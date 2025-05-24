@@ -34,6 +34,7 @@ project "Game"
     -- Include path
     includedirs {
         "include",        -- i tuoi header
+        "UI"
         --[[ 1) via vcpkg  ]]
         -- os.findlib e toolchain vcpkg inseriscono automaticamente include e lib
 
