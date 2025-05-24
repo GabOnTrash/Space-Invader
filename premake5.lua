@@ -25,7 +25,7 @@ project "Game"
         "src/**.cpp",
         "src/**.c",        -- se ci fossero file C
         "include/**.h",
-        "include/**.hpp"
+        "include/**.hpp",
         "UI/**.cpp",    -- <— aggiunge tutti i .cpp dentro UI
         "UI/**.h",      -- <— aggiunge tutti i .h dentro UI
         "UI/**.hpp",    -- <— se hai header .hpp
