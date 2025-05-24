@@ -2,6 +2,11 @@
 *.d
 
 # Compiled Object files
+[Bb]uild/
+x64/
+x86/
+Debug/
+Release/
 *.slo
 *.lo
 *.o
@@ -30,3 +35,23 @@
 *.exe
 *.out
 *.app
+
+# VS
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.cache
+*.VC.db
+*.VC.opendb
+*.aps
+*.ncb
+*.opensdf
+
+# Temporary files
+*.tmp
+*.bak
+*.d
+*.DS_Store
+Thumbs.db
