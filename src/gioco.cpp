@@ -19,7 +19,7 @@ Game::Game()
     int screenHeight = GetMonitorHeight(0);
 
     SCALE = std::min((float) screenWidth / 3840.0f, 1.0f);
-    SCALE = 0.5f;
+
     WINDOW_WIDTH = static_cast<int>(WINDOW_WIDTH * SCALE);
     WINDOW_HEIGHT = static_cast<int>(WINDOW_HEIGHT * SCALE);
 
