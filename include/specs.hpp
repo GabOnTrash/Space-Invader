@@ -17,7 +17,7 @@
 
 #include "timer.hpp"
 #include "MyRandom.hpp"
-#include "Menù.h"
+#include "Menu.h"
 
 
 extern int WINDOW_WIDTH;
