@@ -1,11 +1,13 @@
 #include "gioco.hpp"
 
+int MAP_WIDTH = 3840;
+int MAP_HEIGHT = 2160;
 int WINDOW_WIDTH = 1500;
 int WINDOW_HEIGHT = 1500;
 float SCALE = 1.0f;
 
 Game::Game()
-    : tAsteroidi(0, [this]() { asteroidi.emplace_back(); }, true, true)
+    : tAsteroidi(0, [this]() { asteroidi.emplace_back(giocatore.GetPosition()); }, true, true)
     , tPotenziamenti(6000, [this]() { CreatePowerUp(); }, true, true)
     , tResume(1500, [this]() { ElementsUpdating = true; }, false, false)
     , PotTriplo(5000, [this]() { giocatore.tripleLaser = false; })
@@ -22,6 +24,9 @@ Game::Game()
 
     WINDOW_WIDTH = static_cast<int>(WINDOW_WIDTH * SCALE);
     WINDOW_HEIGHT = static_cast<int>(WINDOW_HEIGHT * SCALE);
+
+	MAP_WIDTH = static_cast<int>(MAP_WIDTH * SCALE);
+	MAP_HEIGHT = static_cast<int>(MAP_HEIGHT * SCALE);
 
 	SetWindowPosition((screenWidth - WINDOW_WIDTH) / 2, (screenHeight - WINDOW_HEIGHT) / 2);
     SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -49,6 +54,11 @@ Game::Game()
                 }
             }
         });
+
+	camera.target = giocatore.GetPosition();
+	camera.offset = { static_cast<float>(WINDOW_WIDTH) / 2, static_cast<float>(WINDOW_HEIGHT) / 2 };
+	camera.zoom = SCALE;
+	camera.rotation = 0.0f;
 }
 Game::~Game()
 {
@@ -71,6 +81,7 @@ void Game::Init()
     if (!textureCaricata)
     {
         GameCursor = LoadTexture("immagini/grogu.png");
+		background = LoadTexture("immagini/background.png");
         GameMusic = LoadMusicStream("immagini/game_music.mp3");
         textureCaricata = true;
     }
@@ -87,7 +98,7 @@ void Game::Unload()
 
 void Game::Run()
 {
-    stelleGioco.InizializzaStelle(0);
+    // stelleGioco.InizializzaStelle(0);
     stelleMenu.InizializzaStelle(1);
 
     PlayMusicStream(GameMusic);
@@ -97,7 +108,6 @@ void Game::Run()
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground(Color{ 58, 46, 63, 255 });
 
         deltaT = GetFrameTime();
 
@@ -105,6 +115,7 @@ void Game::Run()
 
         UpdateGameStatus();
         MenuSystem.UpdateSystem();
+
         if (GameStatus != RUNNING) DrawTextureEx(GameCursor, { GetMousePosition().x - 10 * SCALE, GetMousePosition().y }, 0.0f, SCALE * 2, WHITE);
 
         EndDrawing();
@@ -134,12 +145,17 @@ void Game::UpdateRunInterface()
 }
 void Game::DrawRunInterface()
 {
-    stelleGioco.DisegnaStelle();
+    BeginMode2D(camera);
+    DrawTextureEx(background, { -80, 0 }, 0.0f, SCALE * 2, WHITE);
+    // stelleGioco.DisegnaStelle();
 
     for (auto& asteroide : asteroidi)       asteroide.Disegna();
     for (auto& potenziam : potenziamenti)   potenziam.Disegna();
 
     giocatore.Disegna();
+    camera.target = giocatore.GetPosition();
+
+	EndMode2D();
 
     for (int i = 0; i < arrayCuori.size(); i++)
     {
@@ -154,6 +170,7 @@ void Game::UpdateGameStatus()
 
     if (GameStatus == START)
     {
+        ClearBackground(Color{ 58, 46, 63, 255 });
         stelleMenu.AggiornaStelle(deltaT, 1);
         stelleMenu.DisegnaStelle();
     }
@@ -330,7 +347,9 @@ void Game::UpdateElements()
     {
         asteroidi[i].Aggiorna(deltaT);
 
-        if (asteroidi[i].getBounds().y > 100 + WINDOW_HEIGHT) asteroidi.erase(asteroidi.begin() + i);
+        if (asteroidi[i].getBounds().x > WINDOW_WIDTH + MAP_WIDTH && asteroidi[i].getBounds().y > WINDOW_HEIGHT + MAP_HEIGHT) 
+            asteroidi.erase(asteroidi.begin() + i);
+
         else i++;
     }
 
@@ -338,7 +357,7 @@ void Game::UpdateElements()
     {
         potenziamenti[i].Aggiorna(deltaT);
 
-        if (potenziamenti[i].getBounds().y > 100 + WINDOW_HEIGHT) potenziamenti.erase(potenziamenti.begin() + i);
+        if (potenziamenti[i].getBounds().y > 100 + MAP_HEIGHT) potenziamenti.erase(potenziamenti.begin() + i);
         else i++;
     }
 
@@ -431,7 +450,6 @@ void Game::InitUI()
 
     MenuSystem.InitLayers();
 }
-
 void Game::SaveSettingsFile()
 {
     /*SettingsManager sManager("settings.json");

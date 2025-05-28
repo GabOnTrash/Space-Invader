@@ -17,9 +17,10 @@
 
 #include "timer.hpp"
 #include "MyRandom.hpp"
-#include "UI/Menù.h"
+#include "Menù.h"
 
-
+extern int MAP_WIDTH;
+extern int MAP_HEIGHT;
 extern int WINDOW_WIDTH;
 extern int WINDOW_HEIGHT;
 extern float SCALE;

@@ -1,18 +1,59 @@
 #include "asteroide.hpp"
 
-Asteroide::Asteroide()
+Asteroide::Asteroide(Vector2 PlayerPosition)
 {
-	velX = GetRN<int>(250, 300) * SCALE;
-	velY = GetRN<int>(250, 300) * SCALE;
-	verso =	GetRN<float>(-1, 1);
-	posizione.x = GetRN<float>(0, WINDOW_WIDTH);
-	posizione.y = GetRN<float>(-150, -100);
+	float speed = GetRN<float>(500, 550) * SCALE;
 
-	if (verso == 0)
-		verso = 1;
+	int fromWhere = GetRN<int>(0, 3);
+	// sinistra
+	if (fromWhere == 0)
+	{
+		posizione.x = GetRN<float>(PlayerPosition.x - WINDOW_WIDTH / 2 - 200, PlayerPosition.x - WINDOW_WIDTH / 2 - 100);
+		posizione.y = GetRN<float>(PlayerPosition.y - WINDOW_HEIGHT / 2, PlayerPosition.y + WINDOW_HEIGHT / 2);
+	}
+	// destra
+	else if (fromWhere == 1)
+	{
+		posizione.x = GetRN<float>(PlayerPosition.x + WINDOW_WIDTH / 2 + 100, PlayerPosition.x + WINDOW_WIDTH / 2 + 200);
+		posizione.y = GetRN<float>(PlayerPosition.y - WINDOW_HEIGHT / 2, PlayerPosition.y + WINDOW_HEIGHT / 2);
+	}
+	// sopra
+	else if (fromWhere == 2)
+	{
+		posizione.x = GetRN<float>(PlayerPosition.x - WINDOW_WIDTH / 2, PlayerPosition.x + WINDOW_WIDTH / 2);
+		posizione.y = GetRN<float>(PlayerPosition.y + WINDOW_HEIGHT / 2 + 100, PlayerPosition.y + WINDOW_HEIGHT / 2 + 200);
+	}
+	// sotto
+	else if (fromWhere == 3)
+	{
+		posizione.x = GetRN<float>(PlayerPosition.x - WINDOW_WIDTH / 2, PlayerPosition.x + WINDOW_WIDTH / 2);
+		posizione.y = GetRN<float>(PlayerPosition.y - WINDOW_HEIGHT / 2 - 200, PlayerPosition.y - WINDOW_HEIGHT / 2 - 100);
+	}
 
-	verso *= 0.7f;
+	Vector2 target = 
+	{
+		PlayerPosition.x + GetRN<float>(-30, 30),
+		PlayerPosition.y + GetRN<float>(-30, 30)
+	};
+	
+	Vector2 direction = 
+	{
+		target.x - posizione.x,
+		target.y - posizione.y
+	};
+	
+	float length = sqrt(direction.x * direction.x + direction.y * direction.y);
+	if (length != 0) 
+	{
+		direction.x /= length;
+		direction.y /= length;
+	}
 
+	// Imposta velocità verso il player
+	velX = direction.x * speed * SCALE;
+	velY = direction.y * speed * SCALE;
+
+	// Assegna l'immagine
 	immagine = &arrayAsteroidi[0];
 }
 Asteroide::~Asteroide()
@@ -51,7 +92,7 @@ void Asteroide::Disegna()
 }
 void Asteroide::Movimento(float deltaT)
 {
-	posizione.x += velX * verso * deltaT;
+	posizione.x += velX * deltaT;
 	posizione.y += velY * deltaT;
 }
 void Asteroide::Aggiorna(float deltaT)

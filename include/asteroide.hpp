@@ -6,7 +6,7 @@ class Asteroide
 {
 public:
 
-	Asteroide();
+	Asteroide(Vector2 PlayerPosition);
 	~Asteroide();
 
 	int velX = 0;

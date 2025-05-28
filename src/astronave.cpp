@@ -32,8 +32,8 @@ void Astronave::Reset()
 	lasers.clear();
 	lasers.reserve(10);
 
-	posizione.x = ((WINDOW_WIDTH / 2.0f) - (immagine.width * SCALE / 2.0f));
-	posizione.y = (WINDOW_HEIGHT / 2.0f);
+	posizione.x = (MAP_WIDTH / 2.0f) - (immagine.width * SCALE / 2.0f);
+	posizione.y = (MAP_HEIGHT / 2.0f) - (immagine.width * SCALE / 2.0f);
 	vel = 250 * SCALE;
 
 	tLaser.deactive();
@@ -78,8 +78,12 @@ void Astronave::clearLaser()
 
 void Astronave::Movimento(float deltaT)
 {
+	direzione = { 0, 0 };
+
 	if (reducedVel) vel = 150 * SCALE;
 	else vel = 250 * SCALE;
+
+	
 
 	// Input direzione
 	if (IsKeyDown(KeyBinds.KeyUP)) direzione.y -= 1;
@@ -87,20 +91,13 @@ void Astronave::Movimento(float deltaT)
 	if (IsKeyDown(KeyBinds.KeyLEFT)) direzione.x -= 1;
 	if (IsKeyDown(KeyBinds.KeyRIGHT)) direzione.x += 1;
 
-	if (sqrtf(direzione.x * direzione.x + direzione.y * direzione.y) != 0)
-	{
-		direzione.x /= sqrtf(direzione.x * direzione.x + direzione.y * direzione.y);
-		direzione.y /= sqrtf(direzione.x * direzione.x + direzione.y * direzione.y);
-	}
+	direzione = Vector2Normalize(direzione);
 
-	nuovaPosizione.x = posizione.x + direzione.x * vel * deltaT;
-	nuovaPosizione.y = posizione.y + direzione.y * vel * deltaT;
+	posizione.x += direzione.x * vel * deltaT;
+	posizione.y += direzione.y * vel * deltaT;
 
-	if (nuovaPosizione.x >= 0 && nuovaPosizione.x <= WINDOW_WIDTH - immagine.width * SCALE)
-		posizione.x = nuovaPosizione.x;
-
-	if (nuovaPosizione.y >= 0 && nuovaPosizione.y <= WINDOW_HEIGHT - immagine.height * SCALE)
-		posizione.y = nuovaPosizione.y;
+	posizione.x = std::clamp(posizione.x, 0.0f, static_cast<float>(MAP_WIDTH /* - immagine.width*/ * SCALE));
+	posizione.y = std::clamp(posizione.y, 0.0f, static_cast<float>(MAP_HEIGHT/* - immagine.height*/ * SCALE));
 
 	if (continued)
 	{
@@ -122,14 +119,12 @@ void Astronave::Movimento(float deltaT)
 		}
 		tLaser.active();
 	}
-
-	direzione.x = 0;
-	direzione.y = 0;
 }
 
 Rectangle Astronave::getBounds()
 {
-	return {
+	return 
+	{
 		posizione.x,
 		posizione.y,
 		immagine.width * SCALE,

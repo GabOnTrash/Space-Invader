@@ -20,6 +20,7 @@ public:
 	bool tripleLaser = false;
 	bool reducedVel = false;
 	bool continued = false;
+	float rotation = 0.0f;
 
 	void Aggiorna(float deltaT);
 	void Disegna();
@@ -49,7 +50,6 @@ private:
 
 	Vector2 posizione{ 0, 0 };
 	Vector2 direzione{ 0, 0 };
-	Vector2 nuovaPosizione{ 0, 0 };
 
 	std::vector<Laser> lasers;
 	Timer<> tLaser;

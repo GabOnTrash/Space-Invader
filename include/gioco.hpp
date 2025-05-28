@@ -59,8 +59,6 @@ private:
     int nMaxCuori = 0;
     int DiffPerPotenziamenti;
     int tipoPotenziamento = 0;
-    int delayAsteroidi = 500;
-
     bool ElementsUpdating = true;
 
     GameState GameStatus = START;
@@ -85,10 +83,13 @@ private:
 
     Interface MenuSystem;
 
+	Camera2D camera;
+
     std::thread collisionThread;
     std::mutex collisionMutex;
     std::atomic<bool> runningCollision = true;
 
     static inline Texture2D GameCursor = { 0 };
+    static inline Texture2D background = { 0 };
     static inline bool textureCaricata = false;
 };
