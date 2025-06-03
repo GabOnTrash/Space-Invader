@@ -16,7 +16,7 @@ A modern C++20 implementation of the classic "Space Invaders" arcade game, featu
 ![StartMenu](assets/startmenu.png)
 ![StartMenu](assets/bindingsmenu.png)
 ![StartMenu](assets/volumemenu.png)
-![StartMenu](assets/littlegameplay.gif)
+![StartMenu](assets/gameplay.gif)
 ## Getting Started
 
 ### Prerequisites
