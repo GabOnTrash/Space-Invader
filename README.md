@@ -9,7 +9,7 @@ A modern C++20 implementation of the classic "Space Invaders" arcade game, featu
 - **Difficulty Levels**: Choose from multiple difficulty settings (Easy, Normal, Hard).
 - **Audio & Visual Effects**: Includes explosion animations and sound effects.
 - **Customizable Controls**: Key bindings and audio settings are saved in a JSON file.
-- **Responsive Window**: The game window adapts to your screen resolution.
+- **Responsive Window**: The game window adapts to your screen resolution. ![C++](https://img.shields.io/badge/C%2B%2B-Standard-blue?logo=c%2B%2B&logoColor=white) ![Raylib](https://img.shields.io/badge/Based_on-Raylib-brightgreen?logo=raylib&logoColor=white) ![JSON](https://img.shields.io/badge/Uses-JSON-orange?logo=json&logoColor=white) ![Windows](https://img.shields.io/badge/Platform-Windows-blue?logo=windows&logoColor=white)
 
 ## Screenshots
 
