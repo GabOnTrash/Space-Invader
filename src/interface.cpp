@@ -164,50 +164,61 @@ void Interface::InitAudioControlSettings()
 {
     SettingsManager settings("SpaceInvadersSettings.json");
 
-    GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume");
-    MusicVolume = settings.GetKey<float>("audio", "MusicVolume");
-    LaserVolume = settings.GetKey<float>("audio", "LaserVolume");
-    AsteroidVolume = settings.GetKey<float>("audio", "AsteroidVolume");
-    ExplosionVolume = settings.GetKey<float>("audio", "ExplosionVolume");
-    PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume");
+    GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume") / 100;
+    MusicVolume = settings.GetKey<float>("audio", "MusicVolume") / 100;
+    LaserVolume = settings.GetKey<float>("audio", "LaserVolume") / 100;
+    AsteroidVolume = settings.GetKey<float>("audio", "AsteroidVolume") / 100;
+    ExplosionVolume = settings.GetKey<float>("audio", "ExplosionVolume") / 100;
+    PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume") / 100;
 
-    // ---------------- BLOCCO 1 ----------------
+    centerY = WINDOW_HEIGHT / 2;
+    blockSpacing = 140 * SCALE;
+    sliderOffset = 50 * SCALE;
+    labelX = WINDOW_WIDTH / 2;
+    sliderX = WINDOW_WIDTH / 2;
+    sliderWidth = 400 * SCALE;
+    sliderHeight = 60 * SCALE;
+    pointerWidth = 20 * SCALE;
+
+    // BLOCCO 1
     AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFont, 60 * SCALE, labelX, centerY - 3 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 1, &GeneralVolume, GrigioChiaro);
+    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &GeneralVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
 
-    // ---------------- BLOCCO 2 ----------------
+    // BLOCCO 2
     AudioMenu->add<Label>("labelMusicAudio", Strings::MUSCVOLUME, nullptr, GameFont, 58 * SCALE, labelX + 7 * SCALE, centerY - 2 * blockSpacing, GrigioChiaro, GrigioScuro);
     rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &MusicVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("MusicSliderVolume", rect, pointer);
 
-    // ---------------- BLOCCO 3 ----------------
-    AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFont, 67 * SCALE, labelX + 8 * SCALE, centerY - 1.02 * blockSpacing, GrigioChiaro, GrigioScuro);
+    // BLOCCO 3
+    AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFont, 67 * SCALE, labelX + 8 * SCALE, centerY - 1 * blockSpacing, GrigioChiaro, GrigioScuro);
     rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &LaserVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("LaserSliderVolume", rect, pointer);
 
-    // ---------------- BLOCCO 4 ----------------
+    // BLOCCO 4
     AudioMenu->add<Label>("labelAsteoridAudio", Strings::ASTVOLUME, nullptr, GameFont, 54 * SCALE, labelX + 4 * SCALE, centerY + 0 * blockSpacing, GrigioChiaro, GrigioScuro);
     rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &AsteroidVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("AsteroidSliderVolume", rect, pointer);
 
-    // ---------------- BLOCCO 5 ----------------
+    // BLOCCO 5
     AudioMenu->add<Label>("labelExplosionAudio", Strings::EXPLVOLUME, nullptr, GameFont, 51 * SCALE, labelX - 2 * SCALE, centerY + 1 * blockSpacing, GrigioChiaro, GrigioScuro);
     rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &ExplosionVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("ExplosionSliderVolume", rect, pointer);
 
-    // ---------------- BLOCCO 6 ----------------
+    // BLOCCO 6
     AudioMenu->add<Label>("labelPowerUpsAudio", Strings::PWVOLUME, nullptr, GameFont, 58 * SCALE, labelX + 18 * SCALE, centerY + 2 * blockSpacing, GrigioChiaro, GrigioScuro);
     rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &PowerUpVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
 
-    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFont, 50 * SCALE, sliderWidth - 4 * SCALE, 100 * SCALE, WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2 + 500 * SCALE), [this]() { this->SetLayerPausedMenu(); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFont, 50 * SCALE, 200 * SCALE, 100 * SCALE, WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2 + 500 * SCALE), [this]() {
+        this->SetLayerPausedMenu();
+        }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitControlsSettings()
 {
@@ -217,7 +228,7 @@ void Interface::InitControlsSettings()
     KeyBinds.KeyDOWN = settings.GetKey<int>("KeyBindings", "MOVEDOWN");
     KeyBinds.KeyLEFT = settings.GetKey<int>("KeyBindings", "MOVELEFT");
     KeyBinds.KeyRIGHT = settings.GetKey<int>("KeyBindings", "MOVERIGHT");
-	KeyBinds.KeySHOOT = settings.GetKey<int>("KeyBindings", "SHOOT");
+    KeyBinds.KeySHOOT = settings.GetKey<int>("KeyBindings", "SHOOT");
 
     if (KeyBinds.KeyUP == 0 || KeyBinds.KeyDOWN == 0 || KeyBinds.KeyLEFT == 0 || KeyBinds.KeyRIGHT == 0 || KeyBinds.KeySHOOT == 0)
     {
@@ -225,7 +236,14 @@ void Interface::InitControlsSettings()
         KeyBinds.KeyDOWN = KEY_S;
         KeyBinds.KeyLEFT = KEY_A;
         KeyBinds.KeyRIGHT = KEY_D;
+        KeyBinds.KeySHOOT = KEY_SPACE;
     }
+
+    buttonHeight = 50 * SCALE;
+    spacing = 90 * SCALE;
+    totalHeight = (buttonHeight * 6) + (spacing * 5);
+    yStart = (WINDOW_HEIGHT / 2) - (totalHeight / 2);
+    centerX = WINDOW_WIDTH / 2;
 
     ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 1, [this]() { setToBind("btnMoveDown"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
