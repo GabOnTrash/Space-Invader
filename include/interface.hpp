@@ -69,14 +69,14 @@ private:
     float GeneralVolume = 0.0f;
     int offsetY = 100;
 
-    const int centerY = WINDOW_HEIGHT / 2;
-    const int blockSpacing = 140 * SCALE;
-    const int sliderOffset = 50 * SCALE;
-    const int labelX = WINDOW_WIDTH / 2;
-    const int sliderX = WINDOW_WIDTH / 2;
-    const int sliderWidth = 400 * SCALE;
-    const int sliderHeight = 60 * SCALE;
-    const int pointerWidth = 20 * SCALE;
+    int centerY = WINDOW_HEIGHT / 2;
+    int blockSpacing = 140 * SCALE;
+    int sliderOffset = 50 * SCALE;
+    int labelX = WINDOW_WIDTH / 2;
+    int sliderX = WINDOW_WIDTH / 2;
+    int sliderWidth = 400 * SCALE;
+    int sliderHeight = 60 * SCALE;
+    int pointerWidth = 20 * SCALE;
 
     float buttonHeight = 50 * SCALE;
     float spacing = 90 * SCALE;
