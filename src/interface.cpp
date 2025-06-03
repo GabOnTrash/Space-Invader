@@ -164,12 +164,12 @@ void Interface::InitAudioControlSettings()
 {
     SettingsManager settings("SpaceInvadersSettings.json");
 
-    GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume") / 100;
-    MusicVolume = settings.GetKey<float>("audio", "MusicVolume") / 100;
-    LaserVolume = settings.GetKey<float>("audio", "LaserVolume") / 100;
-    AsteroidVolume = settings.GetKey<float>("audio", "AsteroidVolume") / 100;
-    ExplosionVolume = settings.GetKey<float>("audio", "ExplosionVolume") / 100;
-    PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume") / 100;
+    GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume");
+    MusicVolume = settings.GetKey<float>("audio", "MusicVolume");
+    LaserVolume = settings.GetKey<float>("audio", "LaserVolume");
+    AsteroidVolume = settings.GetKey<float>("audio", "AsteroidVolume");
+    ExplosionVolume = settings.GetKey<float>("audio", "ExplosionVolume");
+    PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume");
 
     centerY = WINDOW_HEIGHT / 2;
     blockSpacing = 140 * SCALE;
@@ -182,7 +182,7 @@ void Interface::InitAudioControlSettings()
 
     // BLOCCO 1
     AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFont, 60 * SCALE, labelX, centerY - 3 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &GeneralVolume, GrigioChiaro);
+    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 1, &GeneralVolume, GrigioChiaro);
     pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
     AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
 
