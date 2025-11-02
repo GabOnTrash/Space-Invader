@@ -217,8 +217,10 @@ void Game::checkAllCollisions()
                 if (asteroidi[j].getState() == DAMAGED)
                 {
                     esplosioni.emplace_back(asteroidi[j].getBounds());
+                    
+                    asteroidi[j] = std::move(asteroidi.back());
+                    asteroidi.pop_back();
 
-                    asteroidi.erase(asteroidi.begin() + j);
                     laserErased = true;
                     GameScore++;
                 }
@@ -250,7 +252,9 @@ void Game::checkAllCollisions()
                 {
                     esplosioni.emplace_back(asteroidi[i].getBounds());
 
-                    asteroidi.erase(asteroidi.begin() + i);
+                    asteroidi[i] = std::move(asteroidi.back());
+                    asteroidi.pop_back();
+
                     GameScore++;
                 }
                 else
@@ -330,7 +334,11 @@ void Game::UpdateElements()
     {
         asteroidi[i].Aggiorna(deltaT);
 
-        if (asteroidi[i].getBounds().y > 100 + WINDOW_HEIGHT) asteroidi.erase(asteroidi.begin() + i);
+        if (asteroidi[i].getBounds().y > 100 + WINDOW_HEIGHT)
+        {
+            asteroidi[i] = std::move(asteroidi.back());
+            asteroidi.pop_back();
+        }
         else i++;
     }
 
@@ -338,7 +346,11 @@ void Game::UpdateElements()
     {
         potenziamenti[i].Aggiorna(deltaT);
 
-        if (potenziamenti[i].getBounds().y > 100 + WINDOW_HEIGHT) potenziamenti.erase(potenziamenti.begin() + i);
+        if (potenziamenti[i].getBounds().y > 100 + WINDOW_HEIGHT)
+        {
+            potenziamenti[i] = std::move(potenziamenti.back());
+            potenziamenti.pop_back();
+        }
         else i++;
     }
 
@@ -346,7 +358,11 @@ void Game::UpdateElements()
     {
         esplosioni[i].Aggiorna(deltaT);
 
-        if (esplosioni[i].fine) esplosioni.erase(esplosioni.begin() + i);
+        if (esplosioni[i].fine)
+        {
+            esplosioni[i] = std::move(esplosioni.back());
+            esplosioni.pop_back();
+        }
         else i++;
     }
 }
@@ -391,10 +407,13 @@ void Game::Start()
     {
     case EASY:
         arrayCuori.emplace_back();
+		[[fallthrough]];
     case NORMAL:
         arrayCuori.emplace_back();
+        [[fallthrough]];
     case HARD:
         arrayCuori.emplace_back();
+        [[fallthrough]];
     default:
         break;
     }
