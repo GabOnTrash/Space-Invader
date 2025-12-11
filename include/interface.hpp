@@ -7,19 +7,17 @@ class Interface
 {
 public:
 
-    Interface();
+    Interface() = default;
+    Interface(GameState* GameStatus);
 
     void InitLayers();
     void UpdateSystem();
-    void SetKilledGame();
-    void SetPausedGame();
 
     const char* TranslateToDifficulty();
     void SetDifficulty();
 
     void SetLayerGame();
     void SetLayerPausedMenu();
-    void SetGameStatus(GameState status);
 
     std::shared_ptr<Menu> GetRunningMenu();
     std::shared_ptr<Menu> GetStartMenu();
@@ -33,13 +31,12 @@ public:
 	float GetAsteroidVolume() { return AsteroidVolume; }
 	float GetExplosionVolume() { return ExplosionVolume; }
 	float GetGeneralVolume() { return GeneralVolume; }
-	GameState GetGameStatus() { return GameStatus; }
 	Difficulty GetGameDifficulty() { return GameDifficulty; }
 
 	std::function<void()> CallStart;
 	std::function<void()> CallRestart;
 	std::function<void()> CallResume;
-	std::function<int()> CallGetScore;
+    std::function<int()> CallGetScore;
 	std::function<void()> CallSetDiff;
 
 private:
@@ -103,6 +100,6 @@ private:
     Color GrigioScuro = Color{ 30, 30, 30, 255 };
     Color Background = Color{ 58, 46, 63, 255 };
 
-    GameState GameStatus = START;
+    GameState* GameStatus;
     Difficulty GameDifficulty = NORMAL;
 };

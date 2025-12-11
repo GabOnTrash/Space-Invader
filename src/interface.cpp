@@ -3,7 +3,7 @@
 
 KeyBindings KeyBinds;
 
-Interface::Interface()
+Interface::Interface(GameState* GameStatus) : GameStatus(GameStatus)
 {
 }
 
@@ -72,11 +72,11 @@ void Interface::setToBind(const std::string& id)
         KeyBinds.KeyRIGHT = KEY_D;
         KeyBinds.KeySHOOT = KEY_SPACE;
 
-        ControlsMenu->getByID("btnMoveUp")->setText("UP: W");
-        ControlsMenu->getByID("btnMoveDown")->setText("DOWN: S");
-        ControlsMenu->getByID("btnMoveLeft")->setText("LEFT: A");
-        ControlsMenu->getByID("btnMoveRight")->setText("RIGHT: D");
-        ControlsMenu->getByID("btnShoot")->setText("SHOOT: SPACE");
+        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat("UP: ", KeyBinds.KeyUP));
+        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat("DOWN: ", KeyBinds.KeyDOWN));
+        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat("LEFT: ", KeyBinds.KeyLEFT));
+        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat("RIGHT: ", KeyBinds.KeyRIGHT));
+        ControlsMenu->getByID("btnShoot")->setText(TextFormat("SHOOT: ", KeyBinds.KeySHOOT));
         waitingForKeyBind = "";
         return;
     }
@@ -89,15 +89,14 @@ void Interface::updateKeyBinding()
     if (waitingForKeyBind.empty()) return;
 
     int key = GetKeyPressed();
-    if (key <= 0 || key > 512 || key == 256) return;
-
-    if (key == KeyBinds.KeyUP || key == KeyBinds.KeyDOWN ||
-        key == KeyBinds.KeyLEFT || key == KeyBinds.KeyRIGHT ||
-        key == KeyBinds.KeySHOOT)
-    {
-        waitingForKeyBind.clear();
-        return;
-    }
+    if (key <= 0                || 
+        key > 512               || 
+        key == 256              ||
+        key == KeyBinds.KeyUP   || 
+        key == KeyBinds.KeyDOWN ||
+        key == KeyBinds.KeyLEFT || 
+        key == KeyBinds.KeyRIGHT||
+        key == KeyBinds.KeySHOOT) return;
 
     if (waitingForKeyBind == "btnMoveUp") 
     {
@@ -245,7 +244,7 @@ void Interface::InitControlsSettings()
     yStart = (WINDOW_HEIGHT / 2) - (totalHeight / 2);
     centerX = WINDOW_WIDTH / 2;
 
-    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyDOWN)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 1, [this]() { setToBind("btnMoveDown"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 2, [this]() { setToBind("btnMoveLeft"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
@@ -257,19 +256,36 @@ void Interface::InitControlsSettings()
 
 void Interface::SetLayerGame()
 {
-    GameStatus = RUNNING;
+    *GameStatus = RUNNING;
     MainMenuHandler.PopMenu();
     MainMenuHandler.PushMenu(RunningMenu);
 }
 void Interface::SetLayerStart()
 {
-    GameStatus = START;
+    *GameStatus = START;
     MainMenuHandler.PopMenu();
     MainMenuHandler.PushMenu(StartMenu);
 }
 void Interface::SetLayerPausedMenu()
 {
     MainMenuHandler.PopMenu();
+
+    if (PausedMenu->getByID("btnRestart")->getActive())
+    {
+        if (*GameStatus == KILLED)
+        {
+            PausedMenu->deactive("btnResume");
+            PausedMenu->getByID("btnRestart")->setWidth(500 * SCALE);
+            PausedMenu->getByID("btnRestart")->setPosX(WINDOW_WIDTH / 2);
+        }
+        else if (*GameStatus == PAUSED)
+        {
+            PausedMenu->activate("btnResume");
+            PausedMenu->getByID("btnRestart")->setWidth(240 * SCALE);
+            PausedMenu->getByID("btnRestart")->setPosX(WINDOW_WIDTH / 2 + (130 * SCALE));
+        }
+    }
+
     MainMenuHandler.PushMenu(PausedMenu);
 }
 void Interface::SetLayerControls()
@@ -288,18 +304,20 @@ void Interface::UpdateSystem()
     MainMenuHandler.Update();
     MainMenuHandler.Draw();
 
-    if (IsKeyPressed(KEY_ESCAPE) && GameStatus != START && GameStatus != KILLED)
+    if ((IsKeyPressed(KEY_ESCAPE) || *GameStatus == KILLED) && *GameStatus != START)
     {
-        GameStatus = PAUSED;
+        if (*GameStatus != KILLED)
+            *GameStatus = PAUSED;
+
         SetLayerPausedMenu();
     }
 
-    if (GameStatus == PAUSED)
+    if (*GameStatus == PAUSED)
     {
         updateKeyBinding();
     }
 
-    if (GameStatus == START || GameStatus == RUNNING)
+    if (MainMenuHandler.TopMenu() == PausedMenu)
     {
         if (ControlsMenu->getByID("btnMoveUp")->getText() == Strings::waitingKey)
             ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)));
@@ -316,29 +334,6 @@ void Interface::UpdateSystem()
         if (ControlsMenu->getByID("btnShoot")->getText() == Strings::waitingKey)
             ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));
     }
-}
-void Interface::SetKilledGame()
-{
-    if (PausedMenu->getByID("btnRestart")->getActive())
-    {
-        PausedMenu->deactive("btnResume");
-        PausedMenu->getByID("btnRestart")->setWidth(500 * SCALE);
-        PausedMenu->getByID("btnRestart")->setPosX(WINDOW_WIDTH / 2);
-    }
-}
-void Interface::SetPausedGame()
-{
-    if (PausedMenu->getByID("btnRestart")->getActive())
-    {
-        PausedMenu->activate("btnResume");
-        PausedMenu->getByID("btnRestart")->setWidth(240 * SCALE);
-        PausedMenu->getByID("btnRestart")->setPosX(WINDOW_WIDTH / 2 + (130 * SCALE));
-    }
-}
-
-void Interface::SetGameStatus(GameState status)
-{
-    GameStatus = status;
 }
 
 std::shared_ptr<Menu> Interface::GetRunningMenu()

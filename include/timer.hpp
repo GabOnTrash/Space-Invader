@@ -9,8 +9,6 @@ class Timer
 {
 public:
 
-    // il sistema con la tupla per gli argomenti funziona con reference e puntatori, ma non con le copie
-
     std::chrono::milliseconds duration;
     std::chrono::high_resolution_clock::time_point initialTime;
 
@@ -21,6 +19,7 @@ public:
     std::function<void(Args...)> callback;
     std::tuple<Args...> args;
 
+    Timer() = default;
     Timer(double duration, std::function<void(Args...)> callback = nullptr, bool repetition = false, bool autoStart = false, Args&&... args)
         : duration(static_cast<int>(duration)),
         callback(callback),

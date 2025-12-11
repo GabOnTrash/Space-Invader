@@ -78,6 +78,9 @@
     <ClInclude Include="include\timer.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\GameLayer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\Button.cpp">
@@ -120,5 +123,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\esplosione.cpp" />
+    <ClCompile Include="src\GameLayer.cpp" />
   </ItemGroup>
 </Project>

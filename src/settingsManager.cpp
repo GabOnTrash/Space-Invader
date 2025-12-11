@@ -1,7 +1,14 @@
 #include "settingsManager.hpp"
 
-SettingsManager::SettingsManager(){}
-SettingsManager::SettingsManager(const std::string& filePath)
+SettingsManager::SettingsManager(const std::string& filePath, Interface& MenuSystem) 
+    : MenuSystem(MenuSystem)
+{
+    this->settingsFilePath = GetFullPath(filePath);
+
+    LoadData();
+}
+SettingsManager::SettingsManager(const std::string& filePath) 
+    : MenuSystem(*(new Interface()))
 {
     this->settingsFilePath = GetFullPath(filePath);
 
@@ -48,8 +55,27 @@ void SettingsManager::LoadData()
         settings = nlohmann::json::object();
     }
 }
-void SettingsManager::SaveData() const 
+void SettingsManager::GetData()
 {
+    SetKey("audio", "GeneralVolume", MenuSystem.GetGeneralVolume());
+    SetKey("audio", "MusicVolume", MenuSystem.GetMusicVolume());
+    SetKey("audio", "LaserVolume", MenuSystem.GetLaserVolume());
+    SetKey("audio", "AsteroidVolume", MenuSystem.GetAsteroidVolume());
+    SetKey("audio", "PowerUpVolume", MenuSystem.GetPowerUpVolume());
+    SetKey("audio", "ExplosionVolume", MenuSystem.GetExplosionVolume());
+
+    SetKey("difficulty", "GameDifficulty", MenuSystem.GetGameDifficulty());
+
+    SetKey("KeyBindings", "MOVEUP", KeyBinds.KeyUP);
+    SetKey("KeyBindings", "MOVEDOWN", KeyBinds.KeyDOWN);
+    SetKey("KeyBindings", "MOVELEFT", KeyBinds.KeyLEFT);
+    SetKey("KeyBindings", "MOVERIGHT", KeyBinds.KeyRIGHT);
+    SetKey("KeyBindings", "SHOOT", KeyBinds.KeySHOOT);
+}
+
+void SettingsManager::SaveData()
+{
+    GetData();
     std::ofstream file(settingsFilePath);
 
     if (file.is_open()) 
@@ -62,40 +88,8 @@ void SettingsManager::SaveData() const
     }
 }
 
-//void SettingsManager::SaveMap(const std::map<const char*, float>& Map, const std::string& type)
-//{
-//    for (const auto& [key, ptr] : Map)
-//    {
-//        settings[type][key] = ptr;
-//    }
-//}
-//void SettingsManager::LoadMap(const std::map<const char*, float>& Map, const std::string& type)
-//{
-//    /*if (settings.contains(type))
-//    {
-//        for (auto& [key, ptr] : Map)
-//        {
-//            if (settings[type].contains(key))
-//            {
-//                ptr = settings[type][key].get<float>();
-//            }
-//        }
-//    }*/
-//}
-//float SettingsManager::GetKey(const std::string& container, const std::string& type) const
-//{
-//    if (settings.contains(container) && settings[container].contains(type)) 
-//    {
-//        return settings[container].at(type).get<float>();
-//    }
-//    return 1.0f;  // valore di default
-//}
-//void SettingsManager::SetKey(const std::string& container, const std::string& type, float value)
-//{
-//    settings[container][type] = value;
-//}
-
 void SettingsManager::DeleteKey(const std::string& section)
 {
-    if (settings.contains(section)) settings.erase(section);
+    if (settings.contains(section))
+        settings.erase(section);
 }

@@ -3,16 +3,18 @@
 #include <nlohmann/json.hpp>
 
 #include "specs.hpp"
+#include "interface.hpp"
 
 class SettingsManager 
 {
 public:
 
-    SettingsManager();
+    SettingsManager(const std::string& filePath, Interface& MenuSystem);
     SettingsManager(const std::string& filePath);
 
     void LoadData();
-    void SaveData() const;
+    void GetData();
+    void SaveData();
 
     // Volume
     //void SaveMap(const std::map<const char*, float>& Map, const std::string& type);
@@ -42,4 +44,6 @@ private:
 
     std::string settingsFilePath;
     nlohmann::json settings;
+
+    Interface& MenuSystem;
 };

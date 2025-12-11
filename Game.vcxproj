@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\GameLayer.hpp" />
     <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\Label.h" />
     <ClInclude Include="UI\Menu.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="include\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameLayer.cpp" />
     <ClCompile Include="src\esplosione.cpp" />
     <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\Label.cpp" />

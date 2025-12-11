@@ -19,7 +19,11 @@ public:
 		if (!MenuStack.empty()) 
 			MenuStack.pop(); 
 	}
-
+	void ClearMenus()
+	{
+		while (!MenuStack.empty())
+			MenuStack.pop();
+    }
 	void Update()
 	{
 		if (!MenuStack.empty())
