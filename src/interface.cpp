@@ -72,11 +72,11 @@ void Interface::setToBind(const std::string& id)
         KeyBinds.KeyRIGHT = KEY_D;
         KeyBinds.KeySHOOT = KEY_SPACE;
 
-        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat("UP: ", KeyBinds.KeyUP));
-        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat("DOWN: ", KeyBinds.KeyDOWN));
-        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat("LEFT: ", KeyBinds.KeyLEFT));
-        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat("RIGHT: ", KeyBinds.KeyRIGHT));
-        ControlsMenu->getByID("btnShoot")->setText(TextFormat("SHOOT: ", KeyBinds.KeySHOOT));
+        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)));
+        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)));
+        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)));
+        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)));
+        ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));
         waitingForKeyBind = "";
         return;
     }

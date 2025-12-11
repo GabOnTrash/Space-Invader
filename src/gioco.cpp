@@ -63,7 +63,6 @@ void Game::Run()
     PlayMusicStream(GameMusic);
 
     HideCursor();
-
     while (!WindowShouldClose())
     {
         BeginDrawing();
