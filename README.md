@@ -95,5 +95,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-*Made with Raylib, vcpkg, Premake5, and C++20.*
+*Made with Raylib, vcpkg, Premake5, and C++17.*
 
