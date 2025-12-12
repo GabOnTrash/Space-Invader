@@ -1,6 +1,6 @@
 # Space Invaders 
 
-A modern C++20 implementation of the classic "Space Invaders" arcade game, featuring smooth animations, power-ups, audio effects, and a responsive UI. Built using [Raylib](https://www.raylib.com/) for graphics and audio.
+A modern C++17 implementation of the classic "Space Invaders" arcade game, featuring smooth animations, power-ups, audio effects, and a responsive UI. Built using [Raylib](https://www.raylib.com/) for graphics and audio.
 
 ## Features
 
@@ -22,7 +22,7 @@ A modern C++20 implementation of the classic "Space Invaders" arcade game, featu
 
 ### Prerequisites
 
-- C++20 compatible compiler (e.g., MSVC, GCC, Clang)
+- C++17 compatible compiler (e.g., MSVC, GCC, Clang)
 - [vcpkg](https://github.com/microsoft/vcpkg) for dependency management
 - [Premake5](https://premake.github.io/) for project generation
 - [Raylib](https://www.raylib.com/) (install via vcpkg)
@@ -95,5 +95,5 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 ---
 
-*Made with Raylib, vcpkg, Premake5, and C++20.*
+*Made with Raylib, vcpkg, Premake5, and C++17.*
 
