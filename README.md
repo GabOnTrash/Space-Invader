@@ -22,7 +22,7 @@ A modern C++20 implementation of the classic "Space Invaders" arcade game, featu
 
 ### Prerequisites
 
-- C++20 compatible compiler (e.g., MSVC, GCC, Clang)
+- C++17 compatible compiler (e.g., MSVC, GCC, Clang)
 - [vcpkg](https://github.com/microsoft/vcpkg) for dependency management
 - [Premake5](https://premake.github.io/) for project generation
 - [Raylib](https://www.raylib.com/) (install via vcpkg)
