@@ -251,7 +251,7 @@ void Interface::InitControlsSettings()
     ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 4, [this]() { setToBind("btnShoot"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, buttonHeight, 500 * SCALE, 120 * SCALE, centerX, yStart + (buttonHeight + spacing) * 5, [this]() { setToBind("Reset"); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    ControlsMenu->add<Button>("Go Back Button", "Go Back", GameFont, 50 * SCALE, sliderWidth - 4 * SCALE, 100 * SCALE, WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2 + 500 * SCALE), [this]() { this->SetLayerPausedMenu(); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("Go Back Button", "Go Back", GameFont, 50 * SCALE, 200 * SCALE, 100 * SCALE, WINDOW_WIDTH / 2, (WINDOW_HEIGHT / 2 + 500 * SCALE), [this]() { this->SetLayerPausedMenu(); }, 0.0f, 0, 4 * SCALE, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 
 void Interface::SetLayerGame()
@@ -266,19 +266,19 @@ void Interface::SetLayerStart()
     MainMenuHandler.PopMenu();
     MainMenuHandler.PushMenu(StartMenu);
 }
-void Interface::SetLayerPausedMenu()
+void Interface::SetLayerPausedMenu(bool dead)
 {
     MainMenuHandler.PopMenu();
 
     if (PausedMenu->getByID("btnRestart")->getActive())
     {
-        if (*GameStatus == KILLED)
+        if (dead)
         {
             PausedMenu->deactive("btnResume");
             PausedMenu->getByID("btnRestart")->setWidth(500 * SCALE);
             PausedMenu->getByID("btnRestart")->setPosX(WINDOW_WIDTH / 2);
         }
-        else if (*GameStatus == PAUSED)
+        else 
         {
             PausedMenu->activate("btnResume");
             PausedMenu->getByID("btnRestart")->setWidth(240 * SCALE);
@@ -306,13 +306,13 @@ void Interface::UpdateSystem()
 
     if ((IsKeyPressed(KEY_ESCAPE) || *GameStatus == KILLED) && *GameStatus != START)
     {
-        if (*GameStatus != KILLED)
-            *GameStatus = PAUSED;
+        bool dead = (*GameStatus == KILLED);
+        *GameStatus = PAUSED;
 
-        SetLayerPausedMenu();
+        SetLayerPausedMenu(dead);
     }
 
-    if (*GameStatus == PAUSED)
+    else if (*GameStatus == PAUSED)
     {
         updateKeyBinding();
     }

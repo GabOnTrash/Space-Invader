@@ -17,7 +17,7 @@ public:
     void SetDifficulty();
 
     void SetLayerGame();
-    void SetLayerPausedMenu();
+    // void SetLayerPausedMenu();
 
     std::shared_ptr<Menu> GetRunningMenu();
     std::shared_ptr<Menu> GetStartMenu();
@@ -53,6 +53,7 @@ private:
     void InitControlsSettings();
     
     void SetLayerStart();
+    void SetLayerPausedMenu(bool dead = false);
     void SetLayerControls();
     void SetLayerAudio();
 
