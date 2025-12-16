@@ -14,7 +14,9 @@ void Astronave::Init()
 {
 	if (!textureCaricata)
 	{
-		immagine = LoadTexture("immagini/giocatore.png");
+		immagine = LoadTexture("immagini/space-ships/Spaceship_4.png");
+        byteMask.loadFromImage("immagini/space-ships/Spaceship_4.png");
+
 		textureCaricata = true;
 	}
 }
@@ -46,12 +48,6 @@ void Astronave::Reset()
 
 void Astronave::Disegna()
 {
-	if (continued)
-		bigLaser.Disegna();
-
-	for (auto& laser : lasers)
-		laser.Disegna();
-
 	DrawTextureEx(immagine, posizione, 0.0f, SCALE, WHITE);
 }
 
@@ -59,16 +55,6 @@ void Astronave::Aggiorna(float deltaT)
 {
 	Movimento(deltaT);
 	tLaser.update();
-
-	for (size_t i = 0; i < lasers.size(); )
-	{
-		lasers[i].Aggiorna(deltaT);
-
-		if (lasers[i].posizione.y < -50 * SCALE)
-			lasers.erase(lasers.begin() + i);
-		else
-			i++;
-	}
 }
 
 void Astronave::clearLaser()
@@ -113,7 +99,7 @@ void Astronave::Movimento(float deltaT)
 		const float laserCenterX = posizione.x + (immagine.width * SCALE / 2.0f) - (Laser::immagine.width * SCALE / 2.0f);
 		const float laserY = posizione.y - laserOffset;
 
-		lasers.emplace_back(laserCenterX, laserY);
+		lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
 
 		if (tripleLaser)
 		{
@@ -129,12 +115,7 @@ void Astronave::Movimento(float deltaT)
 
 Rectangle Astronave::getBounds()
 {
-	return {
-		posizione.x,
-		posizione.y,
-		immagine.width * SCALE,
-		immagine.height * SCALE
-	};
+	return { posizione.x, posizione.y, immagine.width * SCALE, immagine.height * SCALE };
 }
 
 std::vector<Laser>& Astronave::GetLasers()

@@ -1,6 +1,6 @@
 #include "GameLayer.hpp"
 
-GameLayer::GameLayer(GameState* GameStatus, Interface* MenuSystem) 
+GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Interface> MenuSystem)
     : MenuSystem(MenuSystem), GameStatus(GameStatus),
       tAsteroidi(0, [this]() { asteroidi.emplace_back(); }, true, true),
       tPotenziamenti(6000, [this]() { CreatePowerUp(); }, true, true),
@@ -99,15 +99,21 @@ void GameLayer::DrawRunInterface()
 
     for (auto& asteroide : asteroidi)
         asteroide.Disegna();
+
     for (auto& potenziam : potenziamenti)
         potenziam.Disegna();
+
+    for (auto& laser : giocatore.lasers)
+        laser.Disegna();
+
+    if (giocatore.continued)
+        giocatore.bigLaser.Disegna();
 
     giocatore.Disegna();
 
     for (int i = 0; i < arrayCuori.size(); i++)
     {
-        arrayCuori[i].posizione = {static_cast<float>(WINDOW_WIDTH - (i + 1) * arrayCuori[i].getWidth()) - 100 / 10,
-                                   0.0f + 100 / 10};
+        arrayCuori[i].posizione = { static_cast<float>(WINDOW_WIDTH - (i + 1) * arrayCuori[i].getWidth()) - 100 / 10, 100 / 10 };
         arrayCuori[i].Disegna();
     }
 }
@@ -155,6 +161,19 @@ void GameLayer::UpdateElements()
         else
             i++;
     }
+
+    for (size_t i = 0; i < giocatore.lasers.size();)
+    {
+        giocatore.lasers[i].Aggiorna(deltaT);
+
+        if (giocatore.lasers[i].posizione.y < -50 * SCALE || giocatore.lasers[i].shouldDie())
+        {
+            giocatore.lasers[i] = std::move(giocatore.lasers.back());
+            giocatore.lasers.pop_back();
+        }
+        else
+            i++;
+    }
 }
 void GameLayer::UpdateTimers()
 {
@@ -192,131 +211,160 @@ void GameLayer::ClearEffects()
 void GameLayer::checkAllCollisions()
 {
     // Collisioni asteroidi laser
-    for (size_t i = 0; i < giocatore.GetLasers().size();)
+    for (size_t i = 0; i < giocatore.lasers.size();)
     {
         bool laserErased = false;
         for (size_t j = 0; j < asteroidi.size();)
         {
-            if (CheckCollisionRecs(giocatore.GetLasers()[i].getBounds(), asteroidi[j].getBounds()))
+            Rectangle rLaser = giocatore.lasers[i].getBounds();
+            Rectangle rAst = asteroidi[j].getBounds();
+
+            if (CheckCollisionRecs(rLaser, rAst))
             {
-                giocatore.GetLasers().erase(giocatore.GetLasers().begin() + i);
-
-                if (asteroidi[j].getState() == DAMAGED)
+                if (Laser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.lasers[i].posizione, asteroidi[j].posizione, SCALE, GetCollisionRec(rLaser, rAst)))
                 {
-                    esplosioni.emplace_back(asteroidi[j].getBounds());
+                    giocatore.lasers.erase(giocatore.lasers.begin() + i);
 
-                    asteroidi[j] = std::move(asteroidi.back());
-                    asteroidi.pop_back();
+                    if (asteroidi[j].getState() == DAMAGED)
+                    {
+                        esplosioni.emplace_back(asteroidi[j].getBounds());
 
-                    laserErased = true;
-                    GameScore++;
+                        asteroidi[j] = std::move(asteroidi.back());
+                        asteroidi.pop_back();
+
+                        laserErased = true;
+                        GameScore++;
+                    }
+                    else
+                    {
+                        asteroidi[j].NextState();
+                    }
+                    break;
                 }
-                else
-                {
-                    asteroidi[j].NextState();
-                }
-                break;
             }
-            else
-            {
-                j++;
-            }
+            j++;
         }
         if (!laserErased)
-        {
             i++;
-        }
     }
 
-    // Collisioni asteroidi bigLaser
     if (giocatore.continued)
     {
         for (size_t i = 0; i < asteroidi.size();)
         {
-            if (CheckCollisionRecs(giocatore.bigLaser.getBounds(), asteroidi[i].getBounds()))
+            Rectangle rLaser = giocatore.bigLaser.getBounds();
+            Rectangle rAst = asteroidi[i].getBounds();
+
+            if (CheckCollisionRecs(rLaser, rAst))
             {
-                if (asteroidi[i].getState() == DAMAGED)
+                if (BigLaser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.bigLaser.posizione, asteroidi[i].posizione, SCALE, GetCollisionRec(rLaser, rAst)))
                 {
-                    esplosioni.emplace_back(asteroidi[i].getBounds());
-
-                    asteroidi[i] = std::move(asteroidi.back());
-                    asteroidi.pop_back();
-
-                    GameScore++;
-                }
-                else
-                {
-                    asteroidi[i].NextState();
-                    i++; // Incrementa qui se non viene cancellato
+                    if (asteroidi[i].getState() == DAMAGED)
+                    {
+                        esplosioni.emplace_back(asteroidi[i].getBounds());
+                        asteroidi[i] = std::move(asteroidi.back());
+                        asteroidi.pop_back();
+                        GameScore++;
+                        continue;
+                    }
+                    else
+                    {
+                        asteroidi[i].NextState();
+                    }
                 }
             }
-            else
-            {
-                i++;
-            }
+
+            i++;
         }
     }
 
     // Collisioni asteroidi giocatore
     for (size_t i = 0; i < asteroidi.size();)
     {
-        if (CheckCollisionRecs(giocatore.getBounds(), asteroidi[i].getBounds()))
+        Rectangle rPlayer = giocatore.getBounds();
+        Rectangle rAsteroid = asteroidi[i].getBounds();
+
+        if (CheckCollisionRecs(rPlayer, rAsteroid))
         {
-            if (arrayCuori.size() == 0)
+            if (Astronave::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.posizione, asteroidi[i].posizione, SCALE, GetCollisionRec(rPlayer, rAsteroid)))
             {
-                *GameStatus = KILLED;
-                return;
-            }
-            else
-            {
-                arrayCuori.pop_back();
-                asteroidi.erase(asteroidi.begin() + i);
+                if (arrayCuori.size() == 0)
+                {
+                    *GameStatus = KILLED;
+                    return;
+                }
+                else
+                {
+                    arrayCuori.pop_back();
+                    asteroidi[i] = std::move(asteroidi.back());
+                    asteroidi.pop_back();
+                    continue;
+                }
             }
         }
-        else
-            i++;
+        i++;
     }
 
-    // Collsioni potenziamenti giocatore
+    // Collisioni potenziamenti giocatore
     for (size_t i = 0; i < potenziamenti.size();)
     {
-        if (CheckCollisionRecs(giocatore.getBounds(), potenziamenti[i].getBounds()))
-        {
-            if (potenziamenti[i].tipoPotenziamento == "downgrade")
-            {
-                giocatore.reducedVel = true;
-                DpotLento.active();
-            }
-            else if (potenziamenti[i].tipoPotenziamento == "depotCuore")
-            {
-                if (arrayCuori.size() <= 0)
-                    *GameStatus = KILLED;
-                else
-                    arrayCuori.pop_back();
-            }
-            else if (potenziamenti[i].tipoPotenziamento == "triploLaser")
-            {
-                giocatore.tripleLaser = true;
-                PotTriplo.active();
-            }
-            else if (potenziamenti[i].tipoPotenziamento == "potCuore")
-            {
-                if (arrayCuori.size() < nMaxCuori)
-                    arrayCuori.emplace_back();
-            }
-            else if (potenziamenti[i].tipoPotenziamento == "bigLaser")
-            {
-                giocatore.continued = true;
-                PotContinuo.active();
-            }
+        Rectangle rPlayer = giocatore.getBounds();
+        Rectangle rPot = potenziamenti[i].getBounds();
 
-            potenziamenti.erase(potenziamenti.begin() + i);
+        if (CheckCollisionRecs(rPlayer, rPot))
+        {
+            if (Astronave::byteMask.checkPixelCollision(PowerUp::byteMask, giocatore.posizione, potenziamenti[i].posizione, SCALE, GetCollisionRec(rPlayer, rPot)))
+            {
+                if (potenziamenti[i].tipoPotenziamento == "downgrade")
+                {
+                    giocatore.reducedVel = true;
+                    DpotLento.active();
+                }
+                else if (potenziamenti[i].tipoPotenziamento == "depotCuore")
+                {
+                    if (arrayCuori.size() <= 0)
+                        *GameStatus = KILLED;
+                    else
+                        arrayCuori.pop_back();
+                }
+                else if (potenziamenti[i].tipoPotenziamento == "triploLaser")
+                {
+                    giocatore.tripleLaser = true;
+                    PotTriplo.active();
+                }
+                else if (potenziamenti[i].tipoPotenziamento == "potCuore")
+                {
+                    if (arrayCuori.size() < nMaxCuori)
+                        arrayCuori.emplace_back();
+                }
+                else if (potenziamenti[i].tipoPotenziamento == "bigLaser")
+                {
+                    giocatore.continued = true;
+                    PotContinuo.active();
+                }
+
+                potenziamenti[i] = std::move(potenziamenti.back());
+                potenziamenti.pop_back();
+                continue;
+            }
         }
-        else
-            i++;
+
+        i++;
     }
 }
+void GameLayer::Resume()
+{
+    esplosioni.clear();
+    tResume.deactive();
+    tResume.active();
 
+    ElementsUpdating = false;
+    MenuSystem->SetLayerGame();
+}
+void GameLayer::Restart()
+{
+    Start();
+}
 void GameLayer::Start()
 {
     ClearEffects();
@@ -338,24 +386,10 @@ void GameLayer::Start()
 
     MenuSystem->SetLayerGame();
 }
-
-void GameLayer::Resume()
-{
-    esplosioni.clear();
-    tResume.deactive();
-    tResume.active();
-
-    ElementsUpdating = false;
-    MenuSystem->SetLayerGame();
-}
-void GameLayer::Restart()
-{
-    Start();
-}
-
 void GameLayer::SetDiff()
 {
     SetMaxCuori(MenuSystem->GetGameDifficulty() - 2);
+    giocatore.setLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
     tAsteroidi.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
     DiffPerPotenziamenti = MenuSystem->GetGameDifficulty() - 1;
 }
@@ -372,4 +406,3 @@ void GameLayer::SetMaxCuori(int cuori)
 {
     nMaxCuori = cuori;
 }
-

@@ -20,8 +20,7 @@ void Cuore::Unload()
         textureCaricata = false;
     }
 }
-
 void Cuore::Disegna()
 {
-    DrawTextureEx(Cuore::immagine, posizione, 0, SCALE, WHITE);
+    DrawTextureEx(Cuore::immagine, posizione, 0, SCALE * MULTIPLY, WHITE);
 }

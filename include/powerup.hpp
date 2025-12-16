@@ -14,8 +14,9 @@ public:
 	void Movimento(float deltaT);
 	void Aggiorna(float deltaT);
 
-	static void Init();            // <--- chiama questo dopo InitWindow()
-	static void Unload();          // <--- da chiamare prima di CloseWindow()
+	static void Init();          
+	static void Unload();
+    static inline ByteMask byteMask;
 
 	Rectangle getBounds();
 

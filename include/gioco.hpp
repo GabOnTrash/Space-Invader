@@ -24,11 +24,12 @@ private:
 
     void InitUI();
 
-    GameState GameStatus = START;
-    Music GameMusic;
+    
+    std::shared_ptr<GameState> GameStatus;
+    std::shared_ptr<Interface> MenuSystem;
     GameLayer Gamelayer;
-    Interface MenuSystem;
 
+    Music GameMusic;
     static inline Texture2D GameCursor = { 0 };
     static inline bool textureCaricata = false;
 };

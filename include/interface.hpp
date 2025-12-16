@@ -8,7 +8,7 @@ class Interface
 public:
 
     Interface() = default;
-    Interface(GameState* GameStatus);
+    Interface(std::shared_ptr<GameState> GameStatus);
 
     void InitLayers();
     void UpdateSystem();
@@ -17,7 +17,11 @@ public:
     void SetDifficulty();
 
     void SetLayerGame();
-    // void SetLayerPausedMenu();
+
+    bool WantToQuit()
+    {
+        return shouldQuit;
+    }
 
     std::shared_ptr<Menu> GetRunningMenu();
     std::shared_ptr<Menu> GetStartMenu();
@@ -47,7 +51,7 @@ private:
     const char* TranslateKey(int key);
 
     void InitStartMenuSettings();
-    void InitRunningMenuSettings();
+    void InitRunningOverlay();
     void InitPausedMenuSettings();
     void InitAudioControlSettings();
     void InitControlsSettings();
@@ -57,7 +61,13 @@ private:
     void SetLayerControls();
     void SetLayerAudio();
 
+    void ToggleFullscreen();
+
     std::string waitingForKeyBind = "";
+
+    bool shouldQuit = false;
+    bool fullscreen = true;
+    int taskbar = 60; // Approximate taskbar height
 
     float MusicVolume = 0.0f;
     float LaserVolume = 0.0f;
@@ -76,7 +86,8 @@ private:
     int sliderHeight = 60 * SCALE;
     int pointerWidth = 20 * SCALE;
 
-    float buttonHeight = 50 * SCALE;
+    float fontSize = 50 * SCALE;
+    float buttonHeight = 120 * SCALE;
     float spacing = 90 * SCALE;
     float totalHeight = (buttonHeight * 6) + (spacing * 5);
     float yStart = (WINDOW_HEIGHT / 2) - (totalHeight / 2);
@@ -100,7 +111,8 @@ private:
     Color GrigioChiaro = Color{ 65, 65, 65, 255 };
     Color GrigioScuro = Color{ 30, 30, 30, 255 };
     Color Background = Color{ 58, 46, 63, 255 };
+    Color transparent = Color{ 0, 0, 0, 0 };
 
-    GameState* GameStatus;
+    std::shared_ptr<GameState> GameStatus;
     Difficulty GameDifficulty = NORMAL;
 };

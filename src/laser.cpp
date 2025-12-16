@@ -1,6 +1,6 @@
 #include "laser.hpp"
 
-Laser::Laser(int posX, int posY) 
+Laser::Laser(int posX, int posY, int laserTimeToLive) : shouldDieTimer(laserTimeToLive, nullptr, false, true)
 {  
     SetSoundVolume(audio, volume);
     PlaySound(audio);
@@ -8,8 +8,8 @@ Laser::Laser(int posX, int posY)
 	vel = 400 * SCALE;
 	posizione.x = static_cast<float>(posX);  
 	posizione.y = static_cast<float>(posY);  
-}  
-Laser::~Laser()  
+}
+Laser::~Laser()
 {  
 } 
 Rectangle Laser::getBounds()
@@ -22,6 +22,8 @@ void Laser::Init()
     if (!textureCaricata)
     {
         immagine = LoadTexture("immagini/laser.png");
+        byteMask.loadFromImage("immagini/laser.png");
+
         audio = LoadSound("immagini/laser.wav");
         textureCaricata = true;
     }
@@ -37,7 +39,7 @@ void Laser::Unload()
 }
 void Laser::Disegna()  
 {  
-    DrawTextureEx(Laser::immagine, posizione, 0, SCALE, WHITE);
+    DrawTextureEx(Laser::immagine, posizione, 0, SCALE, {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
 }  
 void Laser::Movimento(float deltaT)  
 {  
@@ -45,9 +47,14 @@ void Laser::Movimento(float deltaT)
 }  
 void Laser::Aggiorna(float deltaT)  
 {  
-    Movimento(deltaT);  
+    Movimento(deltaT);
+    shouldDieTimer.update();
+    alpha = (1.0f - static_cast<float>(shouldDieTimer.elapsedTime()) / static_cast<float>(shouldDieTimer.duration.count())); // alpha updates only if the game is being played
 }
-
+bool Laser::shouldDie()
+{
+    return !shouldDieTimer.isRunning;
+}
 
 BigLaser::BigLaser()
 {
@@ -65,6 +72,8 @@ void BigLaser::Init()
     if (!textureCaricata)
     {
         immagine = LoadTexture("immagini/bigLaser.png");
+        byteMask.loadFromImage("immagini/bigLaser.png");
+
         textureCaricata = true;
     }
 }

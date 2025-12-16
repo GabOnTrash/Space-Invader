@@ -47,6 +47,8 @@ void PowerUp::Init()
         arrayPotenziamenti[3] = LoadTexture("immagini/potenziamento_cuore.png");
         arrayPotenziamenti[4] = LoadTexture("immagini/sparo_veloce.png");
 
+        byteMask.loadFromImage("immagini/downgrade.png");
+
         audio = LoadSound("immagini/power_up_sound.mp3");
         textureCaricata = true;
     }
