@@ -12,6 +12,7 @@ public:
 
 	static void Init();
 	static void Unload();
+    static inline ByteMask byteMask;
 
 	void Reset();
 
@@ -24,7 +25,6 @@ public:
 	void Aggiorna(float deltaT);
 	void Disegna();
 	void clearLaser();
-
 	void Movimento(float deltaT);
 
 	Vector2 GetPosition() 
@@ -35,23 +35,29 @@ public:
 	{ 
 		return Astronave::immagine; 
 	}
-	Timer<>& GetTimer() 
-	{ 
-		return tLaser; 
-	}
+    Timer<>& GetTimer()
+    {
+        return tLaser;
+    }
+	void setLaserTimeToLive(int timeInMs)
+	{
+		laserTimeToLive = timeInMs;
+    }
 
 	std::vector<Laser>& GetLasers();
 
 	Rectangle getBounds();
 	BigLaser bigLaser;
+	Vector2 posizione{ 0, 0 };
+	std::vector<Laser> lasers;
 
 private:
 
-	Vector2 posizione{ 0, 0 };
+	int laserTimeToLive = 2000; // in ms
+
 	Vector2 direzione{ 0, 0 };
 	Vector2 nuovaPosizione{ 0, 0 };
 
-	std::vector<Laser> lasers;
 	Timer<> tLaser;
 
 	static inline Texture2D immagine = { 0 };

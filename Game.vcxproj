@@ -98,6 +98,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\config\ByteMask.hpp" />
+    <ClInclude Include="include\config\enums.hpp" />
+    <ClInclude Include="include\config\keys.hpp" />
+    <ClInclude Include="include\config\Strings.hpp" />
     <ClInclude Include="include\GameLayer.hpp" />
     <ClInclude Include="UI\Button.h" />
     <ClInclude Include="UI\Label.h" />

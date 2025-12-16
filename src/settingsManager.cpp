@@ -71,6 +71,8 @@ void SettingsManager::GetData()
     SetKey("KeyBindings", "MOVELEFT", KeyBinds.KeyLEFT);
     SetKey("KeyBindings", "MOVERIGHT", KeyBinds.KeyRIGHT);
     SetKey("KeyBindings", "SHOOT", KeyBinds.KeySHOOT);
+
+    SetKey("video", "Fullscreen", MenuSystem.GetFullscreen());
 }
 
 void SettingsManager::SaveData()

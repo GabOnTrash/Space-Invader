@@ -15,7 +15,7 @@ class GameLayer
 {
 public:
     GameLayer() = default;
-    GameLayer(GameState* GameStatus, Interface* MenuSystem);
+    GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Interface> MenuSystem);
 	~GameLayer();
 
 	void UpdateGameStatus(float deltaT);
@@ -53,13 +53,12 @@ private:
 
     bool ElementsUpdating = true;
 
-    GameState* GameStatus;
+    std::shared_ptr<GameState> GameStatus;
+    std::shared_ptr<Interface> MenuSystem; 
 
 	Stella stelleMenu;
     Stella stelleGioco;
 
-    Interface* MenuSystem; 
-	
     Astronave giocatore;
 
     Timer<> tAsteroidi;

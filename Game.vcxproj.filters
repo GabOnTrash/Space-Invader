@@ -81,6 +81,10 @@
     <ClInclude Include="include\GameLayer.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\config\enums.hpp" />
+    <ClInclude Include="include\config\Strings.hpp" />
+    <ClInclude Include="include\config\keys.hpp" />
+    <ClInclude Include="include\config\ByteMask.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\Button.cpp">
