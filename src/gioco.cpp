@@ -1,7 +1,7 @@
 #include "gioco.hpp"
 
-int WINDOW_WIDTH = 3840.0f;
-int WINDOW_HEIGHT = 2160.0f;
+int WINDOW_WIDTH = 3840;
+int WINDOW_HEIGHT = 2160;
 float SCALE = 1.0f;
 
 Game::Game() 
@@ -16,15 +16,6 @@ Game::Game()
     int screenHeight = GetMonitorHeight(0);
 
     SCALE = std::min((float) screenWidth / WINDOW_WIDTH, 1.0f);
-
-	/*float scaleX = (float)screenWidth  / 3840.0f;
-	float scaleY = (float)screenHeight / 2160.0f;
-
-	SCALE = std::min(scaleX, scaleY);
-
-	WINDOW_WIDTH  = (int)(3840.0f * SCALE);
-	WINDOW_HEIGHT = (int)(2160.0f * SCALE);*/
-	// BIG RATIO ERRORS ON LOWER RES. SCREENS 
 	
     WINDOW_WIDTH = static_cast<int>(WINDOW_WIDTH * SCALE);
     WINDOW_HEIGHT = static_cast<int>(WINDOW_HEIGHT * SCALE);

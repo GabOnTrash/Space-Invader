@@ -46,6 +46,8 @@ public:
 
 private:
 
+    void RecalculateLayout();
+
     void ChangeDifficulty();
     void setToBind(const std::string& id);
     void updateKeyBinding();
@@ -78,21 +80,21 @@ private:
     float GeneralVolume = 0.0f;
     int offsetY = 100;
 
-    int centerY = WINDOW_HEIGHT / 2;
-    int blockSpacing = 140 * SCALE;
-    int sliderOffset = 50 * SCALE;
-    int labelX = WINDOW_WIDTH / 2;
-    int sliderX = WINDOW_WIDTH / 2;
-    int sliderWidth = 400 * SCALE;
-    int sliderHeight = 60 * SCALE;
-    int pointerWidth = 20 * SCALE;
+    int centerY;
+    int blockSpacing;
+    int sliderOffset;
+    int labelX;
+    int sliderX;
+    int sliderWidth;
+    int sliderHeight;
+    int pointerWidth;
 
-    float fontSize = 50 * SCALE;
-    float buttonHeight = 120 * SCALE;
-    float spacing = 90 * SCALE;
-    float totalHeight = (buttonHeight * 6) + (spacing * 5);
-    float yStart = (WINDOW_HEIGHT / 2) - (totalHeight / 2);
-    float centerX = WINDOW_WIDTH / 2;
+    float fontSize;
+    float buttonHeight;
+    float spacing;
+    float totalHeight;
+    float yStart;
+    float centerX;
 
     MenuHandler MainMenuHandler;
 
