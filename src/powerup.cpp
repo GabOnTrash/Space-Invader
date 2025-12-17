@@ -2,10 +2,10 @@
 
 PowerUp::PowerUp(int tipo)
 {
-    posizione.x = GetRN<float>(0, WINDOW_WIDTH);
+    posizione.x = GetRN<float>(0, BASE_WIDTH);
     posizione.y = GetRN<float>(-150, -100);
 
-    vel = 200 * SCALE;
+    vel = 200;
     
     switch (tipo)
     {
@@ -35,7 +35,7 @@ PowerUp::~PowerUp()
 }
 Rectangle PowerUp::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine->width) * SCALE, static_cast<float>(immagine->height) * SCALE };
+    return { posizione.x, posizione.y, static_cast<float>(immagine->width), static_cast<float>(immagine->height) };
 }
 void PowerUp::Init()
 {
@@ -66,7 +66,7 @@ void PowerUp::Unload()
 }
 void PowerUp::Disegna()
 {
-    DrawTextureEx(*immagine, posizione, 0, SCALE, WHITE);
+    DrawTexture(*immagine, posizione.x, posizione.y, WHITE);
 }
 void PowerUp::Movimento(float deltaT)
 {

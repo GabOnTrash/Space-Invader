@@ -54,7 +54,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case KILLED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, BASE_WIDTH, BASE_HEIGHT, Fade(BLACK, 0.3f));
         
         break;
     }
@@ -73,7 +73,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case PAUSED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, BASE_WIDTH, BASE_HEIGHT, Fade(BLACK, 0.3f));
 
         break;
     }
@@ -113,7 +113,7 @@ void GameLayer::DrawRunInterface()
 
     for (int i = 0; i < arrayCuori.size(); i++)
     {
-        arrayCuori[i].posizione = { static_cast<float>(WINDOW_WIDTH - (i + 1) * arrayCuori[i].getWidth()) - 100 / 10, 100 / 10 };
+        arrayCuori[i].posizione = { static_cast<float>(BASE_WIDTH - (i + 1) * arrayCuori[i].getWidth()), 20 };
         arrayCuori[i].Disegna();
     }
 }
@@ -127,7 +127,7 @@ void GameLayer::UpdateElements()
     {
         asteroidi[i].Aggiorna(deltaT);
 
-        if (asteroidi[i].getBounds().y > 100 + WINDOW_HEIGHT)
+        if (asteroidi[i].getBounds().y > 100 + BASE_HEIGHT)
         {
             asteroidi[i] = std::move(asteroidi.back());
             asteroidi.pop_back();
@@ -140,7 +140,7 @@ void GameLayer::UpdateElements()
     {
         potenziamenti[i].Aggiorna(deltaT);
 
-        if (potenziamenti[i].getBounds().y > 100 + WINDOW_HEIGHT)
+        if (potenziamenti[i].getBounds().y > 100 + BASE_HEIGHT)
         {
             potenziamenti[i] = std::move(potenziamenti.back());
             potenziamenti.pop_back();
@@ -166,7 +166,7 @@ void GameLayer::UpdateElements()
     {
         giocatore.lasers[i].Aggiorna(deltaT);
 
-        if (giocatore.lasers[i].posizione.y < -50 * SCALE || giocatore.lasers[i].shouldDie())
+        if (giocatore.lasers[i].posizione.y < -50 || giocatore.lasers[i].shouldDie())
         {
             giocatore.lasers[i] = std::move(giocatore.lasers.back());
             giocatore.lasers.pop_back();
@@ -221,7 +221,7 @@ void GameLayer::checkAllCollisions()
 
             if (CheckCollisionRecs(rLaser, rAst))
             {
-                if (Laser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.lasers[i].posizione, asteroidi[j].posizione, SCALE, GetCollisionRec(rLaser, rAst)))
+                if (Laser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.lasers[i].posizione, asteroidi[j].posizione, GetCollisionRec(rLaser, rAst)))
                 {
                     giocatore.lasers.erase(giocatore.lasers.begin() + i);
 
@@ -257,7 +257,7 @@ void GameLayer::checkAllCollisions()
 
             if (CheckCollisionRecs(rLaser, rAst))
             {
-                if (BigLaser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.bigLaser.posizione, asteroidi[i].posizione, SCALE, GetCollisionRec(rLaser, rAst)))
+                if (BigLaser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.bigLaser.posizione, asteroidi[i].posizione, GetCollisionRec(rLaser, rAst)))
                 {
                     if (asteroidi[i].getState() == DAMAGED)
                     {
@@ -286,7 +286,7 @@ void GameLayer::checkAllCollisions()
 
         if (CheckCollisionRecs(rPlayer, rAsteroid))
         {
-            if (Astronave::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.posizione, asteroidi[i].posizione, SCALE, GetCollisionRec(rPlayer, rAsteroid)))
+            if (Astronave::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.posizione, asteroidi[i].posizione, GetCollisionRec(rPlayer, rAsteroid)))
             {
                 if (arrayCuori.size() == 0)
                 {
@@ -313,7 +313,7 @@ void GameLayer::checkAllCollisions()
 
         if (CheckCollisionRecs(rPlayer, rPot))
         {
-            if (Astronave::byteMask.checkPixelCollision(PowerUp::byteMask, giocatore.posizione, potenziamenti[i].posizione, SCALE, GetCollisionRec(rPlayer, rPot)))
+            if (Astronave::byteMask.checkPixelCollision(PowerUp::byteMask, giocatore.posizione, potenziamenti[i].posizione, GetCollisionRec(rPlayer, rPot)))
             {
                 if (potenziamenti[i].tipoPotenziamento == "downgrade")
                 {

@@ -34,9 +34,9 @@ void Astronave::Reset()
 	lasers.clear();
 	lasers.reserve(10);
 
-	posizione.x = ((WINDOW_WIDTH / 2.0f) - (immagine.width * SCALE / 2.0f));
-	posizione.y = (WINDOW_HEIGHT / 2.0f);
-	vel = 250 * SCALE;
+	posizione.x = ((BASE_WIDTH / 2.0f) - (immagine.width / 2.0f));
+	posizione.y = (BASE_HEIGHT / 2.0f);
+	vel = 250;
 
 	tLaser.deactive();
 
@@ -48,7 +48,7 @@ void Astronave::Reset()
 
 void Astronave::Disegna()
 {
-	DrawTextureEx(immagine, posizione, 0.0f, SCALE, WHITE);
+    DrawTexture(immagine, posizione.x, posizione.y, WHITE);
 }
 
 void Astronave::Aggiorna(float deltaT)
@@ -64,8 +64,8 @@ void Astronave::clearLaser()
 
 void Astronave::Movimento(float deltaT)
 {
-	if (reducedVel) vel = 150 * SCALE;
-	else vel = 250 * SCALE;
+	if (reducedVel) vel = 150;
+	else vel = 250;
 
 	// Input direzione
 	if (IsKeyDown(KeyBinds.KeyUP)) direzione.y -= 1;
@@ -82,21 +82,21 @@ void Astronave::Movimento(float deltaT)
 	nuovaPosizione.x = posizione.x + direzione.x * vel * deltaT;
 	nuovaPosizione.y = posizione.y + direzione.y * vel * deltaT;
 
-	if (nuovaPosizione.x >= 0 && nuovaPosizione.x <= WINDOW_WIDTH - immagine.width * SCALE)
+	if (nuovaPosizione.x >= 0 && nuovaPosizione.x <= BASE_WIDTH - immagine.width)
 		posizione.x = nuovaPosizione.x;
 
-	if (nuovaPosizione.y >= 0 && nuovaPosizione.y <= WINDOW_HEIGHT - immagine.height * SCALE)
+	if (nuovaPosizione.y >= 0 && nuovaPosizione.y <= BASE_HEIGHT - immagine.height)
 		posizione.y = nuovaPosizione.y;
 
 	if (continued)
 	{
-		bigLaser.posizione.x = posizione.x + (immagine.width * SCALE / 2.0f) - (BigLaser::immagine.width * SCALE / 2.0f);
-		bigLaser.posizione.y = posizione.y - (BigLaser::immagine.height * SCALE);
+		bigLaser.posizione.x = posizione.x + (immagine.width / 2.0f) - (BigLaser::immagine.width / 2.0f);
+		bigLaser.posizione.y = posizione.y - (BigLaser::immagine.height);
 	}
 	else if (IsKeyPressed(KeyBinds.KeySHOOT) && !tLaser.isRunning)
 	{
-		const float laserOffset = 15.0f * SCALE;
-		const float laserCenterX = posizione.x + (immagine.width * SCALE / 2.0f) - (Laser::immagine.width * SCALE / 2.0f);
+		const float laserOffset = 15.0f;
+		const float laserCenterX = posizione.x + (immagine.width / 2.0f) - (Laser::immagine.width / 2.0f);
 		const float laserY = posizione.y - laserOffset;
 
 		lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
@@ -115,7 +115,7 @@ void Astronave::Movimento(float deltaT)
 
 Rectangle Astronave::getBounds()
 {
-	return { posizione.x, posizione.y, immagine.width * SCALE, immagine.height * SCALE };
+    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
 }
 
 std::vector<Laser>& Astronave::GetLasers()

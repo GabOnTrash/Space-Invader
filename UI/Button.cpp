@@ -1,3 +1,4 @@
+#include "specs.hpp" // for 'scale'
 #include "Button.h"
 
 Button::Button() {}
@@ -27,7 +28,10 @@ void Button::draw()
 }
 bool Button::hovered()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	return (mousePos.x >= posX && mousePos.x <= posX + width && mousePos.y >= posY && mousePos.y <= posY + height);
 }
 void Button::update()
@@ -73,8 +77,8 @@ void ButtonT::load()
 	imageW = image.width;
 	imageH = image.height;
 
-	width = static_cast<float>(imageW * scale);
-	height = static_cast<float>(imageH * scale);
+	width = static_cast<float>(imageW);
+	height = static_cast<float>(imageH);
 
 	ImageResize(&image, static_cast<int>(width), static_cast<int>(height));
 	textureN = LoadTextureFromImage(image);
@@ -95,8 +99,8 @@ void ButtonT::load()
 		imageW = image.width;
 		imageH = image.height;
 
-		width = static_cast<float>(imageW * scale);
-		height = static_cast<float>(imageH * scale);
+		width = static_cast<float>(imageW);
+		height = static_cast<float>(imageH);
 
 		ImageResize(&image, static_cast<int>(width), static_cast<int>(height));
 		textureC = LoadTextureFromImage(image);
@@ -127,6 +131,9 @@ bool ButtonT::OnClick()
 }
 void ButtonT::draw()
 {
-	if (hovered() && IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pathC != "") DrawTextureV(textureC, textureCPos, WHITE);
-	else DrawTextureV(textureN, textureNPos, WHITE);
+	if (hovered() && IsMouseButtonDown(MOUSE_BUTTON_LEFT) && pathC != "") 
+		DrawTextureV(textureC, textureCPos, WHITE);
+
+	else 
+		DrawTextureV(textureN, textureNPos, WHITE);
 }

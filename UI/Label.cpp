@@ -1,3 +1,4 @@
+#include "specs.hpp" // per 'scale'
 #include "Label.h"
 
 Label::Label(std::string id, std::string text, std::function<int()> func, Font fontJ, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH)
@@ -7,27 +8,18 @@ Label::Label(std::string id, std::string text, std::function<int()> func, Font f
 
 	posX = xPosCenter - (textSize.x / 2);
 	posY = yPosCenter - (textSize.y / 2);
-
-	/*StdCenteredX = posX;
-	StdCenteredY = posY;*/
 }
 bool Label::OnClick()
 {
-	/*if (hovered() && IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && singleClick)
-	{
-		singleClick = false;
-
-		if (function != nullptr)
-			function();
-		return true;
-	}*/
-	/*else singleClick = true;*/
-
+    // not implemented for Label
 	return false;
 }
 bool Label::hovered()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	return (mousePos.x >= posX && mousePos.x <= posX + textSize.x && mousePos.y >= posY && mousePos.y <= posY + textSize.y);
 }
 void Label::draw()

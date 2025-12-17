@@ -5,7 +5,7 @@ Laser::Laser(int posX, int posY, int laserTimeToLive) : shouldDieTimer(laserTime
     SetSoundVolume(audio, volume);
     PlaySound(audio);
 
-	vel = 400 * SCALE;
+	vel = 400;
 	posizione.x = static_cast<float>(posX);  
 	posizione.y = static_cast<float>(posY);  
 }
@@ -14,7 +14,7 @@ Laser::~Laser()
 } 
 Rectangle Laser::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine.width) * SCALE, static_cast<float>(immagine.height) * SCALE };
+    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
 }
 
 void Laser::Init()
@@ -39,7 +39,7 @@ void Laser::Unload()
 }
 void Laser::Disegna()  
 {  
-    DrawTextureEx(Laser::immagine, posizione, 0, SCALE, {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
+    DrawTexture(Laser::immagine, posizione.x, posizione.y, {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
 }  
 void Laser::Movimento(float deltaT)  
 {  
@@ -64,7 +64,7 @@ BigLaser::~BigLaser()
 }
 Rectangle BigLaser::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine.width) * SCALE, static_cast<float>(immagine.height) * SCALE };
+    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
 }
 
 void BigLaser::Init()
@@ -87,5 +87,5 @@ void BigLaser::Unload()
 }
 void BigLaser::Disegna()
 {
-    DrawTextureEx(BigLaser::immagine, posizione, 0, SCALE, WHITE);
+    DrawTexture(BigLaser::immagine, posizione.x, posizione.y, WHITE);
 }

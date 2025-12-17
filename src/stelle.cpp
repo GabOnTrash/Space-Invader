@@ -4,16 +4,16 @@ void Stella::InizializzaStelle(int tipo)
 {
     for (int i = 0; i < NUM_STELLE; i++)
     {
-        stelle[i].posizione = { GetRN<float>(0, WINDOW_WIDTH), GetRN<float>(0, WINDOW_HEIGHT)};
+        stelle[i].posizione = { GetRN<float>(0, BASE_WIDTH), GetRN<float>(0, BASE_HEIGHT)};
         if (tipo == 1)
         {
-            stelle[i].velocita.x = GetRN<float>(50, 100) / 10 * SCALE;
-            stelle[i].velocita.y = -GetRN<float>(50, 100) / 10 * SCALE;
+            stelle[i].velocita.x = GetRN<float>(50, 100) / 10;
+            stelle[i].velocita.y = -GetRN<float>(50, 100) / 10;
         }
         else
         {
-            stelle[i].velocita.x = 0 * SCALE;
-            stelle[i].velocita.y = GetRN<float>(70, 120) / 5 * SCALE;
+            stelle[i].velocita.x = 0;
+            stelle[i].velocita.y = GetRN<float>(70, 120) / 5;
         }
     }
 }
@@ -26,18 +26,18 @@ void Stella::AggiornaStelle(float deltaT, int tipo)
 
         if (tipo == 1)
         {
-            if (stelle[i].posizione.x > WINDOW_WIDTH + 10)
+            if (stelle[i].posizione.x > BASE_WIDTH + 10)
                 stelle[i].posizione.x = GetRN<float>(-50, 0);
 
             if (stelle[i].posizione.y < -10)
-                stelle[i].posizione.y = GetRN<float>(WINDOW_HEIGHT, WINDOW_HEIGHT + 50);
+                stelle[i].posizione.y = GetRN<float>(BASE_HEIGHT, BASE_HEIGHT + 50);
         }
         else
         {
-            if (stelle[i].posizione.y > WINDOW_HEIGHT + 10)
+            if (stelle[i].posizione.y > BASE_HEIGHT + 10)
             {
                 stelle[i].posizione.y = GetRN<float>(-50.0f, 0.0f);
-                stelle[i].posizione.x = GetRN<float>(3, WINDOW_WIDTH - 3);
+                stelle[i].posizione.x = GetRN<float>(3, BASE_WIDTH - 3);
             }       
         }
     }

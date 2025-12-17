@@ -1,3 +1,4 @@
+#include "specs.hpp" // for 'scale'
 #include "Slider.h"
 
 Slider::Slider(std::string id, RectS& rectangle, PointerS& point)
@@ -65,7 +66,10 @@ void Slider::draw()
 }
 void Slider::setPointerVert()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	ButtonDown = Pressed();
 
 	if (mousePos.y != pointer.getCenterY() && ButtonDown && clicked)
@@ -79,7 +83,10 @@ void Slider::setPointerVert()
 }
 void Slider::setPointerHoriz()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	ButtonDown = Pressed();
 
 	if (mousePos.x != pointer.getCenterX() && ButtonDown && clicked)
@@ -106,12 +113,18 @@ bool Slider::Pressed()
 }
 bool Slider::hoveredR()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	return CheckCollisionPointRec(mousePos, { rect.getPosX(), rect.getPosY(), rect.getWidth(), rect.getHeight() });
 }
 bool Slider::hoveredP()
 {
-	mousePos = GetMousePosition();
+    mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - offsetX) / scale;
+    mousePos.y = (mousePos.y - offsetY) / scale;
+
 	return CheckCollisionPointCircle(mousePos, { pointer.getPosX(), pointer.getPosY() }, pointer.getSide1());
 }
 void Slider::update()
