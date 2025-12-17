@@ -2,10 +2,10 @@
 
 Asteroide::Asteroide()
 {
-	velX = GetRN<int>(250, 300) * SCALE;
-	velY = GetRN<int>(250, 300) * SCALE;
+	velX = GetRN<int>(250, 300);
+	velY = GetRN<int>(250, 300);
 	verso =	GetRN<float>(-1, 1);
-	posizione.x = GetRN<float>(0, WINDOW_WIDTH);
+	posizione.x = GetRN<float>(0, BASE_WIDTH);
 	posizione.y = GetRN<float>(-150, -100);
 
 	if (verso == 0)
@@ -20,7 +20,7 @@ Asteroide::~Asteroide()
 }
 Rectangle Asteroide::getBounds()
 {
-	return { posizione.x, posizione.y, static_cast<float>(immagine->width * SCALE), static_cast<float>(immagine->height * SCALE) };
+	return { posizione.x, posizione.y, static_cast<float>(immagine->width), static_cast<float>(immagine->height) };
 }
 
 void Asteroide::Init()
@@ -48,7 +48,7 @@ void Asteroide::Unload()
 }
 void Asteroide::Disegna()
 {
-	DrawTextureEx(*immagine, posizione, 0, SCALE, WHITE);
+	DrawTexture(*immagine, posizione.x, posizione.y, WHITE);
 }
 void Asteroide::Movimento(float deltaT)
 {

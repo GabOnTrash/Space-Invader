@@ -10,7 +10,7 @@ public:
 	static void Init();
 	static void Unload();          
 	void Disegna();
-	inline int getWidth() { return Cuore::immagine.width * SCALE * MULTIPLY; }
+	inline int getWidth() { return Cuore::immagine.width * MULTIPLY; }
 
 	Rectangle getBounds();
 	Vector2 posizione = { 0, 0 };

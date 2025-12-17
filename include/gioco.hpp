@@ -21,9 +21,9 @@ private:
 
     void AudioManager();
     void LoadAssets();
-
     void InitUI();
 
+    RenderTexture2D target;
     
     std::shared_ptr<GameState> GameStatus;
     std::shared_ptr<Interface> MenuSystem;

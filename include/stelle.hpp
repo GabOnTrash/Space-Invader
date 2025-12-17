@@ -20,5 +20,5 @@ public:
     void AggiornaStelle(float deltaT, int tipo);
     void DisegnaStelle();
 
-    float radius = 3 * SCALE;
+    float radius = 3;
 };

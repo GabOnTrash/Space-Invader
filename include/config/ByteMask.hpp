@@ -34,17 +34,18 @@ public:
         UnloadImage(img);
     }
 
-    bool checkPixelCollision(const ByteMask& other, const Vector2& posA, const Vector2& posB, float scale, const Rectangle& overlap) const
+    bool checkPixelCollision(const ByteMask& other, const Vector2& posA, const Vector2& posB,
+                             const Rectangle& overlap) const
     {
         for (int y = 0; y < (int)overlap.height; y++)
         {
-            int ay = (int)((overlap.y - posA.y + y) / scale);
-            int by = (int)((overlap.y - posB.y + y) / scale);
+            int ay = (int)(overlap.y - posA.y + y);
+            int by = (int)(overlap.y - posB.y + y);
 
             for (int x = 0; x < (int)overlap.width; x++)
             {
-                int ax = (int)((overlap.x - posA.x + x) / scale);
-                int bx = (int)((overlap.x - posB.x + x) / scale);
+                int ax = (int)(overlap.x - posA.x + x);
+                int bx = (int)(overlap.x - posB.x + x);
 
                 if (ax < 0 || ay < 0 || ax >= width || ay >= height)
                     continue;

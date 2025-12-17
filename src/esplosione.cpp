@@ -16,7 +16,7 @@ void Esplosione::Aggiorna(float deltaT)
 {
 	if (index < 21)
 	{
-		DrawTextureEx(arrayEsplosione[(int)index], posizione, 0, SCALE, WHITE);
+		DrawTexture(arrayEsplosione[(int)index], posizione.x, posizione.y, WHITE);
 		index += 25 * deltaT;
 	}
 	else

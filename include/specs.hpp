@@ -24,7 +24,10 @@
 #include "config/keys.hpp"
 #include "config/ByteMask.hpp"
 
-extern int WINDOW_WIDTH;
-extern int WINDOW_HEIGHT;
-extern float SCALE;
+extern int BASE_WIDTH;
+extern int BASE_HEIGHT;
+extern float scale;
+extern float offsetX;
+extern float offsetY;
+
 extern KeyBindings KeyBinds;

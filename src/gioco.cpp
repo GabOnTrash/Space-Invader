@@ -1,8 +1,10 @@
 #include "gioco.hpp"
 
-int WINDOW_WIDTH = 3840;
-int WINDOW_HEIGHT = 2160;
-float SCALE = 1.0f;
+int BASE_WIDTH = 3840;
+int BASE_HEIGHT = 2160;
+float scale = 1.0f;
+float offsetX = 0.0f;
+float offsetY = 0.0f;
 
 Game::Game() 
     : GameStatus(std::make_shared<GameState>(START)), 
@@ -10,18 +12,13 @@ Game::Game()
     Gamelayer(GameStatus, MenuSystem)
 {
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Space Invaders");
+    InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Space Invaders");
 
-    int screenWidth = GetMonitorWidth(0);
-    int screenHeight = GetMonitorHeight(0);
+    target = LoadRenderTexture(BASE_WIDTH, BASE_HEIGHT);
 
-    SCALE = std::min((float) screenWidth / WINDOW_WIDTH, 1.0f);
-	
-    WINDOW_WIDTH = static_cast<int>(WINDOW_WIDTH * SCALE);
-    WINDOW_HEIGHT = static_cast<int>(WINDOW_HEIGHT * SCALE);
-
-	SetWindowPosition((screenWidth - WINDOW_WIDTH) / 2, (screenHeight - WINDOW_HEIGHT) / 2);
-    SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    scale = std::min((float)GetScreenWidth() / BASE_WIDTH, (float)GetScreenHeight() / BASE_HEIGHT);
+    offsetX = (GetScreenWidth() - BASE_WIDTH * scale) * 0.5f;
+    offsetY = (GetScreenHeight() - BASE_HEIGHT * scale) * 0.5f;
 
 	SetExitKey(KEY_NULL);
 
@@ -67,8 +64,8 @@ void Game::Run()
 
     while (!WindowShouldClose())
     {
-        BeginDrawing();
-        ClearBackground(Color{ 58, 46, 63, 255 });
+        BeginTextureMode(target);
+        ClearBackground(Color{58, 46, 63, 255});
 
         UpdateMusicStream(GameMusic);
 
@@ -77,12 +74,22 @@ void Game::Run()
 
         AudioManager();
 
-        if (*GameStatus != RUNNING) 
-            DrawTextureEx(GameCursor, { GetMousePosition().x - 10 * SCALE, GetMousePosition().y }, 0.0f, SCALE * 2, WHITE);
+
+        if (*GameStatus != RUNNING)
+            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) / scale - 10, (GetMousePosition().y - offsetY) / scale, WHITE);
 
         if (MenuSystem->WantToQuit())
             break;
-        // mettere l'f11 per lo schermo
+
+        EndTextureMode();
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        DrawTexturePro(target.texture, Rectangle{0, 0, (float)BASE_WIDTH, -(float)BASE_HEIGHT},
+                       Rectangle{offsetX, offsetY, static_cast<float>(BASE_WIDTH), static_cast<float>(BASE_HEIGHT)}, Vector2{0, 0}, 0.0f,
+                       WHITE);
+
         EndDrawing();
     }
 

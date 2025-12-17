@@ -2,7 +2,7 @@
 
 Rectangle Cuore::getBounds()
 {
-    return { posizione.x * SCALE, posizione.y * SCALE, static_cast<float>(immagine.width) * SCALE, static_cast<float>(immagine.height) * SCALE };
+    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
 }
 void Cuore::Init()
 {
@@ -22,5 +22,5 @@ void Cuore::Unload()
 }
 void Cuore::Disegna()
 {
-    DrawTextureEx(Cuore::immagine, posizione, 0, SCALE * MULTIPLY, WHITE);
+    DrawTexture(Cuore::immagine, posizione.x, posizione.y * MULTIPLY, WHITE);
 }
