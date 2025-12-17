@@ -42,7 +42,7 @@ void Game::Init()
 {
     if (!textureCaricata)
     {
-        GameCursor = LoadTexture("immagini/grogu.png");
+        GameCursor = LoadTexture("immagini/pointer.png");
         GameMusic = LoadMusicStream("immagini/game_music.mp3");
         textureCaricata = true;
     }
@@ -76,7 +76,7 @@ void Game::Run()
 
 
         if (*GameStatus != RUNNING)
-            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) - 10, (GetMousePosition().y - offsetY), WHITE);
+            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) / scale - 10, (GetMousePosition().y - offsetY) / scale, WHITE);
 
         if (MenuSystem->WantToQuit())
             break;
