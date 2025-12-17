@@ -76,7 +76,7 @@ void Game::Run()
 
 
         if (*GameStatus != RUNNING)
-            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) / scale - 10, (GetMousePosition().y - offsetY) / scale, WHITE);
+            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) - 10, (GetMousePosition().y - offsetY), WHITE);
 
         if (MenuSystem->WantToQuit())
             break;
@@ -87,7 +87,7 @@ void Game::Run()
         ClearBackground(BLACK);
 
         DrawTexturePro(target.texture, Rectangle{0, 0, (float)BASE_WIDTH, -(float)BASE_HEIGHT},
-                       Rectangle{offsetX, offsetY, static_cast<float>(BASE_WIDTH), static_cast<float>(BASE_HEIGHT)}, Vector2{0, 0}, 0.0f,
+                       Rectangle{offsetX, offsetY, static_cast<float>(BASE_WIDTH * scale), static_cast<float>(BASE_HEIGHT * scale)}, Vector2{0, 0}, 0.0f,
                        WHITE);
 
         EndDrawing();
