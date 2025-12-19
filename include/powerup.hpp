@@ -15,19 +15,17 @@ public:
 	void Aggiorna(float deltaT);
 
 	static void Init();          
-	static void Unload();
     static inline ByteMask byteMask;
 
 	Rectangle getBounds();
 
 	Texture2D* immagine = nullptr;
 	Vector2 posizione;
-	int vel = 0;
+	int vel = 200;
 
 	std::string tipoPotenziamento = "";
 
 	static inline Texture2D arrayPotenziamenti[5] = { 0 };
 	static inline Sound audio = {};
 	static inline float volume = 1.0f;
-	static inline bool textureCaricata = false;   // flag per sapere se è già stata caricata
 };

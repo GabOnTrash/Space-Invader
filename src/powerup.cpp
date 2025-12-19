@@ -4,8 +4,6 @@ PowerUp::PowerUp(int tipo)
 {
     posizione.x = GetRN<float>(0, BASE_WIDTH);
     posizione.y = GetRN<float>(-150, -100);
-
-    vel = 200;
     
     switch (tipo)
     {
@@ -39,31 +37,20 @@ Rectangle PowerUp::getBounds()
 }
 void PowerUp::Init()
 {
-    if (!textureCaricata)
+    if (loadedResources)
     {
-        arrayPotenziamenti[0] = LoadTexture("immagini/downgrade.png");
-        arrayPotenziamenti[1] = LoadTexture("immagini/depotenziamento_cuore.png");
-        arrayPotenziamenti[2] = LoadTexture("immagini/triplo_laser.png");
-        arrayPotenziamenti[3] = LoadTexture("immagini/potenziamento_cuore.png");
-        arrayPotenziamenti[4] = LoadTexture("immagini/sparo_veloce.png");
+        arrayPotenziamenti[0] = AssetsManager::GetTexture("reduced_vel");
+        arrayPotenziamenti[1] = AssetsManager::GetTexture("minus_one_heart");
+        arrayPotenziamenti[2] = AssetsManager::GetTexture("triple_laser");
+        arrayPotenziamenti[3] = AssetsManager::GetTexture("plus_one_heart");
+        arrayPotenziamenti[4] = AssetsManager::GetTexture("_big_laser");
 
-        byteMask.loadFromImage("immagini/downgrade.png");
+        byteMask.loadFromImage(PATH_BYTEMASK_MODIFIERS);
 
-        audio = LoadSound("immagini/power_up_sound.mp3");
-        textureCaricata = true;
+        audio = AssetsManager::GetSound("modifier_sound");
     }
 }
-void PowerUp::Unload()
-{
-    if (textureCaricata)
-    {
-        for (int i = 0; i < 5; i++)
-            UnloadTexture(arrayPotenziamenti[i]);
-        
-        UnloadSound(audio);
-        textureCaricata = false;
-    }
-}
+
 void PowerUp::Disegna()
 {
     DrawTexture(*immagine, posizione.x, posizione.y, WHITE);

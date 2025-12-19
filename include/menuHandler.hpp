@@ -5,11 +5,9 @@
 class MenuHandler
 {
 private:
-
 	std::stack<std::shared_ptr<Menu>> MenuStack;
 
 public:
-
 	void PushMenu(std::shared_ptr<Menu> menu)
 	{ 
 		MenuStack.push(menu); 

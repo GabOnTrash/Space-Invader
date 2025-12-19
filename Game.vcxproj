@@ -98,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AssetsManager.hpp" />
     <ClInclude Include="include\config\ByteMask.hpp" />
     <ClInclude Include="include\config\enums.hpp" />
     <ClInclude Include="include\config\keys.hpp" />
@@ -112,36 +113,36 @@
     <ClInclude Include="UI\UI.h" />
     <ClInclude Include="UI\Widget.h" />
     <ClInclude Include="include\MyRandom.hpp" />
-    <ClInclude Include="include\asteroide.hpp" />
-    <ClInclude Include="include\astronave.hpp" />
-    <ClInclude Include="include\cuore.hpp" />
-    <ClInclude Include="include\esplosione.hpp" />
-    <ClInclude Include="include\gioco.hpp" />
+    <ClInclude Include="include\meteor.hpp" />
+    <ClInclude Include="include\player.hpp" />
+    <ClInclude Include="include\heart.hpp" />
+    <ClInclude Include="include\explosion.hpp" />
+    <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\interface.hpp" />
     <ClInclude Include="include\laser.hpp" />
     <ClInclude Include="include\menuHandler.hpp" />
     <ClInclude Include="include\powerup.hpp" />
-    <ClInclude Include="include\settingsManager.hpp" />
+    <ClInclude Include="include\JsonParser.hpp" />
     <ClInclude Include="include\specs.hpp" />
-    <ClInclude Include="include\stelle.hpp" />
+    <ClInclude Include="include\stars.hpp" />
     <ClInclude Include="include\timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AssetsManager.cpp" />
     <ClCompile Include="src\GameLayer.cpp" />
-    <ClCompile Include="src\esplosione.cpp" />
+    <ClCompile Include="src\explosion.cpp" />
     <ClCompile Include="UI\Button.cpp" />
     <ClCompile Include="UI\Label.cpp" />
     <ClCompile Include="UI\Slider.cpp" />
     <ClCompile Include="src\Space Invader.cpp" />
-    <ClCompile Include="src\asteroide.cpp" />
-    <ClCompile Include="src\astronave.cpp" />
-    <ClCompile Include="src\cuore.cpp" />
-    <ClCompile Include="src\gioco.cpp" />
+    <ClCompile Include="src\meteor.cpp" />
+    <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\heart.cpp" />
+    <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\interface.cpp" />
     <ClCompile Include="src\laser.cpp" />
     <ClCompile Include="src\powerup.cpp" />
-    <ClCompile Include="src\settingsManager.cpp" />
-    <ClCompile Include="src\stelle.cpp" />
+    <ClCompile Include="src\stars.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

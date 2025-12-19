@@ -39,19 +39,19 @@
     <ClInclude Include="include\MyRandom.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\asteroide.hpp">
+    <ClInclude Include="include\meteor.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\astronave.hpp">
+    <ClInclude Include="include\player.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\cuore.hpp">
+    <ClInclude Include="include\heart.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\esplosione.hpp">
+    <ClInclude Include="include\explosion.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\gioco.hpp">
+    <ClInclude Include="include\game.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\interface.hpp">
@@ -66,13 +66,13 @@
     <ClInclude Include="include\powerup.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\settingsManager.hpp">
+    <ClInclude Include="include\JsonParser.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\specs.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\stelle.hpp">
+    <ClInclude Include="include\stars.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\timer.hpp">
@@ -85,6 +85,7 @@
     <ClInclude Include="include\config\Strings.hpp" />
     <ClInclude Include="include\config\keys.hpp" />
     <ClInclude Include="include\config\ByteMask.hpp" />
+    <ClInclude Include="include\AssetsManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\Button.cpp">
@@ -99,16 +100,16 @@
     <ClCompile Include="src\Space Invader.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\asteroide.cpp">
+    <ClCompile Include="src\meteor.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\astronave.cpp">
+    <ClCompile Include="src\player.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\cuore.cpp">
+    <ClCompile Include="src\heart.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\gioco.cpp">
+    <ClCompile Include="src\game.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\interface.cpp">
@@ -120,13 +121,11 @@
     <ClCompile Include="src\powerup.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\settingsManager.cpp">
+    <ClCompile Include="src\stars.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\stelle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\esplosione.cpp" />
+    <ClCompile Include="src\explosion.cpp" />
     <ClCompile Include="src\GameLayer.cpp" />
+    <ClCompile Include="src\AssetsManager.cpp" />
   </ItemGroup>
 </Project>

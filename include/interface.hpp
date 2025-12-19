@@ -78,19 +78,20 @@ private:
     float AsteroidVolume = 0.0f;
     float ExplosionVolume = 0.0f;
     float GeneralVolume = 0.0f;
-    int offsetY = 100;
 
-    int centerY;
-    int blockSpacing;
-    int sliderOffset;
-    int labelX;
-    int sliderX;
-    int sliderWidth;
-    int sliderHeight;
-    int pointerWidth;
+    float offsetY;
+    float centerY;
+    float blockSpacing;
+    float sliderOffset;
+    float labelX;
+    float sliderX;
+    float sliderWidth;
+    float sliderHeight;
+    float pointerWidth;
 
     float fontSize;
     float buttonHeight;
+    float buttonWidth;
     float spacing;
     float totalHeight;
     float yStart;
@@ -109,7 +110,6 @@ private:
     std::shared_ptr<Menu> PreviousMenu;
 
     Font GameFont;
-    Strings text;
 
     Color GrigioChiaro = Color{ 65, 65, 65, 255 };
     Color GrigioScuro = Color{ 30, 30, 30, 255 };

@@ -2,12 +2,12 @@
 
 #include "specs.hpp"
 
-#include "stelle.hpp"
-#include "astronave.hpp"
-#include "asteroide.hpp"
-#include "esplosione.hpp"
+#include "stars.hpp"
+#include "player.hpp"
+#include "meteor.hpp"
+#include "explosion.hpp"
 #include "powerup.hpp"
-#include "cuore.hpp"
+#include "heart.hpp"
 #include "timer.hpp"
 #include "interface.hpp"
 

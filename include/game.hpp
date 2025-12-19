@@ -4,24 +4,22 @@
 #include "gamelayer.hpp"
 
 #include "specs.hpp"
-#include "settingsManager.hpp"
+#include "JsonParser.hpp"
 
 class Game
 {
 public:
-
     Game();
     ~Game();
 
     void Init();
-    void Unload();
     void Run();
 
 private:
-
     void AudioManager();
     void LoadAssets();
     void InitUI();
+    void SaveCommands();
 
     RenderTexture2D target;
     
@@ -31,5 +29,4 @@ private:
 
     Music GameMusic;
     static inline Texture2D GameCursor = { 0 };
-    static inline bool textureCaricata = false;
 };

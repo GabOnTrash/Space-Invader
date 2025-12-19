@@ -1,0 +1,23 @@
+{
+    "KeyBindings": {
+        "MOVEDOWN": 83,
+        "MOVELEFT": 65,
+        "MOVERIGHT": 68,
+        "MOVEUP": 87,
+        "SHOOT": 32
+    },
+    "audio": {
+        "AsteroidVolume": 56.57894515991211,
+        "ExplosionVolume": 68.15789031982422,
+        "GeneralVolume": 1.0,
+        "LaserVolume": 10.263157844543457,
+        "MusicVolume": 0.0,
+        "PowerUpVolume": 74.7368392944336
+    },
+    "difficulty": {
+        "GameDifficulty": 5
+    },
+    "video": {
+        "Fullscreen": true
+    }
+}

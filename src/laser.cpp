@@ -19,24 +19,14 @@ Rectangle Laser::getBounds()
 
 void Laser::Init()
 {
-    if (!textureCaricata)
+    if (loadedResources)
     {
-        immagine = LoadTexture("immagini/laser.png");
-        byteMask.loadFromImage("immagini/laser.png");
+        immagine = AssetsManager::GetTexture("laser");
+        byteMask.loadFromImage(PATH_BYTEMASK_LASER);
+        audio = AssetsManager::GetSound("laser_shot");
+    }
+}
 
-        audio = LoadSound("immagini/laser.wav");
-        textureCaricata = true;
-    }
-}
-void Laser::Unload()
-{
-    if (textureCaricata)
-    {
-        UnloadTexture(immagine);
-        UnloadSound(audio);
-        textureCaricata = false;
-    }
-}
 void Laser::Disegna()  
 {  
     DrawTexture(Laser::immagine, posizione.x, posizione.y, {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
@@ -69,22 +59,13 @@ Rectangle BigLaser::getBounds()
 
 void BigLaser::Init()
 {
-    if (!textureCaricata)
+    if (loadedResources)
     {
-        immagine = LoadTexture("immagini/bigLaser.png");
-        byteMask.loadFromImage("immagini/bigLaser.png");
+        immagine = AssetsManager::GetTexture("big_laser");
+        byteMask.loadFromImage(PATH_BYTEMASK_BIGLASER);
+    }
+}
 
-        textureCaricata = true;
-    }
-}
-void BigLaser::Unload()
-{
-    if (textureCaricata)
-    {
-        UnloadTexture(immagine);
-        textureCaricata = false;
-    }
-}
 void BigLaser::Disegna()
 {
     DrawTexture(BigLaser::immagine, posizione.x, posizione.y, WHITE);

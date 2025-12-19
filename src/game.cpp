@@ -1,10 +1,13 @@
-#include "gioco.hpp"
+#include "game.hpp"
 
 int BASE_WIDTH = 3840;
 int BASE_HEIGHT = 2160;
 float scale = 1.0f;
 float offsetX = 0.0f;
 float offsetY = 0.0f;
+bool loadedResources = false;
+// fix f11 and better single laser powerup handling
+// ingrandire le sprite
 
 Game::Game() 
     : GameStatus(std::make_shared<GameState>(START)), 
@@ -22,38 +25,24 @@ Game::Game()
 
 	SetExitKey(KEY_NULL);
 
+    AssetsManager::Init(PATH_ASSETS_CONFIG);
+    LoadAssets();
+
     InitUI();
     Gamelayer.SetDiff();
-    LoadAssets();
+    
 }
 Game::~Game()
 {
-    Astronave::Unload();
-    Laser::Unload();
-    BigLaser::Unload();
-    Asteroide::Unload();
-    Esplosione::Unload();
-    PowerUp::Unload();
-    Cuore::Unload();
-    Game::Unload();
 }
 
 void Game::Init()
 {
-    if (!textureCaricata)
+    if (!loadedResources)
     {
-        GameCursor = LoadTexture("immagini/pointer.png");
-        GameMusic = LoadMusicStream("immagini/game_music.mp3");
-        textureCaricata = true;
-    }
-}
-void Game::Unload()
-{
-    if (textureCaricata)
-    {
-        UnloadTexture(GameCursor);
-        UnloadMusicStream(GameMusic);
-        textureCaricata = false;
+        GameCursor = AssetsManager::GetTexture("cursor");
+        GameMusic = AssetsManager::GetMusic("game_music");
+        loadedResources = true;
     }
 }
 
@@ -74,7 +63,6 @@ void Game::Run()
 
         AudioManager();
 
-
         if (*GameStatus != RUNNING)
             DrawTexture(GameCursor, (GetMousePosition().x - offsetX) / scale - 10, (GetMousePosition().y - offsetY) / scale, WHITE);
 
@@ -92,8 +80,8 @@ void Game::Run()
 
         EndDrawing();
     }
-
-    SettingsManager("SpaceInvadersSettings.json", *MenuSystem).SaveData();
+    
+    SaveCommands();
     CloseWindow();
 }
 
@@ -119,7 +107,6 @@ void Game::LoadAssets()
     PowerUp::Init();
     Cuore::Init();
 }
-
 void Game::InitUI()
 {
     MenuSystem->CallStart = [this]() { Gamelayer.Start(); };
@@ -128,4 +115,27 @@ void Game::InitUI()
     MenuSystem->CallGetScore = [this]() { return Gamelayer.GetGameScore(); };
     MenuSystem->CallSetDiff = [this]() { Gamelayer.SetDiff(); };
     MenuSystem->InitLayers();
+}
+void Game::SaveCommands()
+{
+    JsonParser p = JsonParser(PATH_SPACEINVADERS_SETTINGS);
+
+    p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
+    p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());
+    p.SetKey("audio", "LaserVolume", MenuSystem->GetLaserVolume());
+    p.SetKey("audio", "AsteroidVolume", MenuSystem->GetAsteroidVolume());
+    p.SetKey("audio", "PowerUpVolume", MenuSystem->GetPowerUpVolume());
+    p.SetKey("audio", "ExplosionVolume", MenuSystem->GetExplosionVolume());
+
+    p.SetKey("difficulty", "GameDifficulty", MenuSystem->GetGameDifficulty());
+
+    p.SetKey("KeyBindings", "MOVEUP", KeyBinds.KeyUP);
+    p.SetKey("KeyBindings", "MOVEDOWN", KeyBinds.KeyDOWN);
+    p.SetKey("KeyBindings", "MOVELEFT", KeyBinds.KeyLEFT);
+    p.SetKey("KeyBindings", "MOVERIGHT", KeyBinds.KeyRIGHT);
+    p.SetKey("KeyBindings", "SHOOT", KeyBinds.KeySHOOT);
+
+    p.SetKey("video", "Fullscreen", MenuSystem->GetFullscreen());
+
+    p.SaveData();
 }
