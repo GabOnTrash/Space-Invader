@@ -14,10 +14,10 @@ A modern C++17 implementation of the classic "Space Invaders" arcade game, featu
 
 ## Screenshots
 
-![StartMenu](assets/startmenu.png)
-![StartMenu](assets/bindingsmenu.png)
-![StartMenu](assets/volumemenu.png)
-![StartMenu](assets/gameplay.gif)
+![StartMenu](assets/StartMenu.png)
+![StartMenu](assets/KeybindsMenu.png)
+![StartMenu](assets/AudioMenu.png)
+![StartMenu](assets/GamePlay.png)
 ## Getting Started
 
 ### Prerequisites
