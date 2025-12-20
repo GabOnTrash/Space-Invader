@@ -8,7 +8,7 @@ Interface::Interface(std::shared_ptr<GameState> GameStatus) : GameStatus(GameSta
 }
 void Interface::InitLayers()
 {
-    StartMenu = std::make_shared<Menu>(/*"SpaceInvaderUIconfig.json"*/);
+    StartMenu = std::make_shared<Menu>();
     RunningMenu = std::make_shared<Menu>();
     PausedMenu = std::make_shared<Menu>();
     AudioMenu = std::make_shared<Menu>();
@@ -53,7 +53,7 @@ void Interface::RecalculateLayout()
     sliderWidth = 400;
     sliderHeight = 60;
     pointerWidth = 20;
-
+    borderRadius = 0.4f;
     fontSize = 50;
     buttonHeight = 120;
     buttonWidth = 500;
@@ -164,10 +164,10 @@ const char* Interface::TranslateKey(int key)
 
 void Interface::InitStartMenuSettings()
 {
-    StartMenu->add<Button>("bottoneStart", Strings::title,                                              GameFont, 2 * fontSize, 1000, 400, BASE_WIDTH / 2, 100, nullptr, 0.0f, 10, 4, GrigioChiaro, transparent, transparent, transparent, transparent);
-    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, 0.0f, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, 0.0f, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("bottoneStart", Strings::title,                                              GameFont, 2 * fontSize, 1000, 400, BASE_WIDTH / 2, 100, nullptr, borderRadius, 10, 4, GrigioChiaro, transparent, transparent, transparent, transparent);
+    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitRunningOverlay()
 {
@@ -177,15 +177,15 @@ void Interface::InitRunningOverlay()
 }
 void Interface::InitPausedMenuSettings()
 {
-    PausedMenu->add<Button>("btnResume", Strings::resume, GameFont,                                     fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFont,                                   fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnResume", Strings::resume, GameFont,                                     fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFont,                                   fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    PausedMenu->add<Button>("btnctrl", Strings::control, GameFont,                                      fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFont,                               fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnctrl", Strings::control, GameFont,                                      fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFont,                               fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFont,                                         fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFont,                                         fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitAudioControlSettings()
 {
@@ -194,49 +194,49 @@ void Interface::InitAudioControlSettings()
     GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume");
     MusicVolume = settings.GetKey<float>("audio", "MusicVolume");
     LaserVolume = settings.GetKey<float>("audio", "LaserVolume");
-    AsteroidVolume = settings.GetKey<float>("audio", "AsteroidVolume");
+    MeteorDamageVolume = settings.GetKey<float>("audio", "MeteorDamageVolume");
     ExplosionVolume = settings.GetKey<float>("audio", "ExplosionVolume");
     PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume");
 
     // BLOCCO 1
     AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFont, 60, labelX, centerY - 3 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 1, &GeneralVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 1, &GeneralVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
 
     // BLOCCO 2
     AudioMenu->add<Label>("labelMusicAudio", Strings::MUSCVOLUME, nullptr, GameFont, 58, labelX + 7, centerY - 2 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &MusicVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MusicVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("MusicSliderVolume", rect, pointer);
 
     // BLOCCO 3
     AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFont, 67, labelX + 8, centerY - 1 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &LaserVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &LaserVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("LaserSliderVolume", rect, pointer);
 
     // BLOCCO 4
     AudioMenu->add<Label>("labelAsteoridAudio", Strings::ASTVOLUME, nullptr, GameFont, 54, labelX + 4, centerY + 0 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &AsteroidVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MeteorDamageVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("AsteroidSliderVolume", rect, pointer);
 
     // BLOCCO 5
     AudioMenu->add<Label>("labelExplosionAudio", Strings::EXPLVOLUME, nullptr, GameFont, 51, labelX - 2, centerY + 1 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &ExplosionVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &ExplosionVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("ExplosionSliderVolume", rect, pointer);
 
     // BLOCCO 6
     AudioMenu->add<Label>("labelPowerUpsAudio", Strings::PWVOLUME, nullptr, GameFont, 58, labelX + 18, centerY + 2 * blockSpacing, GrigioChiaro, GrigioScuro);
-    rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, 0.0f, 0, 0, 100, &PowerUpVolume, GrigioChiaro);
-    pointer = PointerS(true, pointerWidth, sliderHeight, 0.0f, 0, GrigioScuro);
+    rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &PowerUpVolume, GrigioChiaro);
+    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, GrigioScuro);
     AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
 
     AudioMenu->add<Button>("Go Back Button", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() {
         this->SetLayerPausedMenu();
-        }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+        }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitControlsSettings()
 {
@@ -257,14 +257,14 @@ void Interface::InitControlsSettings()
         KeyBinds.KeySHOOT = KEY_SPACE;
     }
 
-    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("Reset"); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, 0.0f, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 
 void Interface::SetLayerGame()

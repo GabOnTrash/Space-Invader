@@ -2,20 +2,18 @@
 
 #include "specs.hpp"
 
-class Cuore
+class Heart
 {
 public:
-    Cuore() {}
+    Heart() = default;
 
 	static void Init(); 
-	void Disegna();
-	inline int getWidth() { return Cuore::immagine.width * MULTIPLY; }
+	void Draw();
 
 	Rectangle getBounds();
-	Vector2 posizione = { 0, 0 };
+	Vector2 position = { 0, 0 };
 
 private:
-	const float MULTIPLY = 1.5f;
-
-	static inline Texture2D immagine = { 0 };
+	const float MULTIPLY = 1.5f * scale;
+	static inline Texture2D texture = { 0 };
 };

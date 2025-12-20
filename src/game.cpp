@@ -89,9 +89,9 @@ void Game::AudioManager()
 {
     SetMusicVolume(GameMusic,   (MenuSystem->GetMusicVolume() / 100)      * MenuSystem->GetGeneralVolume());
 
-    Esplosione::volume =        (MenuSystem->GetExplosionVolume() / 100)  * MenuSystem->GetGeneralVolume();
-    Laser::volume =             (MenuSystem->GetLaserVolume() / 100)      * MenuSystem->GetGeneralVolume();
-    Asteroide::volume =         (MenuSystem->GetAsteroidVolume() / 100)   * MenuSystem->GetGeneralVolume();
+    Explosion::volume =        (MenuSystem->GetExplosionVolume() / 100)  * MenuSystem->GetGeneralVolume();
+    Laser::volume =             (MenuSystem->GecooldownTimerLaserVolume() / 100)      * MenuSystem->GetGeneralVolume();
+    Meteor::volume =         (MenuSystem->GetMeteorDamageVolume() / 100)   * MenuSystem->GetGeneralVolume();
     PowerUp::volume =           (MenuSystem->GetPowerUpVolume() / 100)    * MenuSystem->GetGeneralVolume();
 }
 void Game::LoadAssets()
@@ -99,13 +99,13 @@ void Game::LoadAssets()
     InitAudioDevice();
 
     Game::Init();
-    Astronave::Init();
+    Player::Init();
     Laser::Init();
     BigLaser::Init();
-    Asteroide::Init();
-    Esplosione::Init();
+    Meteor::Init();
+    Explosion::Init();
     PowerUp::Init();
-    Cuore::Init();
+    Heart::Init();
 }
 void Game::InitUI()
 {
@@ -122,8 +122,8 @@ void Game::SaveCommands()
 
     p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
     p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());
-    p.SetKey("audio", "LaserVolume", MenuSystem->GetLaserVolume());
-    p.SetKey("audio", "AsteroidVolume", MenuSystem->GetAsteroidVolume());
+    p.SetKey("audio", "LaserVolume", MenuSystem->GecooldownTimerLaserVolume());
+    p.SetKey("audio", "MeteorDamageVolume", MenuSystem->GetMeteorDamageVolume());
     p.SetKey("audio", "PowerUpVolume", MenuSystem->GetPowerUpVolume());
     p.SetKey("audio", "ExplosionVolume", MenuSystem->GetExplosionVolume());
 

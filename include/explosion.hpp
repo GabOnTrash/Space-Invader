@@ -2,21 +2,21 @@
 
 #include "specs.hpp"
 
-class Esplosione 
+class Explosion 
 {
 public:
-
-	Esplosione(const Rectangle& bounds);
-	void distruggi();
-	void Aggiorna(float deltaT);
+	Explosion(const Rectangle& bounds);
+	void Update(float deltaT);
 	static void Init();            
 
+	bool end = false;
+
+private:
 	float index = 0.0f;
-	bool fine = false;
+    static inline Texture2D textureArray[21] = {0};
+	Vector2 position = { 0.0f, 0.0f };
 
-	Vector2 posizione = { 0.0f, 0.0f };
-
-	static inline Texture2D arrayEsplosione[21] = { 0 };
-	static inline Sound audioEsplosione = {};
+public:
+	static inline Sound explosionAudio = {};
 	static inline float volume = 1.0f;
 };

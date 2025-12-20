@@ -1,38 +1,33 @@
 #include "explosion.hpp"
 
-Esplosione::Esplosione(const Rectangle& bounds)
+Explosion::Explosion(const Rectangle& bounds)
 {
-	SetSoundVolume(audioEsplosione, volume);
-	PlaySound(audioEsplosione);
+	SetSoundVolume(explosionAudio, volume);
+	PlaySound(explosionAudio);
 
-	posizione.x = (bounds.x + bounds.width / 4);
-	posizione.y = (bounds.y + bounds.height / 4);
+	position.x = (bounds.x + bounds.width / 4);
+	position.y = (bounds.y + bounds.height / 4);
 }
-void Esplosione::distruggi() 
-{ 
-	fine = true; 
-}
-void Esplosione::Aggiorna(float deltaT)
+void Explosion::Update(float deltaT)
 {
-	if (index < 21)
-	{
-		DrawTexture(arrayEsplosione[(int)index], posizione.x, posizione.y, WHITE);
-		index += 25 * deltaT;
-	}
-	else
-	{
-		distruggi();
-	}
+    if (index > 21)
+    {
+        end = true;
+        return;
+    }
+	
+	DrawTexture(textureArray[(int)index], position.x, position.y, WHITE);
+	index += 25 * deltaT;
 }
-void Esplosione::Init()
+void Explosion::Init()
 {
 	if (loadedResources)
 	{
 		for (int i = 0; i < 21; i++)
 		{
-			arrayEsplosione[i] = AssetsManager::GetTexture(TextFormat("frame_explosion_%d", i));
+			textureArray[i] = AssetsManager::GetTexture(TextFormat("frame_explosion_%d", i));
 		}
 
-		audioEsplosione = AssetsManager::GetSound("explosion");
+		explosionAudio = AssetsManager::GetSound("explosion");
 	}
 }

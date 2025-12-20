@@ -24,13 +24,13 @@ private:
             }
             catch (const std::exception& e)
             {
-                std::cerr << "Errore nel parsing del file JSON: " << e.what() << std::endl;
+                std::cerr << "Error while parsing JSON: " << e.what() << std::endl;
                 settings = nlohmann::json::object(); // fallback a un oggetto vuoto
             }
         }
         else
         {
-            std::cerr << "File di impostazioni non trovato. Verrà creato uno nuovo." << std::endl;
+            std::cerr << "File not found, a new one will be created." << std::endl;
             settings = nlohmann::json::object();
         }
     }
@@ -42,11 +42,11 @@ public:
 
         if (file.is_open())
         {
-            file << settings.dump(4); // 4 spazi di indentazione
+            file << settings.dump(4);
         }
         else
         {
-            std::cerr << "Errore nel salvataggio delle impostazioni." << std::endl;
+            std::cerr << "Error while saving settings." << std::endl;
         }
     }
 
@@ -57,7 +57,7 @@ public:
         {
             return settings[container].at(type).get<T>();
         }
-        return T{};  // valore di default
+        return T{};
     }
 
 	template<typename T>

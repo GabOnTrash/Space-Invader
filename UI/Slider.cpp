@@ -14,7 +14,7 @@ Slider::Slider(std::string id, RectS& rectangle, PointerS& point)
 	rect.setCenterX(rect.getPosX());
 	rect.setCenterY(rect.getPosY());
 
-	// Calcola posizione angolo superiore sinistro del rettangolo
+	// Calcola position angolo superiore sinistro del rettangolo
 	rect.setPosX(rect.getPosX() - rect.getWidth() / 2);
 	rect.setPosY(rect.getPosY() - rect.getHeight() / 2);
 

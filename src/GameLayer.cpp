@@ -2,19 +2,19 @@
 
 GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Interface> MenuSystem)
     : MenuSystem(MenuSystem), GameStatus(GameStatus),
-      tAsteroidi(0, [this]() { asteroidi.emplace_back(); }, true, true),
-      tPotenziamenti(6000, [this]() { CreatePowerUp(); }, true, true),
-      tResume(1500, [this]() { ElementsUpdating = true; }, false, false),
-      PotTriplo(5000, [this]() { giocatore.tripleLaser = false; }),
-      PotContinuo(6000, [this]() { giocatore.continued = false; }),
-      DpotLento(5000, [this]() { giocatore.reducedVel = false; })
+      meteorTimer(0, [this]() { meteors.emplace_back(); }, true, true),
+      modifierTimer(6000, [this]() { CreatePowerUp(); }, true, true),
+      timerDelayResume(1500, [this]() { ElementsUpdating = true; }, false, false),
+      tripleLaserTimer(5000, [this]() { player.setTripleLaser(false); }),
+      bigLaserTimer(6000, [this]() { player.useBigLaser(false); }),
+      reducedVelTimer(5000, [this]() { player.setReducedVel(false); })
 {
-    asteroidi.reserve(30);
-    esplosioni.reserve(10);
-    potenziamenti.reserve(10);
+    meteors.reserve(30);
+    explosions.reserve(10);
+    modifiers.reserve(10);
 
-    stelleGioco.InizializzaStelle(0);
-    stelleMenu.InizializzaStelle(1);
+    runningStars.InitStars(0);
+    menuStars.InitStars(1);
 
     collisionThread = std::thread(
         [this]()
@@ -25,7 +25,7 @@ GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Inte
                 if (*this->GameStatus == RUNNING && ElementsUpdating)
                 {
                     std::lock_guard<std::mutex> lock(collisionMutex);
-                    checkAllCollisions();
+                    CheckAllCollisions();
                 }
             }
         });
@@ -46,8 +46,8 @@ void GameLayer::UpdateGameStatus(float deltaT)
     {
     case START:
     {
-        stelleMenu.AggiornaStelle(deltaT, 1);
-        stelleMenu.DisegnaStelle();
+        menuStars.updateStars(deltaT, 1);
+        menuStars.DrawStars();
         
         break;
     }
@@ -63,7 +63,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
         UpdateRunInterface();
         DrawRunInterface();
 
-        arrayCuori.size() == 0 ? MenuSystem->GetRunningMenu()->activate("labelDanger")
+        heartsArray.size() == 0 ? MenuSystem->GetRunningMenu()->activate("labelDanger")
                                 : MenuSystem->GetRunningMenu()->deactive("labelDanger");
         !ElementsUpdating ? MenuSystem->GetRunningMenu()->activate("labelReady")
                             : MenuSystem->GetRunningMenu()->deactive("labelReady");
@@ -82,39 +82,39 @@ void GameLayer::UpdateGameStatus(float deltaT)
 
 void GameLayer::UpdateRunInterface()
 {
-    stelleGioco.AggiornaStelle(deltaT, 0);
+    runningStars.updateStars(deltaT, 0);
 
     if (ElementsUpdating)
     {
         UpdateTimers();
         UpdateElements();
-        giocatore.Aggiorna(deltaT);
+        player.Update(deltaT);
     }
     else
-        tResume.update();
+        timerDelayResume.update();
 }
 void GameLayer::DrawRunInterface()
 {
-    stelleGioco.DisegnaStelle();
+    runningStars.DrawStars();
 
-    for (auto& asteroide : asteroidi)
-        asteroide.Disegna();
+    for (auto& Meteor : meteors)
+        Meteor.Draw();
 
-    for (auto& potenziam : potenziamenti)
-        potenziam.Disegna();
+    for (auto& potenziam : modifiers)
+        potenziam.Draw();
 
-    for (auto& laser : giocatore.lasers)
-        laser.Disegna();
+    for (auto& laser : player.lasers)
+        laser.Draw();
 
-    if (giocatore.continued)
-        giocatore.bigLaser.Disegna();
+    if (player.activeBigLaser())
+        player.getBigLaser().Draw();
 
-    giocatore.Disegna();
+    player.Draw();
 
-    for (int i = 0; i < arrayCuori.size(); i++)
+    for (int i = 0; i < heartsArray.size(); i++)
     {
-        arrayCuori[i].posizione = { static_cast<float>(BASE_WIDTH - (i + 1) * arrayCuori[i].getWidth()), 20 };
-        arrayCuori[i].Disegna();
+        heartsArray[i].position = { static_cast<float>(BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width * 1.5) - 20, 20 };
+        heartsArray[i].Draw();
     }
 }
 
@@ -123,53 +123,53 @@ void GameLayer::UpdateElements()
 {
     std::lock_guard<std::mutex> lock(collisionMutex);
 
-    for (size_t i = 0; i < asteroidi.size();)
+    for (size_t i = 0; i < meteors.size();)
     {
-        asteroidi[i].Aggiorna(deltaT);
+        meteors[i].Update(deltaT);
 
-        if (asteroidi[i].getBounds().y > 100 + BASE_HEIGHT)
+        if (meteors[i].getBounds().y > 100 + BASE_HEIGHT)
         {
-            asteroidi[i] = std::move(asteroidi.back());
-            asteroidi.pop_back();
+            meteors[i] = std::move(meteors.back());
+            meteors.pop_back();
         }
         else
             i++;
     }
 
-    for (size_t i = 0; i < potenziamenti.size();)
+    for (size_t i = 0; i < modifiers.size();)
     {
-        potenziamenti[i].Aggiorna(deltaT);
+        modifiers[i].Update(deltaT);
 
-        if (potenziamenti[i].getBounds().y > 100 + BASE_HEIGHT)
+        if (modifiers[i].getBounds().y > 100 + BASE_HEIGHT)
         {
-            potenziamenti[i] = std::move(potenziamenti.back());
-            potenziamenti.pop_back();
+            modifiers[i] = std::move(modifiers.back());
+            modifiers.pop_back();
         }
         else
             i++;
     }
 
-    for (size_t i = 0; i < esplosioni.size();)
+    for (size_t i = 0; i < explosions.size();)
     {
-        esplosioni[i].Aggiorna(deltaT);
+        explosions[i].Update(deltaT);
 
-        if (esplosioni[i].fine)
+        if (explosions[i].end)
         {
-            esplosioni[i] = std::move(esplosioni.back());
-            esplosioni.pop_back();
+            explosions[i] = std::move(explosions.back());
+            explosions.pop_back();
         }
         else
             i++;
     }
 
-    for (size_t i = 0; i < giocatore.lasers.size();)
+    for (size_t i = 0; i < player.lasers.size();)
     {
-        giocatore.lasers[i].Aggiorna(deltaT);
+        player.lasers[i].Update(deltaT);
 
-        if (giocatore.lasers[i].posizione.y < -50 || giocatore.lasers[i].shouldDie())
+        if (player.lasers[i].position.y < -50 || player.lasers[i].shouldDie())
         {
-            giocatore.lasers[i] = std::move(giocatore.lasers.back());
-            giocatore.lasers.pop_back();
+            player.lasers[i] = std::move(player.lasers.back());
+            player.lasers.pop_back();
         }
         else
             i++;
@@ -177,67 +177,67 @@ void GameLayer::UpdateElements()
 }
 void GameLayer::UpdateTimers()
 {
-    tAsteroidi.update();
-    tPotenziamenti.update();
+    meteorTimer.update();
+    modifierTimer.update();
 
-    PotTriplo.update();
-    PotContinuo.update();
-    DpotLento.update();
+    tripleLaserTimer.update();
+    bigLaserTimer.update();
+    reducedVelTimer.update();
 }
 
 void GameLayer::CreatePowerUp()
 {
-    tipoPotenziamento = GetRN<int>(0, DiffPerPotenziamenti);
-    potenziamenti.emplace_back(tipoPotenziamento);
+    modifierType = GetRN<int>(0, DiffPermodifiers);
+    modifiers.emplace_back(modifierType);
 }
 
 void GameLayer::ClearEffects()
 {
-    PotTriplo.deactive();
-    PotContinuo.deactive();
-    DpotLento.deactive();
+    tripleLaserTimer.deactive();
+    bigLaserTimer.deactive();
+    reducedVelTimer.deactive();
 
-    potenziamenti.clear();
-    asteroidi.clear();
-    esplosioni.clear();
-    arrayCuori.clear();
+    modifiers.clear();
+    meteors.clear();
+    explosions.clear();
+    heartsArray.clear();
 
-    giocatore.Reset();
+    player.Reset();
 
-    tAsteroidi.duration = std::chrono::milliseconds(400);
+    meteorTimer.duration = std::chrono::milliseconds(400);
 
     GameScore = 0;
 }
-void GameLayer::checkAllCollisions()
+void GameLayer::CheckAllCollisions()
 {
-    // Collisioni asteroidi laser
-    for (size_t i = 0; i < giocatore.lasers.size();)
+    // Collisioni meteors laser
+    for (size_t i = 0; i < player.lasers.size();)
     {
         bool laserErased = false;
-        for (size_t j = 0; j < asteroidi.size();)
+        for (size_t j = 0; j < meteors.size();)
         {
-            Rectangle rLaser = giocatore.lasers[i].getBounds();
-            Rectangle rAst = asteroidi[j].getBounds();
+            Rectangle rLaser = player.lasers[i].getBounds();
+            Rectangle rAst = meteors[j].getBounds();
 
             if (CheckCollisionRecs(rLaser, rAst))
             {
-                if (Laser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.lasers[i].posizione, asteroidi[j].posizione, GetCollisionRec(rLaser, rAst)))
+                if (Laser::byteMask.checkPixelCollision(Meteor::byteMask, player.lasers[i].position, meteors[j].position, GetCollisionRec(rLaser, rAst)))
                 {
-                    giocatore.lasers.erase(giocatore.lasers.begin() + i);
+                    player.lasers.erase(player.lasers.begin() + i);
 
-                    if (asteroidi[j].getState() == DAMAGED)
+                    if (meteors[j].getState() == DAMAGED)
                     {
-                        esplosioni.emplace_back(asteroidi[j].getBounds());
+                        explosions.emplace_back(meteors[j].getBounds());
 
-                        asteroidi[j] = std::move(asteroidi.back());
-                        asteroidi.pop_back();
+                        meteors[j] = std::move(meteors.back());
+                        meteors.pop_back();
 
                         laserErased = true;
                         GameScore++;
                     }
                     else
                     {
-                        asteroidi[j].NextState();
+                        meteors[j].NextState();
                     }
                     break;
                 }
@@ -248,28 +248,28 @@ void GameLayer::checkAllCollisions()
             i++;
     }
 
-    if (giocatore.continued)
+    if (player.activeBigLaser())
     {
-        for (size_t i = 0; i < asteroidi.size();)
+        for (size_t i = 0; i < meteors.size();)
         {
-            Rectangle rLaser = giocatore.bigLaser.getBounds();
-            Rectangle rAst = asteroidi[i].getBounds();
+            Rectangle rLaser = player.getBigLaser().getBounds();
+            Rectangle rAst = meteors[i].getBounds();
 
             if (CheckCollisionRecs(rLaser, rAst))
             {
-                if (BigLaser::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.bigLaser.posizione, asteroidi[i].posizione, GetCollisionRec(rLaser, rAst)))
+                if (BigLaser::byteMask.checkPixelCollision(Meteor::byteMask, player.getBigLaser().position, meteors[i].position, GetCollisionRec(rLaser, rAst)))
                 {
-                    if (asteroidi[i].getState() == DAMAGED)
+                    if (meteors[i].getState() == DAMAGED)
                     {
-                        esplosioni.emplace_back(asteroidi[i].getBounds());
-                        asteroidi[i] = std::move(asteroidi.back());
-                        asteroidi.pop_back();
+                        explosions.emplace_back(meteors[i].getBounds());
+                        meteors[i] = std::move(meteors.back());
+                        meteors.pop_back();
                         GameScore++;
                         continue;
                     }
                     else
                     {
-                        asteroidi[i].NextState();
+                        meteors[i].NextState();
                     }
                 }
             }
@@ -278,26 +278,26 @@ void GameLayer::checkAllCollisions()
         }
     }
 
-    // Collisioni asteroidi giocatore
-    for (size_t i = 0; i < asteroidi.size();)
+    // Collisioni meteors player
+    for (size_t i = 0; i < meteors.size();)
     {
-        Rectangle rPlayer = giocatore.getBounds();
-        Rectangle rAsteroid = asteroidi[i].getBounds();
+        Rectangle rPlayer = player.getBounds();
+        Rectangle rAsteroid = meteors[i].getBounds();
 
         if (CheckCollisionRecs(rPlayer, rAsteroid))
         {
-            if (Astronave::byteMask.checkPixelCollision(Asteroide::byteMask, giocatore.posizione, asteroidi[i].posizione, GetCollisionRec(rPlayer, rAsteroid)))
+            if (Player::byteMask.checkPixelCollision(Meteor::byteMask, player.position, meteors[i].position, GetCollisionRec(rPlayer, rAsteroid)))
             {
-                if (arrayCuori.size() == 0)
+                if (heartsArray.size() == 0)
                 {
                     *GameStatus = KILLED;
                     return;
                 }
                 else
                 {
-                    arrayCuori.pop_back();
-                    asteroidi[i] = std::move(asteroidi.back());
-                    asteroidi.pop_back();
+                    heartsArray.pop_back();
+                    meteors[i] = std::move(meteors.back());
+                    meteors.pop_back();
                     continue;
                 }
             }
@@ -305,46 +305,46 @@ void GameLayer::checkAllCollisions()
         i++;
     }
 
-    // Collisioni potenziamenti giocatore
-    for (size_t i = 0; i < potenziamenti.size();)
+    // Collisioni modifiers player
+    for (size_t i = 0; i < modifiers.size();)
     {
-        Rectangle rPlayer = giocatore.getBounds();
-        Rectangle rPot = potenziamenti[i].getBounds();
+        Rectangle rPlayer = player.getBounds();
+        Rectangle rPot = modifiers[i].getBounds();
 
         if (CheckCollisionRecs(rPlayer, rPot))
         {
-            if (Astronave::byteMask.checkPixelCollision(PowerUp::byteMask, giocatore.posizione, potenziamenti[i].posizione, GetCollisionRec(rPlayer, rPot)))
+            if (Player::byteMask.checkPixelCollision(PowerUp::byteMask, player.position, modifiers[i].position, GetCollisionRec(rPlayer, rPot)))
             {
-                if (potenziamenti[i].tipoPotenziamento == "downgrade")
+                if (modifiers[i].modType == ModifierType::SLOWER)
                 {
-                    giocatore.reducedVel = true;
-                    DpotLento.active();
+                    player.setReducedVel(true);
+                    reducedVelTimer.active();
                 }
-                else if (potenziamenti[i].tipoPotenziamento == "depotCuore")
+                else if (modifiers[i].modType == ModifierType::LOSEHEART)
                 {
-                    if (arrayCuori.size() <= 0)
+                    if (heartsArray.size() <= 0)
                         *GameStatus = KILLED;
                     else
-                        arrayCuori.pop_back();
+                        heartsArray.pop_back();
                 }
-                else if (potenziamenti[i].tipoPotenziamento == "triploLaser")
+                else if (modifiers[i].modType == ModifierType::TRIPLELASER)
                 {
-                    giocatore.tripleLaser = true;
-                    PotTriplo.active();
+                    player.setTripleLaser(true);
+                    tripleLaserTimer.active();
                 }
-                else if (potenziamenti[i].tipoPotenziamento == "potCuore")
+                else if (modifiers[i].modType == ModifierType::GAINHEART)
                 {
-                    if (arrayCuori.size() < nMaxCuori)
-                        arrayCuori.emplace_back();
+                    if (heartsArray.size() < nMaxHearts)
+                        heartsArray.emplace_back();
                 }
-                else if (potenziamenti[i].tipoPotenziamento == "bigLaser")
+                else if (modifiers[i].modType == ModifierType::BIGLASER)
                 {
-                    giocatore.continued = true;
-                    PotContinuo.active();
+                    player.useBigLaser(true);
+                    bigLaserTimer.active();
                 }
 
-                potenziamenti[i] = std::move(potenziamenti.back());
-                potenziamenti.pop_back();
+                modifiers[i] = std::move(modifiers.back());
+                modifiers.pop_back();
                 continue;
             }
         }
@@ -354,9 +354,9 @@ void GameLayer::checkAllCollisions()
 }
 void GameLayer::Resume()
 {
-    esplosioni.clear();
-    tResume.deactive();
-    tResume.active();
+    explosions.clear();
+    timerDelayResume.deactive();
+    timerDelayResume.active();
 
     ElementsUpdating = false;
     MenuSystem->SetLayerGame();
@@ -372,13 +372,13 @@ void GameLayer::Start()
     switch (MenuSystem->GetGameDifficulty())
     {
     case EASY:
-        GetArrayCuori().emplace_back();
+        GetHeartsArray().emplace_back();
         [[fallthrough]];
     case NORMAL:
-        GetArrayCuori().emplace_back();
+        GetHeartsArray().emplace_back();
         [[fallthrough]];
     case HARD:
-        GetArrayCuori().emplace_back();
+        GetHeartsArray().emplace_back();
         [[fallthrough]];
     default:
         break;
@@ -388,21 +388,21 @@ void GameLayer::Start()
 }
 void GameLayer::SetDiff()
 {
-    SetMaxCuori(MenuSystem->GetGameDifficulty() - 2);
-    giocatore.setLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
-    tAsteroidi.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
-    DiffPerPotenziamenti = MenuSystem->GetGameDifficulty() - 1;
+    SetMaxHearts(MenuSystem->GetGameDifficulty() - 2);
+    player.secooldownTimerLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
+    meteorTimer.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
+    DiffPermodifiers = MenuSystem->GetGameDifficulty() - 1;
 }
 
-std::vector<Cuore>& GameLayer::GetArrayCuori()
+std::vector<Heart>& GameLayer::GetHeartsArray()
 {
-    return arrayCuori;
+    return heartsArray;
 }
 int& GameLayer::GetGameScore()
 {
     return GameScore;
 }
-void GameLayer::SetMaxCuori(int cuori)
+void GameLayer::SetMaxHearts(int hearts)
 {
-    nMaxCuori = cuori;
+    nMaxHearts = hearts;
 }

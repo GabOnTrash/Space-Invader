@@ -6,7 +6,6 @@
 class Interface
 {
 public:
-
     Interface() = default;
     Interface(std::shared_ptr<GameState> GameStatus);
 
@@ -31,9 +30,9 @@ public:
 
     bool GetFullscreen() { return fullscreen; }
 	float GetMusicVolume() { return MusicVolume; }
-	float GetLaserVolume() { return LaserVolume; }
+	float GecooldownTimerLaserVolume() { return LaserVolume; }
 	float GetPowerUpVolume() { return PowerUpVolume; }
-	float GetAsteroidVolume() { return AsteroidVolume; }
+	float GetMeteorDamageVolume() { return MeteorDamageVolume; }
 	float GetExplosionVolume() { return ExplosionVolume; }
 	float GetGeneralVolume() { return GeneralVolume; }
 	Difficulty GetGameDifficulty() { return GameDifficulty; }
@@ -45,7 +44,6 @@ public:
 	std::function<void()> CallSetDiff;
 
 private:
-
     void RecalculateLayout();
 
     void ChangeDifficulty();
@@ -75,7 +73,7 @@ private:
     float MusicVolume = 0.0f;
     float LaserVolume = 0.0f;
     float PowerUpVolume = 0.0f;
-    float AsteroidVolume = 0.0f;
+    float MeteorDamageVolume = 0.0f;
     float ExplosionVolume = 0.0f;
     float GeneralVolume = 0.0f;
 
@@ -88,7 +86,7 @@ private:
     float sliderWidth;
     float sliderHeight;
     float pointerWidth;
-
+    float borderRadius;
     float fontSize;
     float buttonHeight;
     float buttonWidth;

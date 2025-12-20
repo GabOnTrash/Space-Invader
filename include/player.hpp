@@ -3,61 +3,78 @@
 #include "laser.hpp"
 #include "specs.hpp"
 
-class Astronave
+class Player
 {
 public:
 
-	Astronave();
-	~Astronave();
+	Player();
+	~Player();
 
 	static void Init(); 
     static inline ByteMask byteMask;
 
 	void Reset();
 
+	void Update(float deltaT);
+	void Draw();
+
+	Vector2 GetPosition() 
+	{ 
+		return position; 
+	}
+	Texture2D& GetImage() 
+	{ 
+		return Player::texture; 
+	}
+    Timer<>& GetTimer()
+    {
+        return cooldownTimerLaser;
+    }
+	void secooldownTimerLaserTimeToLive(int timeInMs)
+	{
+		laserTimeToLive = timeInMs;
+    }
+	bool activeBigLaser() 
+	{ 
+		return isBigLaserActive; 
+	}
+
+	void setTripleLaser(bool val) 
+	{ 
+		tripleLaser = val; 
+	}
+	void setReducedVel(bool val) 
+	{ 
+		reducedVel = val; 
+	}
+	 void useBigLaser(bool val) 
+	 { 
+		 isBigLaserActive = val; 
+	 }
+	BigLaser& getBigLaser() 
+	{ 
+		return bigLaser; 
+	}
+	Rectangle getBounds();
+	Vector2 position{ 0, 0 };
+	std::vector<Laser> lasers;
+
+private:
+	void Movement(float deltaT);
+	void clearLaser();
+
 	int vel = 0;
 	int coolDown = 400;
 	bool tripleLaser = false;
 	bool reducedVel = false;
-	bool continued = false;
-
-	void Aggiorna(float deltaT);
-	void Disegna();
-	void clearLaser();
-	void Movimento(float deltaT);
-
-	Vector2 GetPosition() 
-	{ 
-		return posizione; 
-	}
-	Texture2D& GetImage() 
-	{ 
-		return Astronave::immagine; 
-	}
-    Timer<>& GetTimer()
-    {
-        return tLaser;
-    }
-	void setLaserTimeToLive(int timeInMs)
-	{
-		laserTimeToLive = timeInMs;
-    }
-
-	std::vector<Laser>& GetLasers();
-
-	Rectangle getBounds();
-	BigLaser bigLaser;
-	Vector2 posizione{ 0, 0 };
-	std::vector<Laser> lasers;
-
-private:
-
+	bool isBigLaserActive = false;
 	int laserTimeToLive = 2000; // in ms
 
-	Vector2 direzione{ 0, 0 };
-	Vector2 nuovaPosizione{ 0, 0 };
+	BigLaser bigLaser;
+	Vector2 direction{ 0, 0 };
+	Vector2 newPosition{ 0, 0 };
 
-	Timer<> tLaser;
+	Timer<> cooldownTimerLaser;
 
-	static inline Texture2D immagine = { 0 };
+	static inline Texture2D texture = { 0 };
 };

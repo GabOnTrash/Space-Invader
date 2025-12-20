@@ -10,7 +10,8 @@
         "AsteroidVolume": 56.57894515991211,
         "ExplosionVolume": 68.15789031982422,
         "GeneralVolume": 1.0,
-        "LaserVolume": 10.263157844543457,
+        "LaserVolume": 43.94736862182617,
+        "MeteorDamageVolume": 0.0,
         "MusicVolume": 0.0,
         "PowerUpVolume": 74.7368392944336
     },

@@ -1,49 +1,29 @@
 #include "powerup.hpp"
 
-PowerUp::PowerUp(int tipo)
+PowerUp::PowerUp(int type)
 {
-    posizione.x = GetRN<float>(0, BASE_WIDTH);
-    posizione.y = GetRN<float>(-150, -100);
+    position.x = GetRN<float>(0, BASE_WIDTH);
+    position.y = GetRN<float>(-150, -100);
     
-    switch (tipo)
-    {
-    case 0:
-        tipoPotenziamento = "downgrade";
-        break;
-    case 1:
-        tipoPotenziamento = "depotCuore";
-        break;
-    case 2:
-        tipoPotenziamento = "triploLaser";
-        break;
-    case 3:
-        tipoPotenziamento = "potCuore";
-        break;
-    case 4:
-        tipoPotenziamento = "bigLaser";
-        break;
-    default:
-        tipoPotenziamento = "";
-    }
-
-    immagine = &arrayPotenziamenti[tipo];
+    modType = static_cast<ModifierType>(type);
+    texture = &arraymodifiers[type];
 }
 PowerUp::~PowerUp()
 {
 }
 Rectangle PowerUp::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine->width), static_cast<float>(immagine->height) };
+    return { position.x, position.y, static_cast<float>(texture->width), static_cast<float>(texture->height) };
 }
 void PowerUp::Init()
 {
     if (loadedResources)
     {
-        arrayPotenziamenti[0] = AssetsManager::GetTexture("reduced_vel");
-        arrayPotenziamenti[1] = AssetsManager::GetTexture("minus_one_heart");
-        arrayPotenziamenti[2] = AssetsManager::GetTexture("triple_laser");
-        arrayPotenziamenti[3] = AssetsManager::GetTexture("plus_one_heart");
-        arrayPotenziamenti[4] = AssetsManager::GetTexture("_big_laser");
+        arraymodifiers[0] = AssetsManager::GetTexture("reduced_vel");
+        arraymodifiers[1] = AssetsManager::GetTexture("minus_one_heart");
+        arraymodifiers[2] = AssetsManager::GetTexture("triple_laser");
+        arraymodifiers[3] = AssetsManager::GetTexture("plus_one_heart");
+        arraymodifiers[4] = AssetsManager::GetTexture("_big_laser");
 
         byteMask.loadFromImage(PATH_BYTEMASK_MODIFIERS);
 
@@ -51,15 +31,11 @@ void PowerUp::Init()
     }
 }
 
-void PowerUp::Disegna()
+void PowerUp::Draw()
 {
-    DrawTexture(*immagine, posizione.x, posizione.y, WHITE);
+    DrawTexture(*texture, position.x, position.y, WHITE);
 }
-void PowerUp::Movimento(float deltaT)
+void PowerUp::Update(float deltaT)
 {
-    posizione.y += vel * deltaT;
-}
-void PowerUp::Aggiorna(float deltaT)
-{
-    Movimento(deltaT);
+    position.y += vel * deltaT;
 }

@@ -1,92 +1,95 @@
 #include "player.hpp"
 
-Astronave::Astronave()
-	: tLaser(coolDown)
+Player::Player()
+	: cooldownTimerLaser(coolDown)
 {
 	Reset();
 }
-Astronave::~Astronave()
+Player::~Player()
 {
 }
 
-void Astronave::Init()
+void Player::Init()
 {
 	if (loadedResources)
 	{
-		immagine = AssetsManager::GetTexture("player");
+		texture = AssetsManager::GetTexture("player");
         byteMask.loadFromImage(PATH_BYTEMASK_PLAYER);
 	}
 }
 
-void Astronave::Reset()
+void Player::Reset()
 {
 	lasers.clear();
 	lasers.reserve(10);
 
-	posizione.x = ((BASE_WIDTH / 2.0f) - (immagine.width / 2.0f));
-	posizione.y = (BASE_HEIGHT / 2.0f);
+	position.x = ((BASE_WIDTH / 2.0f) - (texture.width / 2.0f));
+	position.y = (BASE_HEIGHT / 2.0f);
 	vel = 250;
 
-	tLaser.deactive();
+	cooldownTimerLaser.deactive();
 
 	tripleLaser = false;
 	reducedVel = false;
-	continued = false;
+	isBigLaserActive = false;
 	clearLaser();
 }
 
-void Astronave::Disegna()
+void Player::Draw()
 {
-    DrawTexture(immagine, posizione.x, posizione.y, WHITE);
+    DrawTexture(texture, position.x, position.y, WHITE);
 }
 
-void Astronave::Aggiorna(float deltaT)
+void Player::Update(float deltaT)
 {
-	Movimento(deltaT);
-	tLaser.update();
+	Movement(deltaT);
+	cooldownTimerLaser.update();
 }
 
-void Astronave::clearLaser()
+void Player::clearLaser()
 {
 	lasers.clear();
 }
 
-void Astronave::Movimento(float deltaT)
+void Player::Movement(float deltaT)
 {
-	if (reducedVel) vel = 150;
-	else vel = 250;
+	if (reducedVel) 
+		vel = 150;
+	
+	else 
+		vel = 250;
 
-	// Input direzione
-	if (IsKeyDown(KeyBinds.KeyUP)) direzione.y -= 1;
-	if (IsKeyDown(KeyBinds.KeyDOWN)) direzione.y += 1;
-	if (IsKeyDown(KeyBinds.KeyLEFT)) direzione.x -= 1;
-	if (IsKeyDown(KeyBinds.KeyRIGHT)) direzione.x += 1;
+	// Input direction
+	if (IsKeyDown(KeyBinds.KeyUP)) direction.y -= 1;
+	if (IsKeyDown(KeyBinds.KeyDOWN)) direction.y += 1;
+	if (IsKeyDown(KeyBinds.KeyLEFT)) direction.x -= 1;
+	if (IsKeyDown(KeyBinds.KeyRIGHT)) direction.x += 1;
 
-	if (sqrtf(direzione.x * direzione.x + direzione.y * direzione.y) != 0)
+	if (sqrtf(direction.x * direction.x + direction.y * direction.y) != 0)
 	{
-		direzione.x /= sqrtf(direzione.x * direzione.x + direzione.y * direzione.y);
-		direzione.y /= sqrtf(direzione.x * direzione.x + direzione.y * direzione.y);
+		direction.x /= sqrtf(direction.x * direction.x + direction.y * direction.y);
+		direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
 	}
 
-	nuovaPosizione.x = posizione.x + direzione.x * vel * deltaT;
-	nuovaPosizione.y = posizione.y + direzione.y * vel * deltaT;
+	newPosition.x = position.x + direction.x * vel * deltaT;
+	newPosition.y = position.y + direction.y * vel * deltaT;
 
-	if (nuovaPosizione.x >= 0 && nuovaPosizione.x <= BASE_WIDTH - immagine.width)
-		posizione.x = nuovaPosizione.x;
+	if (newPosition.x >= 0 && newPosition.x <= BASE_WIDTH - texture.width)
+		position.x = newPosition.x;
 
-	if (nuovaPosizione.y >= 0 && nuovaPosizione.y <= BASE_HEIGHT - immagine.height)
-		posizione.y = nuovaPosizione.y;
+	if (newPosition.y >= 0 && newPosition.y <= BASE_HEIGHT - texture.height)
+		position.y = newPosition.y;
 
-	if (continued)
+	if (isBigLaserActive)
 	{
-		bigLaser.posizione.x = posizione.x + (immagine.width / 2.0f) - (BigLaser::immagine.width / 2.0f);
-		bigLaser.posizione.y = posizione.y - (BigLaser::immagine.height);
+		bigLaser.position.x = position.x + (texture.width / 2.0f) - (BigLaser::texture.width / 2.0f);
+		bigLaser.position.y = position.y - (BigLaser::texture.height);
 	}
-	else if (IsKeyPressed(KeyBinds.KeySHOOT) && !tLaser.isRunning)
+	else if (IsKeyPressed(KeyBinds.KeySHOOT) && !cooldownTimerLaser.isRunning)
 	{
 		const float laserOffset = 30.0f * scale;
-		const float laserCenterX = posizione.x + (immagine.width / 2.0f) - (Laser::immagine.width / 2.0f);
-		const float laserY = posizione.y - laserOffset;
+		const float laserCenterX = position.x + (texture.width / 2.0f) - (Laser::texture.width / 2.0f);
+		const float laserY = position.y - laserOffset;
 
 		lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
 
@@ -95,19 +98,14 @@ void Astronave::Movimento(float deltaT)
 			lasers.emplace_back(laserCenterX - laserOffset, laserY);
 			lasers.emplace_back(laserCenterX + laserOffset, laserY);
 		}
-		tLaser.active();
+		cooldownTimerLaser.active();
 	}
 
-	direzione.x = 0;
-	direzione.y = 0;
+	direction.x = 0;
+	direction.y = 0;
 }
 
-Rectangle Astronave::getBounds()
+Rectangle Player::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
-}
-
-std::vector<Laser>& Astronave::GetLasers()
-{
-	return this->lasers;
+    return { position.x, position.y, static_cast<float>(texture.width), static_cast<float>(texture.height) };
 }

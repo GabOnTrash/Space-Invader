@@ -10,24 +10,23 @@ public:
 	Laser(int posX, int posY, int laserTimeToLive = 2000);
 	~Laser();
 
-	void Disegna();
-	void Movimento(float deltaT);
-    void Aggiorna(float deltaT);
+	void Draw();
+    void Update(float deltaT);
 
     bool shouldDie();
 	static void Init(); 
 
 	Rectangle getBounds();
 
-	Vector2 posizione = { 0, 0 };
-	int vel = 0;
-    float alpha = 0;
+	Vector2 position = { 0, 0 };
 
 	static inline ByteMask byteMask;
-	static inline Texture2D immagine = { 0 };
 	static inline float volume = 1.0f;
+	static inline Texture2D texture = { 0 };
 	
 private:
+	int vel = 400;
+    float alpha = 0;
 	static inline Sound audio = {};
 	Timer<> shouldDieTimer;
 };
@@ -39,13 +38,12 @@ public:
 	BigLaser();
 	~BigLaser();
 
-	void Disegna();
-
+	void Draw();
 	static void Init();
 
 	Rectangle getBounds();
-	Vector2 posizione = { 0, 0 };
+	Vector2 position = { 0, 0 };
 
 	static inline ByteMask byteMask;
-	static inline Texture2D immagine = { 0 };
+	static inline Texture2D texture = { 0 };
 };

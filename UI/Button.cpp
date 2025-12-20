@@ -84,7 +84,7 @@ void ButtonT::load()
 	textureN = LoadTextureFromImage(image);
 	UnloadImage(image);
 
-	originalX = posX; // Memorizza la posizione originale
+	originalX = posX; // Memorizza la position originale
 	originalY = posY;
 
 	posX = (posX - (width / 2));

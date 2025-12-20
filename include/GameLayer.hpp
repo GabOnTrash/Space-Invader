@@ -26,52 +26,48 @@ public:
     void UpdateTimers();
     void CreatePowerUp();
     void ClearEffects();
-    void checkAllCollisions();
+    void CheckAllCollisions();
 
     void Start();
     void Restart();
     void Resume();
-
     void SetDiff();
 
-    std::vector<Cuore>& GetArrayCuori();
-
+    std::vector<Heart>& GetHeartsArray();
     int& GetGameScore();
-    
-    void SetMaxCuori(int cuori);
-    
-
+    void SetMaxHearts(int hearts);
+   
 private:
 
     float deltaT = 0.0f;
 
     int GameScore = 0;
-    int nMaxCuori = 0;
-    int DiffPerPotenziamenti;
-    int tipoPotenziamento = 0;
-    int delayAsteroidi = 500;
+    int nMaxHearts = 0;
+    int DiffPermodifiers = 0;
+    int modifierType = 0;
+    int delaymeteors = 500;
 
     bool ElementsUpdating = true;
 
     std::shared_ptr<GameState> GameStatus;
     std::shared_ptr<Interface> MenuSystem; 
 
-	Stella stelleMenu;
-    Stella stelleGioco;
+	Star menuStars;
+    Star runningStars;
 
-    Astronave giocatore;
+    Player player;
 
-    Timer<> tAsteroidi;
-    Timer<> tPotenziamenti;
-    Timer<> PotTriplo;
-    Timer<> PotContinuo;
-    Timer<> DpotLento;
-    Timer<> tResume;
+    Timer<> meteorTimer;
+    Timer<> modifierTimer;
+    Timer<> tripleLaserTimer;
+    Timer<> bigLaserTimer;
+    Timer<> reducedVelTimer;
+    Timer<> timerDelayResume;
 
-    std::vector<Cuore> arrayCuori;
-    std::vector<Asteroide> asteroidi;
-    std::vector<Esplosione> esplosioni;
-    std::vector<PowerUp> potenziamenti;
+    std::vector<Heart> heartsArray;
+    std::vector<Meteor> meteors;
+    std::vector<Explosion> explosions;
+    std::vector<PowerUp> modifiers;
 
     std::thread collisionThread;
     std::mutex collisionMutex;

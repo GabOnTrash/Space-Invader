@@ -2,6 +2,6 @@
 
 int main()
 {
-    Game gioco;
-    gioco.Run();
+    Game game;
+    game.Run();
 }

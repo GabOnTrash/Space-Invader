@@ -1,15 +1,16 @@
 #include "heart.hpp"
 
-Rectangle Cuore::getBounds()
+Rectangle Heart::getBounds()
 {
-    return { posizione.x, posizione.y, static_cast<float>(immagine.width), static_cast<float>(immagine.height) };
+    return { position.x, position.y, static_cast<float>(texture.width), static_cast<float>(texture.height) };
 }
-void Cuore::Init()
+void Heart::Init()
 {
-    if (loadedResources) immagine = AssetsManager::GetTexture("heart");
+    if (loadedResources) 
+        texture = AssetsManager::GetTexture("heart");
 }
 
-void Cuore::Disegna()
+void Heart::Draw()
 {
-    DrawTexture(Cuore::immagine, posizione.x, posizione.y * MULTIPLY, WHITE);
+    DrawTextureEx(Heart::texture, position, 0.0f, MULTIPLY, WHITE);
 }

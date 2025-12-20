@@ -6,26 +6,23 @@
 class PowerUp
 {
 public:
-
-	PowerUp(int tipo);
+	PowerUp(int type);
 	~PowerUp();
 
-	void Disegna();
-	void Movimento(float deltaT);
-	void Aggiorna(float deltaT);
+	void Draw();
+	void Update(float deltaT);
 
 	static void Init();          
     static inline ByteMask byteMask;
 
 	Rectangle getBounds();
-
-	Texture2D* immagine = nullptr;
-	Vector2 posizione;
-	int vel = 200;
-
-	std::string tipoPotenziamento = "";
-
-	static inline Texture2D arrayPotenziamenti[5] = { 0 };
+	Vector2 position;
+	ModifierType modType;
 	static inline Sound audio = {};
 	static inline float volume = 1.0f;
+
+private:
+	int vel = 200;
+	Texture2D* texture = nullptr;
+	static inline Texture2D arraymodifiers[5] = { 0 };
 };

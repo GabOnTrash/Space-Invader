@@ -1,63 +1,60 @@
 #include "meteor.hpp"
 
-Asteroide::Asteroide()
+Meteor::Meteor()
 {
-    immagine = arrayAsteroidi;
+    texture = arraymeteors;
 
 	velX = GetRN<int>(250, 300);
 	velY = GetRN<int>(250, 300);
-	verso =	GetRN<float>(-1, 1);
-	posizione.x = GetRN<float>(50, BASE_WIDTH - 50);
-    posizione.y = GetRN<float>(-immagine->height * 2.0f, -immagine->height * 1.5f);
+	direction =	GetRN<float>(-1, 1);
+	position.x = GetRN<float>(50, BASE_WIDTH - 50);
+    position.y = GetRN<float>(-texture->height * 2.0f, -texture->height * 1.5f);
 
-	if (verso == 0)
-		verso = 1;
+	if (direction == 0)
+		direction = 1;
 
-	verso *= 0.7f;
+	direction *= 0.7f;
 }
-Asteroide::~Asteroide()
+Meteor::~Meteor()
 {
 }
-Rectangle Asteroide::getBounds()
+Rectangle Meteor::getBounds()
 {
-	return { posizione.x, posizione.y, static_cast<float>(immagine->width), static_cast<float>(immagine->height) };
+	return { position.x, position.y, static_cast<float>(texture->width), static_cast<float>(texture->height) };
 }
 
-void Asteroide::Init()
+void Meteor::Init()
 {
 	if (loadedResources)
 	{
-		arrayAsteroidi[0] = AssetsManager::GetTexture("meteor");
-        arrayAsteroidi[1] = AssetsManager::GetTexture("meteor_damaged");
+		arraymeteors[0] = AssetsManager::GetTexture("meteor");
+        arraymeteors[1] = AssetsManager::GetTexture("meteor_damaged");
         byteMask.loadFromImage(PATH_BYTEMASK_ASTEROID);
 
 		audio = AssetsManager::GetSound("meteor_damage");
 	}
 }
 
-void Asteroide::Disegna()
+void Meteor::Draw()
 {
-	DrawTexture(*immagine, posizione.x, posizione.y, WHITE);
+	DrawTexture(*texture, position.x, position.y, WHITE);
 }
-void Asteroide::Movimento(float deltaT)
+void Meteor::Update(float deltaT)
 {
-	posizione.x += velX * verso * deltaT;
-	posizione.y += velY * deltaT;
-}
-void Asteroide::Aggiorna(float deltaT)
-{
-	Movimento(deltaT);
+    position.x += velX * direction * deltaT;
+    position.y += velY * deltaT;
 }
 
-void Asteroide::NextState()
+void Meteor::NextState()
 {
 	SetSoundVolume(audio, volume);
 	PlaySound(audio);
 	AsteroidState = static_cast<MeteorState>(AsteroidState + 1);
 
-	if (AsteroidState == DAMAGED) immagine = &arrayAsteroidi[1];
+	if (AsteroidState == DAMAGED) 
+		texture = &arraymeteors[1];
 }
-MeteorState Asteroide::getState()
+MeteorState Meteor::getState()
 {
 	return static_cast<MeteorState>(AsteroidState);
 }

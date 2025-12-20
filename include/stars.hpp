@@ -2,23 +2,24 @@
 
 #include "specs.hpp"
 
-#define NUM_STELLE 50 * (1500 / 1000)
+#define STAR_NUM 50 * (1500 / 1000)
 
-struct AttribStelle
+struct AttribStar
 {
-    Vector2 posizione;
-    Vector2 velocita;
+    Vector2 position;
+    Vector2 speed;
 };
 
-class Stella
+class Star
 {
 public:
 
-    AttribStelle stelle[NUM_STELLE] = { 0, 0 };
+    AttribStar stars[STAR_NUM] = { 0, 0 };
 
-    void InizializzaStelle(int tipo);
-    void AggiornaStelle(float deltaT, int tipo);
-    void DisegnaStelle();
+    void InitStars(int tipo);
+    void updateStars(float deltaT, int tipo);
+    void DrawStars();
 
-    float radius = 3;
+private:
+    float radius = 4;
 };

@@ -21,3 +21,12 @@ enum Difficulty
     NORMAL = 4,
     HARD = 3
 };
+
+enum ModifierType
+{
+    SLOWER = 0,
+    LOSEHEART,
+    TRIPLELASER,
+    GAINHEART,
+    BIGLASER
+};

@@ -27,13 +27,11 @@ public:
 		if (!MenuStack.empty())
 			MenuStack.top()->update();
 	}
-
 	void Draw()
 	{
 		if (!MenuStack.empty())
 			MenuStack.top()->draw();
 	}
-
 	std::shared_ptr<Menu> TopMenu()
 	{
 		if (!MenuStack.empty())
