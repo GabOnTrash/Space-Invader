@@ -18,7 +18,7 @@ Game::Game()
     InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Space Invaders");
 
     target = LoadRenderTexture(BASE_WIDTH, BASE_HEIGHT);
-
+    
     scale = std::min((float)GetScreenWidth() / BASE_WIDTH, (float)GetScreenHeight() / BASE_HEIGHT);
     offsetX = (GetScreenWidth() - BASE_WIDTH * scale) * 0.5f;
     offsetY = (GetScreenHeight() - BASE_HEIGHT * scale) * 0.5f;
