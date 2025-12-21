@@ -11,7 +11,9 @@ Release/
 *.lo
 *.o
 *.obj
-*.json
+
+# Json user configuration
+conf/SpaceInvaderSettings.json
 
 # Precompiled Headers
 *.gch
