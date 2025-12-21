@@ -13,7 +13,8 @@ Release/
 *.obj
 
 # Json user configuration
-conf/SpaceInvaderSettings.json
+conf/
+SpaceInvaderSettings.json
 
 # Precompiled Headers
 *.gch
