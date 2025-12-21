@@ -1,4 +1,4 @@
-#include "specs.hpp" // per 'scale'
+#include "specs.hpp" // per 'ViewPort::scale'
 #include "Label.h"
 
 Label::Label(std::string id, std::string text, std::function<int()> func, Font fontJ, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH)
@@ -17,8 +17,8 @@ bool Label::OnClick()
 bool Label::hovered()
 {
     mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - offsetX) / scale;
-    mousePos.y = (mousePos.y - offsetY) / scale;
+    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
+    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
 
 	return (mousePos.x >= posX && mousePos.x <= posX + textSize.x && mousePos.y >= posY && mousePos.y <= posY + textSize.y);
 }

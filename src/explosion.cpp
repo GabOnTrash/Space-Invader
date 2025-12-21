@@ -21,7 +21,7 @@ void Explosion::Update(float deltaT)
 }
 void Explosion::Init()
 {
-	if (loadedResources)
+	if (ViewPort::loadedResources)
 	{
 		for (int i = 0; i < 21; i++)
 		{

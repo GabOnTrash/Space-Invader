@@ -6,7 +6,7 @@ Rectangle Heart::getBounds()
 }
 void Heart::Init()
 {
-    if (loadedResources) 
+    if (ViewPort::loadedResources) 
         texture = AssetsManager::GetTexture("heart");
 }
 

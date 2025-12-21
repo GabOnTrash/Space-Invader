@@ -1,13 +1,14 @@
 #include "game.hpp"
 
-int BASE_WIDTH = 3840;
-int BASE_HEIGHT = 2160;
-float scale = 1.0f;
-float offsetX = 0.0f;
-float offsetY = 0.0f;
-bool loadedResources = false;
-// fix f11 and better single laser powerup handling
-// ingrandire le sprite
+namespace ViewPort
+{
+    int BASE_WIDTH = 3840;
+    int BASE_HEIGHT = 2160;
+    float scale = 1.0f;
+    float offsetX = 0.0f;
+    float offsetY = 0.0f;
+    bool loadedResources = false;
+}
 
 Game::Game() 
     : GameStatus(std::make_shared<GameState>(START)), 
@@ -17,11 +18,11 @@ Game::Game()
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Space Invaders");
 
-    target = LoadRenderTexture(BASE_WIDTH, BASE_HEIGHT);
+    target = LoadRenderTexture(ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT);
     
-    scale = std::min((float)GetScreenWidth() / BASE_WIDTH, (float)GetScreenHeight() / BASE_HEIGHT);
-    offsetX = (GetScreenWidth() - BASE_WIDTH * scale) * 0.5f;
-    offsetY = (GetScreenHeight() - BASE_HEIGHT * scale) * 0.5f;
+    ViewPort::scale = std::min((float)GetScreenWidth() / ViewPort::BASE_WIDTH, (float)GetScreenHeight() / ViewPort::BASE_HEIGHT);
+    ViewPort::offsetX = (GetScreenWidth() - ViewPort::BASE_WIDTH * ViewPort::scale) * 0.5f;
+    ViewPort::offsetY = (GetScreenHeight() - ViewPort::BASE_HEIGHT * ViewPort::scale) * 0.5f;
 
 	SetExitKey(KEY_NULL);
 
@@ -38,11 +39,11 @@ Game::~Game()
 
 void Game::Init()
 {
-    if (!loadedResources)
+    if (!ViewPort::loadedResources)
     {
         GameCursor = AssetsManager::GetTexture("cursor");
         GameMusic = AssetsManager::GetMusic("game_music");
-        loadedResources = true;
+        ViewPort::loadedResources = true;
     }
 }
 
@@ -64,7 +65,7 @@ void Game::Run()
         AudioManager();
 
         if (*GameStatus != RUNNING)
-            DrawTexture(GameCursor, (GetMousePosition().x - offsetX) / scale - 10, (GetMousePosition().y - offsetY) / scale, WHITE);
+            DrawTexture(GameCursor, (GetMousePosition().x - ViewPort::offsetX) / ViewPort::scale - 10, (GetMousePosition().y - ViewPort::offsetY) / ViewPort::scale, WHITE);
 
         if (MenuSystem->WantToQuit())
             break;
@@ -74,8 +75,8 @@ void Game::Run()
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawTexturePro(target.texture, Rectangle{0, 0, (float)BASE_WIDTH, -(float)BASE_HEIGHT},
-                       Rectangle{offsetX, offsetY, static_cast<float>(BASE_WIDTH * scale), static_cast<float>(BASE_HEIGHT * scale)}, Vector2{0, 0}, 0.0f,
+        DrawTexturePro(target.texture, Rectangle{0, 0, (float)ViewPort::BASE_WIDTH, -(float)ViewPort::BASE_HEIGHT},
+                       Rectangle{ViewPort::offsetX, ViewPort::offsetY, static_cast<float>(ViewPort::BASE_WIDTH * ViewPort::scale), static_cast<float>(ViewPort::BASE_HEIGHT * ViewPort::scale)}, Vector2{0, 0}, 0.0f,
                        WHITE);
 
         EndDrawing();

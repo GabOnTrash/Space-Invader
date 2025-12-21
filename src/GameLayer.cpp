@@ -54,7 +54,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case KILLED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, BASE_WIDTH, BASE_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.3f));
         
         break;
     }
@@ -73,7 +73,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case PAUSED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, BASE_WIDTH, BASE_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.3f));
 
         break;
     }
@@ -113,7 +113,7 @@ void GameLayer::DrawRunInterface()
 
     for (int i = 0; i < heartsArray.size(); i++)
     {
-        heartsArray[i].position = { static_cast<float>(BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width * 1.5) - 20, 20 };
+        heartsArray[i].position = { static_cast<float>(ViewPort::BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width * 1.5) - 20, 20 };
         heartsArray[i].Draw();
     }
 }
@@ -127,7 +127,7 @@ void GameLayer::UpdateElements()
     {
         meteors[i].Update(deltaT);
 
-        if (meteors[i].getBounds().y > 100 + BASE_HEIGHT)
+        if (meteors[i].getBounds().y > 100 + ViewPort::BASE_HEIGHT)
         {
             meteors[i] = std::move(meteors.back());
             meteors.pop_back();
@@ -140,7 +140,7 @@ void GameLayer::UpdateElements()
     {
         modifiers[i].Update(deltaT);
 
-        if (modifiers[i].getBounds().y > 100 + BASE_HEIGHT)
+        if (modifiers[i].getBounds().y > 100 + ViewPort::BASE_HEIGHT)
         {
             modifiers[i] = std::move(modifiers.back());
             modifiers.pop_back();

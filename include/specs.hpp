@@ -25,12 +25,15 @@
 #include "config/ByteMask.hpp"
 #include "AssetsManager.hpp"
 
-extern int BASE_WIDTH;
-extern int BASE_HEIGHT;
-extern float scale;
-extern float offsetX;
-extern float offsetY;
-extern bool loadedResources;
+namespace ViewPort
+{
+	extern int BASE_WIDTH;
+	extern int BASE_HEIGHT;
+	extern float scale;
+	extern float offsetX;
+	extern float offsetY;
+	extern bool loadedResources;
+}
 
 extern KeyBindings KeyBinds;
 

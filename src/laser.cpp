@@ -18,7 +18,7 @@ Rectangle Laser::getBounds()
 
 void Laser::Init()
 {
-    if (loadedResources)
+    if (ViewPort::loadedResources)
     {
         texture = AssetsManager::GetTexture("laser");
         byteMask.loadFromImage(PATH_BYTEMASK_LASER);
@@ -54,7 +54,7 @@ Rectangle BigLaser::getBounds()
 
 void BigLaser::Init()
 {
-    if (loadedResources)
+    if (ViewPort::loadedResources)
     {
         texture = AssetsManager::GetTexture("big_laser");
         byteMask.loadFromImage(PATH_BYTEMASK_BIGLASER);

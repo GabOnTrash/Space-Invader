@@ -7,7 +7,7 @@ Meteor::Meteor()
 	velX = GetRN<int>(250, 300);
 	velY = GetRN<int>(250, 300);
 	direction =	GetRN<float>(-1, 1);
-	position.x = GetRN<float>(50, BASE_WIDTH - 50);
+	position.x = GetRN<float>(50, ViewPort::BASE_WIDTH - 50);
     position.y = GetRN<float>(-texture->height * 2.0f, -texture->height * 1.5f);
 
 	if (direction == 0)
@@ -25,7 +25,7 @@ Rectangle Meteor::getBounds()
 
 void Meteor::Init()
 {
-	if (loadedResources)
+	if (ViewPort::loadedResources)
 	{
 		arraymeteors[0] = AssetsManager::GetTexture("meteor");
         arraymeteors[1] = AssetsManager::GetTexture("meteor_damaged");

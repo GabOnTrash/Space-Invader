@@ -2,7 +2,7 @@
 
 PowerUp::PowerUp(int type)
 {
-    position.x = GetRN<float>(0, BASE_WIDTH);
+    position.x = GetRN<float>(0, ViewPort::BASE_WIDTH);
     position.y = GetRN<float>(-150, -100);
     
     modType = static_cast<ModifierType>(type);
@@ -17,7 +17,7 @@ Rectangle PowerUp::getBounds()
 }
 void PowerUp::Init()
 {
-    if (loadedResources)
+    if (ViewPort::loadedResources)
     {
         arraymodifiers[0] = AssetsManager::GetTexture("reduced_vel");
         arraymodifiers[1] = AssetsManager::GetTexture("minus_one_heart");

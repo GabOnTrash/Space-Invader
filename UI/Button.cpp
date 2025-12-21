@@ -1,4 +1,4 @@
-#include "specs.hpp" // for 'scale'
+#include "specs.hpp" // for 'ViewPort::scale'
 #include "Button.h"
 
 Button::Button() {}
@@ -29,8 +29,8 @@ void Button::draw()
 bool Button::hovered()
 {
     mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - offsetX) / scale;
-    mousePos.y = (mousePos.y - offsetY) / scale;
+    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
+    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
 
 	return (mousePos.x >= posX && mousePos.x <= posX + width && mousePos.y >= posY && mousePos.y <= posY + height);
 }

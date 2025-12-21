@@ -14,6 +14,6 @@ public:
 	Vector2 position = { 0, 0 };
 
 private:
-	const float MULTIPLY = 1.5f * scale;
+	const float MULTIPLY = 1.5f * ViewPort::scale;
 	static inline Texture2D texture = { 0 };
 };

@@ -14,7 +14,7 @@ void Interface::InitLayers()
     AudioMenu = std::make_shared<Menu>();
     ControlsMenu = std::make_shared<Menu>();
 
-    if (loadedResources)
+    if (ViewPort::loadedResources)
     {
         GameFont = AssetsManager::GetFontEx("main", 100, nullptr, 0);
         SetTextureFilter(GameFont.texture, TEXTURE_FILTER_BILINEAR);
@@ -45,11 +45,11 @@ void Interface::InitLayers()
 }
 void Interface::RecalculateLayout()
 {
-    centerY = BASE_HEIGHT / 2;
+    centerY = ViewPort::BASE_HEIGHT / 2;
     blockSpacing = 140;
     sliderOffset = 50;
-    labelX = BASE_WIDTH / 2;
-    sliderX = BASE_WIDTH / 2;
+    labelX = ViewPort::BASE_WIDTH / 2;
+    sliderX = ViewPort::BASE_WIDTH / 2;
     sliderWidth = 400;
     sliderHeight = 60;
     pointerWidth = 20;
@@ -59,8 +59,8 @@ void Interface::RecalculateLayout()
     buttonWidth = 500;
     spacing = 90;
     totalHeight = (buttonHeight * 6) + (spacing * 5);
-    yStart = (BASE_HEIGHT / 2) - (totalHeight / 2);
-    centerX = BASE_WIDTH / 2;
+    yStart = (ViewPort::BASE_HEIGHT / 2) - (totalHeight / 2);
+    centerX = ViewPort::BASE_WIDTH / 2;
 }
 
 const char* Interface::TranslateToDifficulty()
@@ -164,28 +164,28 @@ const char* Interface::TranslateKey(int key)
 
 void Interface::InitStartMenuSettings()
 {
-    StartMenu->add<Button>("bottoneStart", Strings::title,                                              GameFont, 2 * fontSize, 1000, 400, BASE_WIDTH / 2, 100, nullptr, borderRadius, 10, 4, GrigioChiaro, transparent, transparent, transparent, transparent);
-    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("bottoneStart", Strings::title,                                              GameFont, 2 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 100, nullptr, borderRadius, 10, 4, GrigioChiaro, transparent, transparent, transparent, transparent);
+    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitRunningOverlay()
 {
-    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, BASE_WIDTH / 2, BASE_HEIGHT / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, WHITE, WHITE);
     RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 60, MeasureText(Strings::score, 60) / 2, 30, WHITE, WHITE);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, BASE_WIDTH - offsetY * 1.5f, offsetY / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - ViewPort::offsetY * 1.5f, ViewPort::offsetY / 2, WHITE, WHITE);
 }
 void Interface::InitPausedMenuSettings()
 {
-    PausedMenu->add<Button>("btnResume", Strings::resume, GameFont,                                     fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFont,                                   fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnResume", Strings::resume, GameFont,                                     fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFont,                                   fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    PausedMenu->add<Button>("btnctrl", Strings::control, GameFont,                                      fontSize, 240, buttonHeight, (BASE_WIDTH / 2 - 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFont,                               fontSize, 240, buttonHeight, (BASE_WIDTH / 2 + 130), (BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnctrl", Strings::control, GameFont,                                      fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFont,                               fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
-    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFont, fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFont,                                         fontSize, buttonWidth, buttonHeight, BASE_WIDTH / 2, (BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFont,                                         fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 void Interface::InitAudioControlSettings()
 {
@@ -316,14 +316,14 @@ void Interface::ToggleFullscreen()
     if (fullscreen)
     {
         SetWindowPosition(0, 0);
-        SetWindowSize(BASE_WIDTH, BASE_HEIGHT - taskbar);
+        SetWindowSize(ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT - taskbar);
         PausedMenu->getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "Off"));
         fullscreen = false;
     }
     else
     {
         SetWindowPosition(0, 0);
-        SetWindowSize(BASE_WIDTH, BASE_HEIGHT);
+        SetWindowSize(ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT);
         PausedMenu->getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "On"));
         fullscreen = true;
     }
