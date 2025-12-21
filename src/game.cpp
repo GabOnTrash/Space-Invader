@@ -65,7 +65,7 @@ void Game::Run()
         AudioManager();
 
         if (*GameStatus != RUNNING)
-            DrawTexture(GameCursor, (GetMousePosition().x - ViewPort::offsetX) / ViewPort::scale - 10, (GetMousePosition().y - ViewPort::offsetY) / ViewPort::scale, WHITE);
+            DrawTexture(GameCursor, static_cast<int>((GetMousePosition().x - ViewPort::offsetX) / ViewPort::scale - 10), static_cast<int>((GetMousePosition().y - ViewPort::offsetY) / ViewPort::scale), WHITE);
 
         if (MenuSystem->WantToQuit())
             break;

@@ -77,23 +77,23 @@ private:
     float ExplosionVolume = 0.0f;
     float GeneralVolume = 0.0f;
 
-    float offsetY;
-    float centerY;
-    float blockSpacing;
-    float sliderOffset;
-    float labelX;
-    float sliderX;
-    float sliderWidth;
-    float sliderHeight;
-    float pointerWidth;
-    float borderRadius;
-    float fontSize;
-    float buttonHeight;
-    float buttonWidth;
-    float spacing;
-    float totalHeight;
-    float yStart;
-    float centerX;
+    float offsetY = 0.0f;
+    float centerY = 0.0f;
+    float blockSpacing = 0.0f;
+    float sliderOffset = 0.0f;
+    float labelX = 0.0f;
+    float sliderX = 0.0f;
+    float sliderWidth = 0.0f;
+    float sliderHeight = 0.0f;
+    float pointerWidth = 0.0f;
+    float borderRadius = 0.0f;
+    float fontSize = 0.0f;
+    float buttonHeight = 0.0f;
+    float buttonWidth = 0.0f;
+    float spacing = 0.0f;
+    float totalHeight = 0.0f;
+    float yStart = 0.0f;
+    float centerX = 0.0f;
 
     MenuHandler MainMenuHandler;
 

@@ -16,7 +16,7 @@ void Explosion::Update(float deltaT)
         return;
     }
 	
-	DrawTexture(textureArray[(int)index], position.x, position.y, WHITE);
+	DrawTexture(textureArray[(int)index], static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 	index += 25 * deltaT;
 }
 void Explosion::Init()

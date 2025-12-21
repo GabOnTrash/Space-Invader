@@ -60,8 +60,8 @@ void Slider::draw()
 	{
 		DrawRectangleRounded({ rect.getPosX(), rect.getPosY(), rect.getWidth(), rect.getHeight() }, rect.getRoundness(), static_cast<int>(rect.getSegments()), rect.getColor());
 
-		if (pointer.isRect()) DrawRectangleRounded({ pointer.getPosX(), pointer.getPosY(), pointer.getSide1(), pointer.getSide2() }, pointer.getRoundness(), pointer.getSegments(), pointer.getColor());
-		else DrawCircle(pointer.getCenterX(), pointer.getCenterY(), pointer.getSide1(), pointer.getColor());
+		if (pointer.isRect()) DrawRectangleRounded({ pointer.getPosX(), pointer.getPosY(), pointer.getSide1(), pointer.getSide2() }, pointer.getRoundness(), static_cast<int>(pointer.getSegments()), pointer.getColor());
+		else DrawCircle(static_cast<int>(pointer.getCenterX()), static_cast<int>(pointer.getCenterY()), pointer.getSide1(), pointer.getColor());
 	}
 }
 void Slider::setPointerVert()

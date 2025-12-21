@@ -28,7 +28,7 @@ void Laser::Init()
 
 void Laser::Draw()  
 {  
-    DrawTexture(Laser::texture, position.x, position.y, {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
+    DrawTexture(Laser::texture, static_cast<int>(position.x), static_cast<int>(position.y), {255, 255, 255, static_cast<unsigned char>(255.0f * alpha)});
 }  
 void Laser::Update(float deltaT)  
 {  
@@ -63,5 +63,5 @@ void BigLaser::Init()
 
 void BigLaser::Draw()
 {
-    DrawTexture(BigLaser::texture, position.x, position.y, WHITE);
+    DrawTexture(BigLaser::texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }

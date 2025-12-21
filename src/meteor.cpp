@@ -7,7 +7,7 @@ Meteor::Meteor()
 	velX = GetRN<int>(250, 300);
 	velY = GetRN<int>(250, 300);
 	direction =	GetRN<float>(-1, 1);
-	position.x = GetRN<float>(50, ViewPort::BASE_WIDTH - 50);
+	position.x = GetRN<float>(50.f, ViewPort::BASE_WIDTH - 50.f);
     position.y = GetRN<float>(-texture->height * 2.0f, -texture->height * 1.5f);
 
 	if (direction == 0)
@@ -37,7 +37,7 @@ void Meteor::Init()
 
 void Meteor::Draw()
 {
-	DrawTexture(*texture, position.x, position.y, WHITE);
+	DrawTexture(*texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }
 void Meteor::Update(float deltaT)
 {

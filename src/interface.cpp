@@ -45,11 +45,11 @@ void Interface::InitLayers()
 }
 void Interface::RecalculateLayout()
 {
-    centerY = ViewPort::BASE_HEIGHT / 2;
+    centerY = static_cast<float>(ViewPort::BASE_HEIGHT / 2);
     blockSpacing = 140;
     sliderOffset = 50;
-    labelX = ViewPort::BASE_WIDTH / 2;
-    sliderX = ViewPort::BASE_WIDTH / 2;
+    labelX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
+    sliderX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
     sliderWidth = 400;
     sliderHeight = 60;
     pointerWidth = 20;
@@ -60,7 +60,7 @@ void Interface::RecalculateLayout()
     spacing = 90;
     totalHeight = (buttonHeight * 6) + (spacing * 5);
     yStart = (ViewPort::BASE_HEIGHT / 2) - (totalHeight / 2);
-    centerX = ViewPort::BASE_WIDTH / 2;
+    centerX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
 }
 
 const char* Interface::TranslateToDifficulty()

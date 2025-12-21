@@ -33,7 +33,7 @@ void PowerUp::Init()
 
 void PowerUp::Draw()
 {
-    DrawTexture(*texture, position.x, position.y, WHITE);
+    DrawTexture(*texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }
 void PowerUp::Update(float deltaT)
 {

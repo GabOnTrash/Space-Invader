@@ -6,8 +6,8 @@ Button::Button(std::string id, std::string text, Font fontJ, int fontS, float wi
 	: id(id), text(text), fontJ(fontJ), fontS(fontS), width(width), height(height), posX(xPosCenter - (width / 2)), posY(yPosCenter - (height / 2)), roundness(round), segments(segm), thickness(thickness), FG(FG), BG(BG), BGH(BGH), BD(BD), BDH(BDH)
 {
 	textSize = MeasureTextEx(fontJ, text.c_str(), static_cast<float>(fontS), 1);
-	StdCenterX = posX + (width / 2) - (textSize.x / 2);
-	StdCenterY = posY + (height / 2) - (textSize.y / 2);
+	StdCenterX = static_cast<int>(posX + (width / 2) - (textSize.x / 2));
+	StdCenterY = static_cast<int>(posY + (height / 2) - (textSize.y / 2));
 
 	this->function = func;
 }

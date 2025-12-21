@@ -36,5 +36,7 @@ public:
 	{
 		if (!MenuStack.empty())
 			return MenuStack.top();
+
+		return nullptr;
 	}
 };
