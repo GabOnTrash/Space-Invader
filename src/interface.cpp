@@ -173,7 +173,7 @@ void Interface::InitRunningOverlay()
 {
     RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, WHITE, WHITE);
     RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 60, MeasureText(Strings::score, 60) / 2, 30, WHITE, WHITE);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - ViewPort::offsetY * 1.5f, ViewPort::offsetY / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - blockSpacing, blockSpacing / 3, WHITE, WHITE);
 }
 void Interface::InitPausedMenuSettings()
 {

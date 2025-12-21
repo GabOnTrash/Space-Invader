@@ -54,7 +54,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case KILLED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.5f));
         
         break;
     }
@@ -73,7 +73,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     case PAUSED:
     {
         DrawRunInterface();
-        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.3f));
+        DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.5f));
 
         break;
     }
