@@ -179,9 +179,9 @@ void Interface::InitStartMenuSettings()
 }
 void Interface::InitRunningOverlay()
 {
-    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, BASE_WIDTH / 2, BASE_HEIGHT / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, WHITE, WHITE);
     RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, WHITE, WHITE);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, BASE_WIDTH - offsetY * 1.5f, offsetY / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - offsetY * 1.5f, offsetY / 2, WHITE, WHITE);
 }
 void Interface::InitPausedMenuSettings()
 {
@@ -257,7 +257,7 @@ void Interface::InitControlsSettings()
     KeyBinds.KeySHOOT = settings.GetKey<int>("KeyBindings", "SHOOT");
     KeyBinds.KeyDASH = settings.GetKey<int>("KeyBindings", "DASH");
 
-    if (KeyBinds.KeyUP == 0 || KeyBinds.KeyDOWN == 0 || KeyBinds.KeyLEFT == 0 || KeyBinds.KeyRIGHT == 0 || KeyBinds.KeySHOOT == 0 || KeyBinds.KeyDASH)
+    if (KeyBinds.KeyUP == 0 || KeyBinds.KeyDOWN == 0 || KeyBinds.KeyLEFT == 0 || KeyBinds.KeyRIGHT == 0 || KeyBinds.KeySHOOT == 0 || KeyBinds.KeyDASH == 0)
     {
         KeyBinds.KeyUP = KEY_W;
         KeyBinds.KeyLEFT = KEY_A;
