@@ -30,7 +30,7 @@ public:
 
     bool GetFullscreen() { return fullscreen; }
 	float GetMusicVolume() { return MusicVolume; }
-	float GecooldownTimerLaserVolume() { return LaserVolume; }
+	float GetcooldownTimerLaserVolume() { return LaserVolume; }
 	float GetPowerUpVolume() { return PowerUpVolume; }
 	float GetMeteorDamageVolume() { return MeteorDamageVolume; }
 	float GetExplosionVolume() { return ExplosionVolume; }

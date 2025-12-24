@@ -97,12 +97,14 @@ void Interface::setToBind(const std::string& id)
         KeyBinds.KeyDOWN = KEY_S;
         KeyBinds.KeyRIGHT = KEY_D;
         KeyBinds.KeySHOOT = KEY_SPACE;
+        KeyBinds.KeyDASH = KEY_LEFT_SHIFT;
 
         ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)));
         ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)));
         ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)));
         ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)));
         ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));
+        ControlsMenu->getByID("btnDash")->setText(TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)));
         waitingForKeyBind = "";
         return;
     }
@@ -122,7 +124,8 @@ void Interface::updateKeyBinding()
         key == KeyBinds.KeyDOWN ||
         key == KeyBinds.KeyLEFT || 
         key == KeyBinds.KeyRIGHT||
-        key == KeyBinds.KeySHOOT) return;
+        key == KeyBinds.KeySHOOT|| 
+        key == KeyBinds.KeyDASH) return;
 
     if (waitingForKeyBind == "btnMoveUp") 
     {
@@ -149,6 +152,11 @@ void Interface::updateKeyBinding()
         KeyBinds.KeySHOOT = key;
         ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(key)));
     }
+    else if (waitingForKeyBind == "btnDash")
+    {
+        KeyBinds.KeyDASH = key;
+        ControlsMenu->getByID("btnDash")->setText(TextFormat(Strings::dash, TranslateKey(key)));
+    }
 
     waitingForKeyBind.clear();
 }
@@ -171,9 +179,9 @@ void Interface::InitStartMenuSettings()
 }
 void Interface::InitRunningOverlay()
 {
-    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, WHITE, WHITE);
-    RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 60, MeasureText(Strings::score, 60) / 2, 30, WHITE, WHITE);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - blockSpacing, blockSpacing / 3, WHITE, WHITE);
+    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 70, BASE_WIDTH / 2, BASE_HEIGHT / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, WHITE, WHITE);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, BASE_WIDTH - offsetY * 1.5f, offsetY / 2, WHITE, WHITE);
 }
 void Interface::InitPausedMenuSettings()
 {
@@ -247,14 +255,16 @@ void Interface::InitControlsSettings()
     KeyBinds.KeyLEFT = settings.GetKey<int>("KeyBindings", "MOVELEFT");
     KeyBinds.KeyRIGHT = settings.GetKey<int>("KeyBindings", "MOVERIGHT");
     KeyBinds.KeySHOOT = settings.GetKey<int>("KeyBindings", "SHOOT");
+    KeyBinds.KeyDASH = settings.GetKey<int>("KeyBindings", "DASH");
 
-    if (KeyBinds.KeyUP == 0 || KeyBinds.KeyDOWN == 0 || KeyBinds.KeyLEFT == 0 || KeyBinds.KeyRIGHT == 0 || KeyBinds.KeySHOOT == 0)
+    if (KeyBinds.KeyUP == 0 || KeyBinds.KeyDOWN == 0 || KeyBinds.KeyLEFT == 0 || KeyBinds.KeyRIGHT == 0 || KeyBinds.KeySHOOT == 0 || KeyBinds.KeyDASH)
     {
         KeyBinds.KeyUP = KEY_W;
         KeyBinds.KeyLEFT = KEY_A;
         KeyBinds.KeyDOWN = KEY_S;
         KeyBinds.KeyRIGHT = KEY_D;
         KeyBinds.KeySHOOT = KEY_SPACE;
+        KeyBinds.KeyDASH = KEY_LEFT_SHIFT;
     }
 
     ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
@@ -262,8 +272,9 @@ void Interface::InitControlsSettings()
     ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
-    ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
+    ControlsMenu->add<Button>("btnDash", TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("btnDash"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 
+    ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 6, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
     ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, WHITE, GrigioScuro, GrigioScuro, GrigioScuro, WHITE);
 }
 
@@ -363,6 +374,9 @@ void Interface::UpdateSystem()
 
         if (ControlsMenu->getByID("btnShoot")->getText() == Strings::waitingKey)
             ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));
+
+        if (ControlsMenu->getByID("btnDash")->getText() == Strings::waitingKey)
+            ControlsMenu->getByID("btnDash")->setText(TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)));
     }
 }
 

@@ -1,7 +1,6 @@
 #include "player.hpp"
 
-Player::Player()
-	: cooldownTimerLaser(coolDown)
+Player::Player() : cooldownTimerLaser(coolDown)
 {
 	Reset();
 }
@@ -51,25 +50,61 @@ void Player::clearLaser()
 	lasers.clear();
 }
 
+void Player::UpdateDash(float deltaT)
+{
+    dashTimer += deltaT;
+	float t = dashTimer / dashDuration;
+	if (t >= 1.0f)
+	{
+		isDashing = false;
+		return;
+	}
+	
+	float curve = sinf(t * PI);
+    float dashSpeed = vel * dashMultiplier * curve;
+
+    position.x += dashDir.x * dashSpeed * deltaT;
+    position.y += dashDir.y * dashSpeed * deltaT;
+}
+
+void Player::StartDash(Vector2 dir)
+{
+    isDashing = true;
+    dashTimer = 0.0f;
+    dashDir = dir;
+}
+
+void Player::HandleInput()
+{
+    if (IsKeyDown(KeyBinds.KeyUP))
+        direction.y -= 1;
+    if (IsKeyDown(KeyBinds.KeyDOWN))
+        direction.y += 1;
+    if (IsKeyDown(KeyBinds.KeyLEFT))
+        direction.x -= 1;
+    if (IsKeyDown(KeyBinds.KeyRIGHT))
+        direction.x += 1;
+
+    if (sqrtf(direction.x * direction.x + direction.y * direction.y) != 0)
+    {
+        direction.x /= sqrtf(direction.x * direction.x + direction.y * direction.y);
+        direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
+    }
+
+    if (!IsKeyPressed(KeyBinds.KeyDASH) || Vector2Length(direction) == 0)
+        return;
+
+    StartDash(direction);
+}
+
 void Player::Movement(float deltaT)
 {
-	if (reducedVel) 
-		vel = 150;
-	
-	else 
-		vel = 250;
+    if (isDashing)
+        UpdateDash(deltaT);
 
-	// Input direction
-	if (IsKeyDown(KeyBinds.KeyUP)) direction.y -= 1;
-	if (IsKeyDown(KeyBinds.KeyDOWN)) direction.y += 1;
-	if (IsKeyDown(KeyBinds.KeyLEFT)) direction.x -= 1;
-	if (IsKeyDown(KeyBinds.KeyRIGHT)) direction.x += 1;
+    vel = reducedVel ? reducedVelocity : normalVelocity;
 
-	if (sqrtf(direction.x * direction.x + direction.y * direction.y) != 0)
-	{
-		direction.x /= sqrtf(direction.x * direction.x + direction.y * direction.y);
-		direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
-	}
+	HandleInput();
 
 	newPosition.x = position.x + direction.x * vel * deltaT;
 	newPosition.y = position.y + direction.y * vel * deltaT;
@@ -91,18 +126,14 @@ void Player::Movement(float deltaT)
 		const float laserCenterX = position.x + (texture.width / 2.0f) - (Laser::texture.width / 2.0f);
 		const float laserY = position.y - laserOffset;
 
-		lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
+    lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
 
-		if (tripleLaser)
-		{
-			lasers.emplace_back(laserCenterX - laserOffset, laserY);
-			lasers.emplace_back(laserCenterX + laserOffset, laserY);
-		}
-		cooldownTimerLaser.active();
-	}
-
-	direction.x = 0;
-	direction.y = 0;
+    if (tripleLaser)
+    {
+        lasers.emplace_back(laserCenterX - laserOffset, laserY);
+        lasers.emplace_back(laserCenterX + laserOffset, laserY);
+    }
+    cooldownTimerLaser.active();
 }
 
 Rectangle Player::getBounds()

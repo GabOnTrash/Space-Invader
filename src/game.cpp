@@ -88,12 +88,12 @@ void Game::Run()
 
 void Game::AudioManager()
 {
-    SetMusicVolume(GameMusic,   (MenuSystem->GetMusicVolume() / 100)      * MenuSystem->GetGeneralVolume());
+    SetMusicVolume(GameMusic,   (MenuSystem->GetMusicVolume() / 100)                * MenuSystem->GetGeneralVolume());
 
-    Explosion::volume =        (MenuSystem->GetExplosionVolume() / 100)  * MenuSystem->GetGeneralVolume();
-    Laser::volume =             (MenuSystem->GecooldownTimerLaserVolume() / 100)      * MenuSystem->GetGeneralVolume();
-    Meteor::volume =         (MenuSystem->GetMeteorDamageVolume() / 100)   * MenuSystem->GetGeneralVolume();
-    PowerUp::volume =           (MenuSystem->GetPowerUpVolume() / 100)    * MenuSystem->GetGeneralVolume();
+    Explosion::volume =         (MenuSystem->GetExplosionVolume() / 100)            * MenuSystem->GetGeneralVolume();
+    Laser::volume =             (MenuSystem->GetcooldownTimerLaserVolume() / 100)   * MenuSystem->GetGeneralVolume();
+    Meteor::volume =            (MenuSystem->GetMeteorDamageVolume() / 100)         * MenuSystem->GetGeneralVolume();
+    PowerUp::volume =           (MenuSystem->GetPowerUpVolume() / 100)              * MenuSystem->GetGeneralVolume();
 }
 void Game::LoadAssets()
 {
@@ -123,7 +123,7 @@ void Game::SaveCommands()
 
     p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
     p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());
-    p.SetKey("audio", "LaserVolume", MenuSystem->GecooldownTimerLaserVolume());
+    p.SetKey("audio", "LaserVolume", MenuSystem->GetcooldownTimerLaserVolume());
     p.SetKey("audio", "MeteorDamageVolume", MenuSystem->GetMeteorDamageVolume());
     p.SetKey("audio", "PowerUpVolume", MenuSystem->GetPowerUpVolume());
     p.SetKey("audio", "ExplosionVolume", MenuSystem->GetExplosionVolume());
@@ -135,6 +135,7 @@ void Game::SaveCommands()
     p.SetKey("KeyBindings", "MOVELEFT", KeyBinds.KeyLEFT);
     p.SetKey("KeyBindings", "MOVERIGHT", KeyBinds.KeyRIGHT);
     p.SetKey("KeyBindings", "SHOOT", KeyBinds.KeySHOOT);
+    p.SetKey("KeyBindings", "DASH", KeyBinds.KeyDASH);
 
     p.SetKey("video", "Fullscreen", MenuSystem->GetFullscreen());
 

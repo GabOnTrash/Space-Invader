@@ -7,6 +7,7 @@ struct KeyBindings
     int KeyLEFT = KEY_A;
     int KeyRIGHT = KEY_D;
     int KeySHOOT = KEY_SPACE;
+    int KeyDASH = KEY_LEFT_SHIFT;
 };
 
 static inline std::unordered_map<int, std::string> RaylibKeyToString = {
@@ -15,6 +16,7 @@ static inline std::unordered_map<int, std::string> RaylibKeyToString = {
     {KEY_MINUS, "-"},
     {KEY_PERIOD, "."},
     {KEY_SLASH, "/"},
+
     {KEY_ZERO, "0"},
     {KEY_ONE, "1"},
     {KEY_TWO, "2"},
@@ -25,8 +27,10 @@ static inline std::unordered_map<int, std::string> RaylibKeyToString = {
     {KEY_SEVEN, "7"},
     {KEY_EIGHT, "8"},
     {KEY_NINE, "9"},
+
     {KEY_SEMICOLON, ";"},
     {KEY_EQUAL, "="},
+
     {KEY_A, "A"},
     {KEY_B, "B"},
     {KEY_C, "C"},
@@ -53,27 +57,59 @@ static inline std::unordered_map<int, std::string> RaylibKeyToString = {
     {KEY_X, "X"},
     {KEY_Y, "Y"},
     {KEY_Z, "Z"},
+
     {KEY_LEFT_BRACKET, "["},
     {KEY_BACKSLASH, "\\"},
     {KEY_RIGHT_BRACKET, "]"},
     {KEY_GRAVE, "`"},
-    {KEY_SPACE, "SPACE"},
-    {KEY_ESCAPE, "ESCAPE"},
-    {KEY_ENTER, "ENTER"},
-    {KEY_TAB, "TAB"},
-    {KEY_BACKSPACE, "BACKSPACE"},
-    {KEY_INSERT, "INSERT"},
-    {KEY_DELETE, "DELETE"},
-    {KEY_RIGHT, "RIGHT"},
-    {KEY_LEFT, "LEFT"},
-    {KEY_DOWN, "DOWN"},
-    {KEY_UP, "UP"},
-    {KEY_PAGE_UP, "PAGE UP"},
-    {KEY_PAGE_DOWN, "PAGE DOWN"},
-    {KEY_HOME, "HOME"},
-    {KEY_END, "END"},
-    {KEY_CAPS_LOCK, "CAPS LOCK"},
-    {KEY_SCROLL_LOCK, "SCROLL LOCK"},
-    {KEY_NUM_LOCK, "NUM LOCK"},
-    {KEY_PRINT_SCREEN, "PRINT SCREEN"},
+
+    {KEY_SPACE, "Space"},
+    {KEY_ESCAPE, "Esc"},
+    {KEY_ENTER, "Enter"},
+    {KEY_TAB, "Tab"},
+    {KEY_BACKSPACE, "Backspace"},
+
+    {KEY_INSERT, "Insert"},
+    {KEY_DELETE, "Delete"},
+
+    {KEY_RIGHT, "Right Arrow"},
+    {KEY_LEFT, "Left Arrow"},
+    {KEY_DOWN, "Down Arrow"},
+    {KEY_UP, "Up Arrow"},
+
+    {KEY_PAGE_UP, "Page Up"},
+    {KEY_PAGE_DOWN, "Page Down"},
+    {KEY_HOME, "Home"},
+    {KEY_END, "End"},
+
+    {KEY_CAPS_LOCK, "Caps Lock"},
+    {KEY_SCROLL_LOCK, "Scroll Lock"},
+    {KEY_NUM_LOCK, "Num Lock"},
+    {KEY_PRINT_SCREEN, "Print Screen"},
+    {KEY_PAUSE, "Pause"},
+
+    {KEY_F1, "F1"},
+    {KEY_F2, "F2"},
+    {KEY_F3, "F3"},
+    {KEY_F4, "F4"},
+    {KEY_F5, "F5"},
+    {KEY_F6, "F6"},
+    {KEY_F7, "F7"},
+    {KEY_F8, "F8"},
+    {KEY_F9, "F9"},
+    {KEY_F10, "F10"},
+    {KEY_F11, "F11"},
+    {KEY_F12, "F12"},
+
+    {KEY_LEFT_SHIFT, "Left Shift"},
+    {KEY_LEFT_CONTROL, "Left Ctrl"},
+    {KEY_LEFT_ALT, "Left Alt"},
+    {KEY_LEFT_SUPER, "Left Super"},
+
+    {KEY_RIGHT_SHIFT, "Right Shift"},
+    {KEY_RIGHT_CONTROL, "Right Ctrl"},
+    {KEY_RIGHT_ALT, "Right Alt"},
+    {KEY_RIGHT_SUPER, "Right Super"},
+
+    {KEY_KB_MENU, "Menu"},
 };

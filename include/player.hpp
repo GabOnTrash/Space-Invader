@@ -60,8 +60,12 @@ public:
 	std::vector<Laser> lasers;
 
 private:
-	void Movement(float deltaT);
+    void Movement(float deltaT);
+    void generateLaser();
 	void clearLaser();
+    void HandleInput();
+    void StartDash(Vector2 dir);
+    void UpdateDash(float deltaT);
 
 	int vel = 0;
 	int coolDown = 400;
@@ -69,6 +73,15 @@ private:
 	bool reducedVel = false;
 	bool isBigLaserActive = false;
 	int laserTimeToLive = 2000; // in ms
+    const int normalVelocity = 250;
+    const int reducedVelocity = 150;
+
+    bool isDashing = false;
+    float dashTimer = 0.0f;
+    float dashDuration = 0.16f;
+    float dashMultiplier = 3.5f;
+
+    Vector2 dashDir = { 0, 0 };
 
 	BigLaser bigLaser;
 	Vector2 direction{ 0, 0 };

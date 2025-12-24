@@ -27,12 +27,13 @@ struct Strings
     static inline const char* EXPLVOLUME = "Explosions Volume";
     static inline const char* PWVOLUME = "PowerUps Volume";
 
-    static inline const char* control = "Control";
+    static inline const char* control = "Controls";
     static inline const char* moveup = "UP: %s";
     static inline const char* movedown = "DOWN: %s";
     static inline const char* moveleft = "LEFT: %s";
     static inline const char* moveright = "RIGHT: %s";
     static inline const char* shoot = "SHOOT: %s";
+    static inline const char* dash = "DASH: %s";
     static inline const char* reset = "Reset bindings";
 
     static inline const char* waitingKey = "Press a key...";
