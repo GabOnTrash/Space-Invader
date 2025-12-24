@@ -1,6 +1,6 @@
 #include "player.hpp"
 
-Player::Player() : cooldownTimerLaser(coolDown)
+Player::Player() : cooldownTimerLaser(coolDown), cooldownTimerDash(1000)
 {
 	Reset();
 }
@@ -24,7 +24,7 @@ void Player::Reset()
 
 	position.x = ((ViewPort::BASE_WIDTH / 2.0f) - (texture.width / 2.0f));
 	position.y = (ViewPort::BASE_HEIGHT / 2.0f);
-	vel = 250;
+	vel = normalVelocity;
 
 	cooldownTimerLaser.deactive();
 
@@ -43,6 +43,7 @@ void Player::Update(float deltaT)
 {
 	Movement(deltaT);
 	cooldownTimerLaser.update();
+    cooldownTimerDash.update();
 }
 
 void Player::clearLaser()
@@ -57,6 +58,7 @@ void Player::UpdateDash(float deltaT)
 	if (t >= 1.0f)
 	{
 		isDashing = false;
+        cooldownTimerDash.active();
 		return;
 	}
 	
@@ -91,7 +93,7 @@ void Player::HandleInput()
         direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
     }
 
-    if (!IsKeyPressed(KeyBinds.KeyDASH) || Vector2Length(direction) == 0)
+    if (!IsKeyPressed(KeyBinds.KeyDASH) || Vector2Length(direction) == 0 || cooldownTimerDash.isRunning)
         return;
 
     StartDash(direction);
@@ -104,27 +106,32 @@ void Player::Movement(float deltaT)
 
     vel = reducedVel ? reducedVelocity : normalVelocity;
 
-	HandleInput();
+    HandleInput();
 
-	newPosition.x = position.x + direction.x * vel * deltaT;
-	newPosition.y = position.y + direction.y * vel * deltaT;
+    newPosition.x = position.x + direction.x * vel * deltaT;
+    newPosition.y = position.y + direction.y * vel * deltaT;
 
-	if (newPosition.x >= 0 && newPosition.x <= ViewPort::BASE_WIDTH - texture.width)
-		position.x = newPosition.x;
+    if (newPosition.x >= 0 && newPosition.x <= ViewPort::BASE_WIDTH - texture.width)
+        position.x = newPosition.x;
 
-	if (newPosition.y >= 0 && newPosition.y <= ViewPort::BASE_HEIGHT - texture.height)
-		position.y = newPosition.y;
+    if (newPosition.y >= 0 && newPosition.y <= ViewPort::BASE_HEIGHT - texture.height)
+        position.y = newPosition.y;
 
-	if (isBigLaserActive)
-	{
-		bigLaser.position.x = position.x + (texture.width / 2.0f) - (BigLaser::texture.width / 2.0f);
-		bigLaser.position.y = position.y - (BigLaser::texture.height);
-	}
-	else if (IsKeyPressed(KeyBinds.KeySHOOT) && !cooldownTimerLaser.isRunning)
-	{
-		const float laserOffset = 30.0f * ViewPort::scale;
-		const float laserCenterX = position.x + (texture.width / 2.0f) - (Laser::texture.width / 2.0f);
-		const float laserY = position.y - laserOffset;
+    if (isBigLaserActive)
+    {
+        bigLaser.position.x = position.x + (texture.width / 2.0f) - (BigLaser::texture.width / 2.0f);
+        bigLaser.position.y = position.y - (BigLaser::texture.height);
+    }
+    else if (IsKeyPressed(KeyBinds.KeySHOOT) && !cooldownTimerLaser.isRunning)
+        generateLaser();
+
+    direction = { 0, 0 };
+}
+void Player::generateLaser()
+{
+    const float laserOffset = 30.0f * ViewPort::scale;
+    const float laserCenterX = position.x + (texture.width / 2.0f) - (Laser::texture.width / 2.0f);
+    const float laserY = position.y - laserOffset;
 
     lasers.emplace_back(laserCenterX, laserY, laserTimeToLive);
 
@@ -135,7 +142,6 @@ void Player::Movement(float deltaT)
     }
     cooldownTimerLaser.active();
 }
-
 Rectangle Player::getBounds()
 {
     return { position.x, position.y, static_cast<float>(texture.width), static_cast<float>(texture.height) };

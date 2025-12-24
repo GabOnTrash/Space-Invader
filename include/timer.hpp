@@ -30,16 +30,6 @@ public:
         if (autoStart)
             active();
     }
-    int elapsedTime()
-    {
-        if (isRunning)
-        {
-            auto currentTime = std::chrono::high_resolution_clock::now();
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - initialTime).count();
-            return static_cast<int>(elapsed);
-        }
-        return -1;
-    }
     void active()
     {
         isRunning = true;
@@ -75,6 +65,6 @@ public:
             auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - initialTime).count();
             return static_cast<int>(elapsed);
         }
-        return 0.0f;
+        return -1;
     }
 };

@@ -88,6 +88,7 @@ private:
 	Vector2 newPosition{ 0, 0 };
 
 	Timer<> cooldownTimerLaser;
+    Timer<> cooldownTimerDash;
 
 	static inline Texture2D texture = { 0 };
 };
