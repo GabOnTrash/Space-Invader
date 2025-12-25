@@ -8,8 +8,8 @@ class Button : public Widget
 public:
 
 	Button();
-	Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, float segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH);
-
+	Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, int segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH);
+	
 	void draw() override;
 	void update() override;
 	bool OnClick() override;	// funzione di tipo void
@@ -78,7 +78,7 @@ private:
 
 	float roundness = 0;
 	float thickness = 4;
-	float segments = 10;
+	int segments = 10;
 
 	int StdCenterX = 0;
 	int StdCenterY = 0;

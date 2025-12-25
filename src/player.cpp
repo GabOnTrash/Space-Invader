@@ -79,13 +79,13 @@ void Player::StartDash(Vector2 dir)
 void Player::HandleInput()
 {
     if (IsKeyDown(KeyBinds.KeyUP))
-        direction.y -= 1;
+        direction.y -= 1.f;
     if (IsKeyDown(KeyBinds.KeyDOWN))
-        direction.y += 1;
+        direction.y += 1.f;
     if (IsKeyDown(KeyBinds.KeyLEFT))
-        direction.x -= 1;
+        direction.x -= 1.f;
     if (IsKeyDown(KeyBinds.KeyRIGHT))
-        direction.x += 1;
+        direction.x += 1.f;
 
     if (sqrtf(direction.x * direction.x + direction.y * direction.y) != 0)
     {
@@ -125,7 +125,7 @@ void Player::Movement(float deltaT)
     else if (IsKeyPressed(KeyBinds.KeySHOOT) && !cooldownTimerLaser.isRunning)
         generateLaser();
 
-    direction = { 0, 0 };
+    direction = { 0.f, 0.f };
 }
 void Player::generateLaser()
 {

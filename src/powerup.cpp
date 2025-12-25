@@ -2,8 +2,8 @@
 
 PowerUp::PowerUp(int type)
 {
-    position.x = GetRN<float>(0, ViewPort::BASE_WIDTH);
-    position.y = GetRN<float>(-150, -100);
+    position.x = GetRN<float>(0.f, static_cast<float>(ViewPort::BASE_WIDTH));
+    position.y = GetRN<float>(-150.f, -100.f);
     
     modType = static_cast<ModifierType>(type);
     texture = &arraymodifiers[type];

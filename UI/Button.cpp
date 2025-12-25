@@ -2,7 +2,7 @@
 #include "Button.h"
 
 Button::Button() {}
-Button::Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, float segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH)
+Button::Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, int segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH)
 	: id(id), text(text), fontJ(fontJ), fontS(fontS), width(width), height(height), posX(xPosCenter - (width / 2)), posY(yPosCenter - (height / 2)), roundness(round), segments(segm), thickness(thickness), FG(FG), BG(BG), BGH(BGH), BD(BD), BDH(BDH)
 {
 	textSize = MeasureTextEx(fontJ, text.c_str(), static_cast<float>(fontS), 1);
