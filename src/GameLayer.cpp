@@ -1,6 +1,6 @@
 #include "GameLayer.hpp"
 
-GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Interface> MenuSystem)
+GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<MenuLayer> MenuSystem)
     : MenuSystem(MenuSystem), GameStatus(GameStatus),
       meteorTimer(0, [this]() { meteors.emplace_back(); }, true, true),
       modifierTimer(6000, [this]() { CreatePowerUp(); }, true, true),
@@ -53,15 +53,15 @@ void GameLayer::UpdateGameStatus(float deltaT)
     }
     case KILLED:
     {
-        DrawRunInterface();
+        DrawRunMenuLayer();
         DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.5f));
         
         break;
     }
     case RUNNING:
     {
-        UpdateRunInterface();
-        DrawRunInterface();
+        UpdateRunMenuLayer();
+        DrawRunMenuLayer();
 
         heartsArray.size() == 0 ? MenuSystem->GetRunningMenu()->activate("labelDanger")
                                 : MenuSystem->GetRunningMenu()->deactive("labelDanger");
@@ -72,7 +72,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     }
     case PAUSED:
     {
-        DrawRunInterface();
+        DrawRunMenuLayer();
         DrawRectangle(0, 0, ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT, Fade(BLACK, 0.5f));
 
         break;
@@ -80,7 +80,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
     }
 }
 
-void GameLayer::UpdateRunInterface()
+void GameLayer::UpdateRunMenuLayer()
 {
     runningStars.updateStars(deltaT, 0);
 
@@ -93,7 +93,7 @@ void GameLayer::UpdateRunInterface()
     else
         timerDelayResume.update();
 }
-void GameLayer::DrawRunInterface()
+void GameLayer::DrawRunMenuLayer()
 {
     runningStars.DrawStars();
 

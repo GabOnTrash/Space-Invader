@@ -9,19 +9,19 @@
 #include "powerup.hpp"
 #include "heart.hpp"
 #include "timer.hpp"
-#include "interface.hpp"
+#include "MenuLayer.hpp"
 
 class GameLayer
 {
 public:
     GameLayer() = default;
-    GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Interface> MenuSystem);
+    GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<MenuLayer> MenuSystem);
 	~GameLayer();
 
 	void UpdateGameStatus(float deltaT);
 
-    void UpdateRunInterface();
-    void DrawRunInterface();
+    void UpdateRunMenuLayer();
+    void DrawRunMenuLayer();
     void UpdateElements();
     void UpdateTimers();
     void CreatePowerUp();
@@ -50,7 +50,7 @@ private:
     bool ElementsUpdating = true;
 
     std::shared_ptr<GameState> GameStatus;
-    std::shared_ptr<Interface> MenuSystem; 
+    std::shared_ptr<MenuLayer> MenuSystem; 
 
 	Star menuStars;
     Star runningStars;

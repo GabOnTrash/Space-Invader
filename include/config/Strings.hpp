@@ -9,7 +9,7 @@ struct Strings
     static inline const char* quitGame = "Quit the Game";
     static inline const char* fullscreen = "Fullscreen: %s";
 
-    static inline const char* ready = "Ready";
+    static inline const char* ready = "Be ready!";
     static inline const char* start = "Start the game";
 
     static inline const char* difficulty = "Difficulty: %s";

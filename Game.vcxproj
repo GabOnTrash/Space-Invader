@@ -118,7 +118,7 @@
     <ClInclude Include="include\heart.hpp" />
     <ClInclude Include="include\explosion.hpp" />
     <ClInclude Include="include\game.hpp" />
-    <ClInclude Include="include\interface.hpp" />
+    <ClInclude Include="include\MenuLayer.hpp" />
     <ClInclude Include="include\laser.hpp" />
     <ClInclude Include="include\menuHandler.hpp" />
     <ClInclude Include="include\powerup.hpp" />
@@ -139,7 +139,7 @@
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\heart.cpp" />
     <ClCompile Include="src\game.cpp" />
-    <ClCompile Include="src\interface.cpp" />
+    <ClCompile Include="src\MenuLayer.cpp" />
     <ClCompile Include="src\laser.cpp" />
     <ClCompile Include="src\powerup.cpp" />
     <ClCompile Include="src\stars.cpp" />

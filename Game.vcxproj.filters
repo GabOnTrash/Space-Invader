@@ -54,7 +54,7 @@
     <ClInclude Include="include\game.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\interface.hpp">
+    <ClInclude Include="include\MenuLayer.hpp">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\laser.hpp">
@@ -112,7 +112,7 @@
     <ClCompile Include="src\game.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\interface.cpp">
+    <ClCompile Include="src\MenuLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\laser.cpp">

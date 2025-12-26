@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interface.hpp"
+#include "MenuLayer.hpp"
 #include "gamelayer.hpp"
 
 #include "specs.hpp"
@@ -24,7 +24,7 @@ private:
     RenderTexture2D target;
     
     std::shared_ptr<GameState> GameStatus;
-    std::shared_ptr<Interface> MenuSystem;
+    std::shared_ptr<MenuLayer> MenuSystem;
     GameLayer Gamelayer;
 
     Music GameMusic;

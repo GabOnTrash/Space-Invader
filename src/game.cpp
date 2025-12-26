@@ -12,7 +12,7 @@ namespace ViewPort
 
 Game::Game() 
     : GameStatus(std::make_shared<GameState>(START)), 
-    MenuSystem(std::make_shared<Interface>(GameStatus)),
+    MenuSystem(std::make_shared<MenuLayer>(GameStatus)),
     Gamelayer(GameStatus, MenuSystem)
 {
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
@@ -119,7 +119,7 @@ void Game::InitUI()
 }
 void Game::SaveCommands()
 {
-    JsonParser p = JsonParser(PATH_SPACEINVADERS_SETTINGS);
+    JsonParser p(PATH_SPACEINVADERS_SETTINGS);
 
     p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
     p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());
