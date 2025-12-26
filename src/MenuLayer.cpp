@@ -16,8 +16,9 @@ void MenuLayer::InitLayers()
 
     if (ViewPort::loadedResources)
     {
-        GameFont = AssetsManager::GetFontEx("main", 100, nullptr, 0);
-        SetTextureFilter(GameFont.texture, TEXTURE_FILTER_TRILINEAR);
+        GameFontMedium = AssetsManager::GetFontEx("medium", 100, nullptr, 0);
+        GameFontSemiBold = AssetsManager::GetFontEx("semibold", 100, nullptr, 0);
+        SetTextureFilter(GameFontMedium.texture, TEXTURE_FILTER_TRILINEAR);
     }
     RecalculateLayout();
 
@@ -172,28 +173,28 @@ const char* MenuLayer::TranslateKey(int key)
 
 void MenuLayer::InitStartMenuSettings()
 {
-    StartMenu->add<Button>("bottoneTitle", Strings::title,                                              GameFont, 5 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
-    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("bottoneTitle", Strings::title,                                              GameFontSemiBold, 5 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
+    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitRunningOverlay()
 {
-    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFont, 150, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFont, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFont, 70, ViewPort::BASE_WIDTH - offsetY * 1.5f, offsetY / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFontMedium, 150, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, ViewPort::BASE_WIDTH - offsetY * 1.5f, offsetY / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitPausedMenuSettings()
 {
-    PausedMenu->add<Button>("btnResume", Strings::resume, GameFont,                                     fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFont,                                   fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFontMedium,                                   fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
-    PausedMenu->add<Button>("btnctrl", Strings::control, GameFont,                                      fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFont,                               fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnctrl", Strings::control, GameFontMedium,                                      fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerControls(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFontMedium,                               fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 60), [this]() { this->SetLayerAudio(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
-    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFont, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFont,                                         fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    PausedMenu->add<Button>("btnQuit", Strings::quit, GameFontMedium,                                         fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 360), [this]() { this->SetLayerStart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitAudioControlSettings()
 {
@@ -207,42 +208,42 @@ void MenuLayer::InitAudioControlSettings()
     PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume");
 
     // BLOCCO 1
-    AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFont, 60, labelX, centerY - 3 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFontMedium, 60, labelX, centerY - 3 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 1, &GeneralVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
 
     // BLOCCO 2
-    AudioMenu->add<Label>("labelMusicAudio", Strings::MUSCVOLUME, nullptr, GameFont, 58, labelX + 7, centerY - 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelMusicAudio", Strings::MUSCVOLUME, nullptr, GameFontMedium, 58, labelX + 7, centerY - 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MusicVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("MusicSliderVolume", rect, pointer);
 
     // BLOCCO 3
-    AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFont, 67, labelX + 8, centerY - 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFontMedium, 67, labelX + 8, centerY - 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &LaserVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("LaserSliderVolume", rect, pointer);
 
     // BLOCCO 4
-    AudioMenu->add<Label>("labelAsteoridAudio", Strings::ASTVOLUME, nullptr, GameFont, 54, labelX + 4, centerY + 0 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelAsteoridAudio", Strings::ASTVOLUME, nullptr, GameFontMedium, 54, labelX + 4, centerY + 0 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MeteorDamageVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("AsteroidSliderVolume", rect, pointer);
 
     // BLOCCO 5
-    AudioMenu->add<Label>("labelExplosionAudio", Strings::EXPLVOLUME, nullptr, GameFont, 51, labelX - 2, centerY + 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelExplosionAudio", Strings::EXPLVOLUME, nullptr, GameFontMedium, 51, labelX - 2, centerY + 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &ExplosionVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("ExplosionSliderVolume", rect, pointer);
     
     // BLOCCO 6
-    AudioMenu->add<Label>("labelPowerUpsAudio", Strings::PWVOLUME, nullptr, GameFont, 58, labelX + 18, centerY + 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelPowerUpsAudio", Strings::PWVOLUME, nullptr, GameFontMedium, 58, labelX + 18, centerY + 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &PowerUpVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
 
-    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitControlsSettings()
 {
@@ -265,15 +266,15 @@ void MenuLayer::InitControlsSettings()
         KeyBinds.KeyDASH = KEY_LEFT_SHIFT;
     }
 
-    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnDash", TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)), GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("btnDash"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnDash", TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("btnDash"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
-    ControlsMenu->add<Button>("Reset", Strings::reset, GameFont, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 6, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFont, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("Reset", Strings::reset, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 6, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
 void MenuLayer::SetLayerGame()

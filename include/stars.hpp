@@ -2,7 +2,7 @@
 
 #include "specs.hpp"
 
-#define STAR_NUM 50 * (1500 / 1000)
+#define STARS_NUM 300
 
 struct AttribStar
 {
@@ -14,12 +14,12 @@ class Star
 {
 public:
 
-    AttribStar stars[STAR_NUM] = { 0, 0 };
+    AttribStar stars[STARS_NUM] = { 0, 0 };
 
     void InitStars(int tipo);
     void updateStars(float deltaT, int tipo);
     void DrawStars();
 
 private:
-    float radius = 4;
+    float radius = 3;
 };

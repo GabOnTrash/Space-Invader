@@ -107,7 +107,8 @@ private:
     std::shared_ptr<Menu> ControlsMenu;
     std::shared_ptr<Menu> PreviousMenu;
 
-    Font GameFont;
+    Font GameFontMedium;
+    Font GameFontSemiBold;
 
     Color GrigioChiaro = Color{ 65, 65, 65, 255 };
     Color GrigioScuro = Color{ 30, 30, 30, 255 };

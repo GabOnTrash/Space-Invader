@@ -118,7 +118,6 @@ void GameLayer::DrawRunMenuLayer()
     }
 }
 
-
 void GameLayer::UpdateElements()
 {
     std::lock_guard<std::mutex> lock(collisionMutex);

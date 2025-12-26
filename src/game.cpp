@@ -55,17 +55,20 @@ void Game::Run()
     while (!WindowShouldClose())
     {
         BeginTextureMode(target);
-        ClearBackground(Color{58, 46, 63, 255});
+        ClearBackground(Color{18, 24, 38, 255});
 
         UpdateMusicStream(GameMusic);
 
         Gamelayer.UpdateGameStatus(GetFrameTime());
         MenuSystem->UpdateSystem();
 
-        AudioManager();
-
         if (*GameStatus != RUNNING)
-            DrawTexture(GameCursor, static_cast<int>((GetMousePosition().x - ViewPort::offsetX) / ViewPort::scale - 10), static_cast<int>((GetMousePosition().y - ViewPort::offsetY) / ViewPort::scale), WHITE);
+        {
+            DrawTexture(GameCursor, static_cast<int>((GetMousePosition().x - ViewPort::offsetX) / ViewPort::scale - 10),
+                        static_cast<int>((GetMousePosition().y - ViewPort::offsetY) / ViewPort::scale), WHITE);
+            
+            AudioManager();
+        }
 
         if (MenuSystem->WantToQuit())
             break;

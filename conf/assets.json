@@ -47,7 +47,7 @@
         "modifier_sound": "assets/sounds/modifier_sound.mp3"
     },
     "fonts": {
-        "main": "assets/fonts/JBSemiBold.ttf",
-        "italic": "assets/fonts/JBSemiBoldItalic.ttf"
+        "medium": "assets/fonts/Orbitron-Medium.ttf",
+        "semibold": "assets/fonts/Orbitron-SemiBold.ttf"
     }
 }

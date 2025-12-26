@@ -65,8 +65,11 @@ void Player::UpdateDash(float deltaT)
 	float curve = sinf(t * PI);
     float dashSpeed = vel * dashMultiplier * curve;
 
-    position.x += dashDir.x * dashSpeed * deltaT;
-    position.y += dashDir.y * dashSpeed * deltaT;
+    if (position.x > 0 && position.x < ViewPort::BASE_WIDTH - texture.width)
+        position.x += dashDir.x * dashSpeed * deltaT;
+    
+    if (position.y > 0 && position.y < ViewPort::BASE_HEIGHT - texture.height)
+        position.y += dashDir.y * dashSpeed * deltaT;
 }
 
 void Player::StartDash(Vector2 dir)

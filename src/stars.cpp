@@ -2,7 +2,7 @@
 
 void Star::InitStars(int tipo)
 {
-    for (int i = 0; i < STAR_NUM; i++)
+    for (int i = 0; i < STARS_NUM; i++)
     {
         stars[i].position = { GetRN<float>(0.0f, static_cast<float>(ViewPort::BASE_WIDTH)), GetRN<float>(0.0f, static_cast<float>(ViewPort::BASE_HEIGHT))};
         if (tipo == 1)
@@ -19,7 +19,7 @@ void Star::InitStars(int tipo)
 }
 void Star::updateStars(float deltaT, int tipo)
 {
-    for (int i = 0; i < STAR_NUM; i++)
+    for (int i = 0; i < STARS_NUM; i++)
     {
         stars[i].position.x += stars[i].speed.x * deltaT;
         stars[i].position.y += stars[i].speed.y * deltaT;
@@ -44,7 +44,7 @@ void Star::updateStars(float deltaT, int tipo)
 }
 void Star::DrawStars()
 {
-    for (int i = 0; i < STAR_NUM; i++)
+    for (int i = 0; i < STARS_NUM; i++)
     {
         DrawCircleV(stars[i].position, radius, WHITE);
     }
