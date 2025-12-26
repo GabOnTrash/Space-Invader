@@ -182,7 +182,7 @@ void MenuLayer::InitRunningOverlay()
 {
     RunningMenu->add<Label>("labelReady", Strings::ready, nullptr, GameFontMedium, 150, ViewPort::BASE_WIDTH / 2, ViewPort::BASE_HEIGHT / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     RunningMenu->add<Label>("labelScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, ViewPort::BASE_WIDTH - offsetY * 1.5f, offsetY / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, ViewPort::BASE_WIDTH - MeasureText(Strings::danger, 70) / 2 * 1.5f, MeasureText(Strings::danger, 70) / 4, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitPausedMenuSettings()
 {
