@@ -63,8 +63,11 @@ This will generate a Visual Studio 2022 solution. For other IDEs or build system
 
 ### 1. Create build directory and generate the project
 
-Create in the root the `build` directory
+Create in the root the `build` directory move there and type *cmake ..* and choose the toolset (e.g. *-G "Visual Studio 17 2022" -A x64* or *-G "MinGW Makefiles"* for MinGW) 
 
+### 2. Compile the game
+
+The project will be compiled based on the platform chosed (e.g. with MinGW you should use `mingw32-make`) and the executable alongside the assets folder and the configuration folder will be placed in the current directory
 
 
 ### Project Structure
