@@ -70,7 +70,7 @@ Create in the root the `build` directory move there and type *cmake ..* and choo
 The project will be compiled based on the platform chosed (e.g. with MinGW you should use `mingw32-make`) and the executable alongside the assets folder and the configuration folder will be placed in the current directory
 
 
-### Project Structure
+## Project Structure
 
 - Source code is in the main directory.
 - Asset files (images, sounds, music) should be placed in the `assets/` directory as referenced in the code.
