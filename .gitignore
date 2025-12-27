@@ -48,6 +48,7 @@ SpaceInvaderSettings.json
 *.sdf
 *.sln
 *.vcxproj
+*.vcxproj.filters
 *.cache
 *.VC.db
 *.VC.opendb
