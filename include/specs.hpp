@@ -1,29 +1,29 @@
 #pragma once
 
-#include <cmath> 
-#include <vector>
-#include <mutex>
 #include <atomic>
-#include <thread>
 #include <chrono>
-#include <stack>
-#include <memory>
-#include <string>
-#include <iostream>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <stack>
+#include <string>
+#include <thread>
+#include <vector>
 
-#include <raylib.h>
-#include <raymath.h>
+#include "raylib.h"
+#include "raymath.h"
 
+#include "AssetsManager.hpp"
 #include "Menu.h"
-#include "timer.hpp"
 #include "MyRandom.hpp"
-#include "config/Strings.hpp"
+#include "timer.hpp"
+#include "config/ByteMask.hpp"
 #include "config/enums.hpp"
 #include "config/keys.hpp"
-#include "config/ByteMask.hpp"
-#include "AssetsManager.hpp"
+#include "config/Strings.hpp"
 
 namespace ViewPort
 {

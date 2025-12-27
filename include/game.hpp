@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MenuLayer.hpp"
-#include "gamelayer.hpp"
+#include "GameLayer.hpp"
 
 #include "specs.hpp"
 #include "JsonParser.hpp"
