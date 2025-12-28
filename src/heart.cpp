@@ -12,5 +12,5 @@ void Heart::Init()
 
 void Heart::Draw()
 {
-    DrawTextureEx(Heart::texture, position, 0.0f, MULTIPLY, WHITE);
+    DrawTexture(Heart::texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }
