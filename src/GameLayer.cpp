@@ -113,7 +113,7 @@ void GameLayer::DrawRunMenuLayer()
 
     for (int i = 0; i < heartsArray.size(); i++)
     {
-        heartsArray[i].position = { static_cast<float>(ViewPort::BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width * ViewPort::scale * 1.5) - 20, 20 };
+        heartsArray[i].position = { ViewPort::BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width - 20, 20 };
         heartsArray[i].Draw();
     }
 }
