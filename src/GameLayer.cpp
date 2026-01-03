@@ -38,9 +38,9 @@ GameLayer::~GameLayer()
         collisionThread.join();
 }
 
-void GameLayer::UpdateGameStatus(float deltaT)
+void GameLayer::UpdateSystem()
 {
-    this->deltaT = deltaT;
+    deltaT = GetFrameTime();
 
     switch (*GameStatus)
     {
@@ -63,7 +63,7 @@ void GameLayer::UpdateGameStatus(float deltaT)
         UpdateRunMenuLayer();
         DrawRunMenuLayer();
 
-        heartsArray.size() == 0 ? MenuSystem->GetRunningMenu()->activate("labelDanger")
+        heartsArray.empty() ? MenuSystem->GetRunningMenu()->activate("labelDanger")
                                 : MenuSystem->GetRunningMenu()->deactive("labelDanger");
         !ElementsUpdating ? MenuSystem->GetRunningMenu()->activate("labelReady")
                             : MenuSystem->GetRunningMenu()->deactive("labelReady");
@@ -100,8 +100,8 @@ void GameLayer::DrawRunMenuLayer()
     for (auto& Meteor : meteors)
         Meteor.Draw();
 
-    for (auto& potenziam : modifiers)
-        potenziam.Draw();
+    for (auto& mod : modifiers)
+        mod.Draw();
 
     for (auto& laser : player.lasers)
         laser.Draw();
@@ -126,9 +126,9 @@ void GameLayer::UpdateElements()
     {
         meteors[i].Update(deltaT);
 
-        if (meteors[i].getBounds().y > 100 + ViewPort::BASE_HEIGHT)
+        if (meteors[i].getBounds().y > ViewPort::BASE_HEIGHT + meteors[i].getBounds().height)
         {
-            meteors[i] = std::move(meteors.back());
+            meteors[i] = meteors.back();
             meteors.pop_back();
         }
         else
@@ -139,9 +139,9 @@ void GameLayer::UpdateElements()
     {
         modifiers[i].Update(deltaT);
 
-        if (modifiers[i].getBounds().y > 100 + ViewPort::BASE_HEIGHT)
+        if (modifiers[i].getBounds().y > ViewPort::BASE_HEIGHT + modifiers[i].getBounds().height)
         {
-            modifiers[i] = std::move(modifiers.back());
+            modifiers[i] = modifiers.back();
             modifiers.pop_back();
         }
         else
@@ -154,7 +154,7 @@ void GameLayer::UpdateElements()
 
         if (explosions[i].end)
         {
-            explosions[i] = std::move(explosions.back());
+            explosions[i] = explosions.back();
             explosions.pop_back();
         }
         else
@@ -167,7 +167,7 @@ void GameLayer::UpdateElements()
 
         if (player.lasers[i].position.y < -50 || player.lasers[i].shouldDie())
         {
-            player.lasers[i] = std::move(player.lasers.back());
+            player.lasers[i] = player.lasers.back();
             player.lasers.pop_back();
         }
         else
@@ -186,7 +186,7 @@ void GameLayer::UpdateTimers()
 
 void GameLayer::CreatePowerUp()
 {
-    modifierType = GetRN<int>(0, DiffPermodifiers);
+    modifierType = GetRN<int>(0, DiffPerModifiers);
     modifiers.emplace_back(modifierType);
 }
 
@@ -228,7 +228,7 @@ void GameLayer::CheckAllCollisions()
                     {
                         explosions.emplace_back(meteors[j].getBounds());
 
-                        meteors[j] = std::move(meteors.back());
+                        meteors[j] = meteors.back();
                         meteors.pop_back();
 
                         laserErased = true;
@@ -261,7 +261,7 @@ void GameLayer::CheckAllCollisions()
                     if (meteors[i].getState() == DAMAGED)
                     {
                         explosions.emplace_back(meteors[i].getBounds());
-                        meteors[i] = std::move(meteors.back());
+                        meteors[i] = meteors.back();
                         meteors.pop_back();
                         GameScore++;
                         continue;
@@ -295,7 +295,7 @@ void GameLayer::CheckAllCollisions()
                 else
                 {
                     heartsArray.pop_back();
-                    meteors[i] = std::move(meteors.back());
+                    meteors[i] = meteors.back();
                     meteors.pop_back();
                     continue;
                 }
@@ -312,7 +312,7 @@ void GameLayer::CheckAllCollisions()
 
         if (CheckCollisionRecs(rPlayer, rPot))
         {
-            if (Player::byteMask.checkPixelCollision(PowerUp::byteMask, player.position, modifiers[i].position, GetCollisionRec(rPlayer, rPot)))
+            if (Player::byteMask.checkPixelCollision(Modifier::byteMask, player.position, modifiers[i].position, GetCollisionRec(rPlayer, rPot)))
             {
                 if (modifiers[i].modType == ModifierType::SLOWER)
                 {
@@ -321,7 +321,7 @@ void GameLayer::CheckAllCollisions()
                 }
                 else if (modifiers[i].modType == ModifierType::LOSEHEART)
                 {
-                    if (heartsArray.size() <= 0)
+                    if (heartsArray.empty())
                         *GameStatus = KILLED;
                     else
                         heartsArray.pop_back();
@@ -342,7 +342,7 @@ void GameLayer::CheckAllCollisions()
                     bigLaserTimer.active();
                 }
 
-                modifiers[i] = std::move(modifiers.back());
+                modifiers[i] = modifiers.back();
                 modifiers.pop_back();
                 continue;
             }
@@ -390,7 +390,7 @@ void GameLayer::SetDiff()
     SetMaxHearts(MenuSystem->GetGameDifficulty() - 2);
     player.secooldownTimerLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
     meteorTimer.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
-    DiffPermodifiers = MenuSystem->GetGameDifficulty() - 1;
+    DiffPerModifiers = MenuSystem->GetGameDifficulty() - 1;
 }
 
 std::vector<Heart>& GameLayer::GetHeartsArray()

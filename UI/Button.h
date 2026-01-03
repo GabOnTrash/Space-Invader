@@ -41,7 +41,7 @@ public:
 	void setText(std::string newText) override 
 	{ 
 		text = newText; 
-		textSize = MeasureTextEx(fontJ, text.c_str(), static_cast<float>(fontS), 1);
+		textSize = MeasureTextEx(customFont, text.c_str(), static_cast<float>(fontS), 1);
 	}
 	void setActive(bool val) override { activated = val; }
 
@@ -63,7 +63,7 @@ public:
 
 private:
 
-	Font fontJ{};
+	Font customFont{};
 	Vector2 textSize{ 0, 0 };
 	Color BG = WHITE;	// BACKGROUND
 	Color FG = WHITE;	// TEXT/FG

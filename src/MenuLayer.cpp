@@ -18,7 +18,7 @@ void MenuLayer::InitLayers()
     {
         GameFontMedium = AssetsManager::GetFontEx("medium", 100, nullptr, 0);
         GameFontSemiBold = AssetsManager::GetFontEx("semibold", 100, nullptr, 0);
-        SetTextureFilter(GameFontMedium.texture, TEXTURE_FILTER_TRILINEAR);
+        SetTextureFilter(GameFontMedium.texture, TEXTURE_FILTER_BILINEAR);
     }
     RecalculateLayout();
 
@@ -30,7 +30,7 @@ void MenuLayer::InitLayers()
 
     JsonParser settings(PATH_SPACEINVADERS_SETTINGS);
 
-    fullscreen = !settings.GetKey<bool>("video", "Fullscreen"); // Inverted on purpose to match what we get from the json example (we get true, we set
+    fullscreen = !settings.GetKey<bool>("video", "Fullscreen"); // Inverted on purpose to match what we get from the Json example (we get true, we set
                                                                 // to false, and the toggle set it back to true)
     ToggleFullscreen();
 
@@ -47,6 +47,7 @@ void MenuLayer::InitLayers()
 void MenuLayer::RecalculateLayout()
 {
     centerY = static_cast<float>(ViewPort::BASE_HEIGHT / 2);
+    centerX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
     blockSpacing = 140;
     sliderOffset = 50;
     labelX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
@@ -61,7 +62,6 @@ void MenuLayer::RecalculateLayout()
     spacing = 90;
     totalHeight = (buttonHeight * 6) + (spacing * 5);
     yStart = (ViewPort::BASE_HEIGHT / 2) - (totalHeight / 2);
-    centerX = static_cast<float>(ViewPort::BASE_WIDTH / 2);
 }
 
 const char* MenuLayer::TranslateToDifficulty()
@@ -100,10 +100,10 @@ void MenuLayer::setToBind(const std::string& id)
         KeyBinds.KeySHOOT = KEY_SPACE;
         KeyBinds.KeyDASH = KEY_LEFT_SHIFT;
 
-        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)));
-        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)));
-        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)));
-        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)));
+        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveUp, TranslateKey(KeyBinds.KeyUP)));
+        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::moveDown, TranslateKey(KeyBinds.KeyDOWN)));
+        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveLeft, TranslateKey(KeyBinds.KeyLEFT)));
+        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveRight, TranslateKey(KeyBinds.KeyRIGHT)));
         ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));
         ControlsMenu->getByID("btnDash")->setText(TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)));
         waitingForKeyBind = "";
@@ -131,22 +131,22 @@ void MenuLayer::updateKeyBinding()
     if (waitingForKeyBind == "btnMoveUp") 
     {
         KeyBinds.KeyUP = key;
-        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(key)));
+        ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveUp, TranslateKey(key)));
     }
     else if (waitingForKeyBind == "btnMoveDown") 
     {
         KeyBinds.KeyDOWN = key;
-        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::movedown, TranslateKey(key)));
+        ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::moveDown, TranslateKey(key)));
     }
     else if (waitingForKeyBind == "btnMoveLeft") 
     {
         KeyBinds.KeyLEFT = key;
-        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveleft, TranslateKey(key)));
+        ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveLeft, TranslateKey(key)));
     }
     else if (waitingForKeyBind == "btnMoveRight")
     {
         KeyBinds.KeyRIGHT = key;
-        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveright, TranslateKey(key)));
+        ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveRight, TranslateKey(key)));
     }
     else if (waitingForKeyBind == "btnShoot") 
     {
@@ -186,6 +186,8 @@ void MenuLayer::InitRunningOverlay()
 }
 void MenuLayer::InitPausedMenuSettings()
 {
+    PausedMenu->add<Label>("labelMenuScore", Strings::score, [this]() { if (CallGetScore) { return this->CallGetScore(); }; }, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+
     PausedMenu->add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 - 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallResume) this->CallResume(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     PausedMenu->add<Button>("btnRestart", Strings::restart, GameFontMedium,                                   fontSize, 240, buttonHeight, (ViewPort::BASE_WIDTH / 2 + 130), (ViewPort::BASE_HEIGHT / 2 - 200), [this]() { if (CallRestart) this->CallRestart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
@@ -208,37 +210,37 @@ void MenuLayer::InitAudioControlSettings()
     PowerUpVolume = settings.GetKey<float>("audio", "PowerUpVolume");
 
     // BLOCCO 1
-    AudioMenu->add<Label>("labelGeneralAudio", Strings::GENVOLUME, nullptr, GameFontMedium, 60, labelX, centerY - 3 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelGeneralAudio", Strings::generalVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 3 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 1, &GeneralVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
 
     // BLOCCO 2
-    AudioMenu->add<Label>("labelMusicAudio", Strings::MUSCVOLUME, nullptr, GameFontMedium, 58, labelX + 7, centerY - 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelMusicAudio", Strings::musicVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MusicVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("MusicSliderVolume", rect, pointer);
 
     // BLOCCO 3
-    AudioMenu->add<Label>("labelLaserAudio", Strings::LASVOLUME, nullptr, GameFontMedium, 67, labelX + 8, centerY - 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelLaserAudio", Strings::laserVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &LaserVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("LaserSliderVolume", rect, pointer);
 
     // BLOCCO 4
-    AudioMenu->add<Label>("labelAsteoridAudio", Strings::ASTVOLUME, nullptr, GameFontMedium, 54, labelX + 4, centerY + 0 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelAsteoridAudio", Strings::meteorVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 0 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MeteorDamageVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("AsteroidSliderVolume", rect, pointer);
 
     // BLOCCO 5
-    AudioMenu->add<Label>("labelExplosionAudio", Strings::EXPLVOLUME, nullptr, GameFontMedium, 51, labelX - 2, centerY + 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelExplosionAudio", Strings::explosionVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &ExplosionVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("ExplosionSliderVolume", rect, pointer);
     
     // BLOCCO 6
-    AudioMenu->add<Label>("labelPowerUpsAudio", Strings::PWVOLUME, nullptr, GameFontMedium, 58, labelX + 18, centerY + 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Label>("labelPowerUpsAudio", Strings::modifierVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &PowerUpVolume, FILL_COLOR_NHOVER);
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
@@ -266,10 +268,10 @@ void MenuLayer::InitControlsSettings()
         KeyBinds.KeyDASH = KEY_LEFT_SHIFT;
     }
 
-    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveUp", TextFormat(Strings::moveUp, TranslateKey(KeyBinds.KeyUP)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 0, [this]() { setToBind("btnMoveUp"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveLeft", TextFormat(Strings::moveLeft, TranslateKey(KeyBinds.KeyLEFT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 1, [this]() { setToBind("btnMoveLeft"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveDown", TextFormat(Strings::moveDown, TranslateKey(KeyBinds.KeyDOWN)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 2, [this]() { setToBind("btnMoveDown"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    ControlsMenu->add<Button>("btnMoveRight", TextFormat(Strings::moveRight, TranslateKey(KeyBinds.KeyRIGHT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 3, [this]() { setToBind("btnMoveRight"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     ControlsMenu->add<Button>("btnShoot", TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 4, [this]() { setToBind("btnShoot"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     ControlsMenu->add<Button>("btnDash", TextFormat(Strings::dash, TranslateKey(KeyBinds.KeyDASH)), GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 5, [this]() { setToBind("btnDash"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
@@ -360,16 +362,16 @@ void MenuLayer::UpdateSystem()
     if (MainMenuHandler.TopMenu() == PausedMenu)
     {
         if (ControlsMenu->getByID("btnMoveUp")->getText() == Strings::waitingKey)
-            ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveup, TranslateKey(KeyBinds.KeyUP)));
+            ControlsMenu->getByID("btnMoveUp")->setText(TextFormat(Strings::moveUp, TranslateKey(KeyBinds.KeyUP)));
 
         if (ControlsMenu->getByID("btnMoveDown")->getText() == Strings::waitingKey)
-            ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::movedown, TranslateKey(KeyBinds.KeyDOWN)));
+            ControlsMenu->getByID("btnMoveDown")->setText(TextFormat(Strings::moveDown, TranslateKey(KeyBinds.KeyDOWN)));
 
         if (ControlsMenu->getByID("btnMoveLeft")->getText() == Strings::waitingKey)
-            ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveleft, TranslateKey(KeyBinds.KeyLEFT)));
+            ControlsMenu->getByID("btnMoveLeft")->setText(TextFormat(Strings::moveLeft, TranslateKey(KeyBinds.KeyLEFT)));
 
         if (ControlsMenu->getByID("btnMoveRight")->getText() == Strings::waitingKey)
-            ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveright, TranslateKey(KeyBinds.KeyRIGHT)));
+            ControlsMenu->getByID("btnMoveRight")->setText(TextFormat(Strings::moveRight, TranslateKey(KeyBinds.KeyRIGHT)));
 
         if (ControlsMenu->getByID("btnShoot")->getText() == Strings::waitingKey)
             ControlsMenu->getByID("btnShoot")->setText(TextFormat(Strings::shoot, TranslateKey(KeyBinds.KeySHOOT)));

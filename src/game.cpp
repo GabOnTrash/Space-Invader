@@ -59,7 +59,7 @@ void Game::Run()
 
         UpdateMusicStream(GameMusic);
 
-        Gamelayer.UpdateGameStatus(GetFrameTime());
+        Gamelayer.UpdateSystem();
         MenuSystem->UpdateSystem();
 
         if (*GameStatus != RUNNING)
@@ -96,7 +96,7 @@ void Game::AudioManager()
     Explosion::volume =         (MenuSystem->GetExplosionVolume() / 100)            * MenuSystem->GetGeneralVolume();
     Laser::volume =             (MenuSystem->GetcooldownTimerLaserVolume() / 100)   * MenuSystem->GetGeneralVolume();
     Meteor::volume =            (MenuSystem->GetMeteorDamageVolume() / 100)         * MenuSystem->GetGeneralVolume();
-    PowerUp::volume =           (MenuSystem->GetPowerUpVolume() / 100)              * MenuSystem->GetGeneralVolume();
+    Modifier::volume =           (MenuSystem->GetPowerUpVolume() / 100)              * MenuSystem->GetGeneralVolume();
 }
 void Game::LoadAssets()
 {
@@ -108,7 +108,7 @@ void Game::LoadAssets()
     BigLaser::Init();
     Meteor::Init();
     Explosion::Init();
-    PowerUp::Init();
+    Modifier::Init();
     Heart::Init();
 }
 void Game::InitUI()

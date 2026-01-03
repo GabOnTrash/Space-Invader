@@ -6,7 +6,7 @@
 #include "player.hpp"
 #include "meteor.hpp"
 #include "explosion.hpp"
-#include "powerup.hpp"
+#include "modifier.hpp"
 #include "heart.hpp"
 #include "timer.hpp"
 #include "MenuLayer.hpp"
@@ -18,7 +18,7 @@ public:
     GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<MenuLayer> MenuSystem);
 	~GameLayer();
 
-	void UpdateGameStatus(float deltaT);
+	void UpdateSystem();
 
     void UpdateRunMenuLayer();
     void DrawRunMenuLayer();
@@ -38,14 +38,13 @@ public:
     void SetMaxHearts(int hearts);
    
 private:
-
     float deltaT = 0.0f;
 
     int GameScore = 0;
     int nMaxHearts = 0;
-    int DiffPermodifiers = 0;
+    int DiffPerModifiers = 0;
     int modifierType = 0;
-    int delaymeteors = 500;
+    int meteorsDelay = 500;
 
     bool ElementsUpdating = true;
 
@@ -67,7 +66,7 @@ private:
     std::vector<Heart> heartsArray;
     std::vector<Meteor> meteors;
     std::vector<Explosion> explosions;
-    std::vector<PowerUp> modifiers;
+    std::vector<Modifier> modifiers;
 
     std::thread collisionThread;
     std::mutex collisionMutex;

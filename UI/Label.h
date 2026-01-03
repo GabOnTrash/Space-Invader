@@ -8,7 +8,7 @@ class Label : public Widget
 public:
 
 	Label() {}
-	Label(std::string id, std::string text, std::function<int()> func, Font fontJ, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH);
+	Label(std::string id, std::string text, std::function<int()> func, Font customFont, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH);
 
 	void draw() override;
 	bool isHovered() override;
@@ -27,10 +27,10 @@ public:
 	void setText(std::string newText) override 
 	{ 
 		text = newText;
-		/*textSize = MeasureTextEx(GetFontDefault(), text.c_str(), static_cast<float>(fontS), 1); 
+		textSize = MeasureTextEx(customFont, text.c_str(), static_cast<float>(fontS), 1);
 
-		posX = StdCenteredX - (textSize.x / 2);
-		posY = StdCenteredY - (textSize.y / 2);*/
+		posX = posX - (textSize.x / 2);
+		posY = posY - (textSize.y / 2);
 	}
 	void setActive(bool val) override { activated = val; }
 
@@ -56,7 +56,7 @@ private:
 	void hover(Color FGH);
 	bool hovered();
 
-	Font fontJ;
+	Font customFont;
 
 	Color FG = WHITE;
 	Color FGH = WHITE;

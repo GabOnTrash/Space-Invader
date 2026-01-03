@@ -20,18 +20,18 @@ struct Strings
     static inline const char* danger = "Danger!";
 
     static inline const char* audioSettings = "Audio";
-    static inline const char* GENVOLUME = "General Volume";
-    static inline const char* MUSCVOLUME = "BG Music Volume";
-    static inline const char* LASVOLUME = "Lasers Volume";
-    static inline const char* ASTVOLUME = "Asteroids Volume";
-    static inline const char* EXPLVOLUME = "Explosions Volume";
-    static inline const char* PWVOLUME = "PowerUps Volume";
+    static inline const char* generalVolume = "General Volume";
+    static inline const char* musicVolume = "Music Volume";
+    static inline const char* laserVolume = "Lasers Volume";
+    static inline const char* meteorVolume = "Meteors Volume";
+    static inline const char* explosionVolume = "Explosions Volume";
+    static inline const char* modifierVolume = "Modifiers Volume";
 
     static inline const char* control = "Controls";
-    static inline const char* moveup = "UP: %s";
-    static inline const char* movedown = "DOWN: %s";
-    static inline const char* moveleft = "LEFT: %s";
-    static inline const char* moveright = "RIGHT: %s";
+    static inline const char* moveUp = "UP: %s";
+    static inline const char* moveDown = "DOWN: %s";
+    static inline const char* moveLeft = "LEFT: %s";
+    static inline const char* moveRight = "RIGHT: %s";
     static inline const char* shoot = "SHOOT: %s";
     static inline const char* dash = "DASH: %s";
     static inline const char* reset = "Reset bindings";

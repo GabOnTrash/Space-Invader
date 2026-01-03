@@ -34,7 +34,7 @@ add_executable(Space_Invader
         src/MenuLayer.cpp
         src/meteor.cpp
         src/player.cpp
-        src/powerup.cpp
+        src/modifier.cpp
         src/SpaceInvader.cpp
         src/stars.cpp
         UI/Button.cpp

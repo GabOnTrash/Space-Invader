@@ -127,7 +127,7 @@ void Player::Movement(float deltaT)
         bigLaser.position.x = position.x + (texture.width / 2.0f) - (BigLaser::texture.width / 2.0f);
         bigLaser.position.y = position.y - (BigLaser::texture.height);
     }
-    else if (IsKeyPressed(KeyBinds.KeySHOOT) && !cooldownTimerLaser.isRunning)
+    else if ((IsKeyPressed(KeyBinds.KeySHOOT) || IsKeyDown(KeyBinds.KeySHOOT)) && !cooldownTimerLaser.isRunning)
         generateLaser();
 
     direction = { 0.f, 0.f };

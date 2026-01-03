@@ -25,7 +25,7 @@ public:
 	static inline Texture2D texture = { 0 };
 	
 private:
-	int vel = 400;
+	int vel = 500;
     float alpha = 0;
 	static inline Sound audio = {};
 	Timer<> shouldDieTimer;

@@ -73,12 +73,12 @@ private:
 	bool reducedVel = false;
 	bool isBigLaserActive = false;
 	int laserTimeToLive = 2000; // in ms
-    const int normalVelocity = 250;
+    const int normalVelocity = 300;
     const int reducedVelocity = 150;
 
     bool isDashing = false;
     float dashTimer = 0.0f;
-    float dashDuration = 0.16f;
+    float dashDuration = 0.3f;
     float dashMultiplier = 3.5f;
 
     Vector2 dashDir = { 0, 0 };

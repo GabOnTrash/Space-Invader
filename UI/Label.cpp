@@ -1,10 +1,10 @@
 #include "specs.hpp" // per 'ViewPort::scale'
 #include "Label.h"
 
-Label::Label(std::string id, std::string text, std::function<int()> func, Font fontJ, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH)
-	: id(id), text(text), function(func), fontJ(fontJ), fontS(fontS), posX(xPosCenter), posY(yPosCenter), FG(FG), FGH(FGH)
+Label::Label(std::string id, std::string text, std::function<int()> func, Font customFont, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH)
+	: id(id), text(text), function(func), customFont(customFont), fontS(fontS), posX(xPosCenter), posY(yPosCenter), FG(FG), FGH(FGH)
 {
-	textSize = MeasureTextEx(GetFontDefault(), text.c_str(), static_cast<float>(fontS), 1);
+	textSize = MeasureTextEx(customFont, text.c_str(), static_cast<float>(fontS), 1);
 
 	posX = xPosCenter - (textSize.x / 2);
 	posY = yPosCenter - (textSize.y / 2);
@@ -33,6 +33,6 @@ bool Label::isHovered()
 }
 void Label::hover(Color color)
 {
-	if (function != nullptr) DrawTextEx(fontJ, TextFormat(text.c_str(), function()), { posX, posY }, static_cast<float>(fontS), 1, color);
-	else DrawTextEx(fontJ, text.c_str(), { posX, posY }, static_cast<float>(fontS), 1, color);
+	if (function != nullptr) DrawTextEx(customFont, TextFormat(text.c_str(), function()), { posX, posY }, static_cast<float>(fontS), 1, color);
+	else DrawTextEx(customFont, text.c_str(), { posX, posY }, static_cast<float>(fontS), 1, color);
 }
