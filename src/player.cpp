@@ -38,7 +38,6 @@ void Player::Draw()
 {
     DrawTexture(texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }
-
 void Player::Update(float deltaT)
 {
 	Movement(deltaT);

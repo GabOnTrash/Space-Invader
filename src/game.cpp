@@ -110,6 +110,8 @@ void Game::LoadAssets()
     Explosion::Init();
     Modifier::Init();
     Heart::Init();
+
+    GameLayer::InitIcons();
 }
 void Game::InitUI()
 {

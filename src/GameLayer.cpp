@@ -38,6 +38,33 @@ GameLayer::~GameLayer()
         collisionThread.join();
 }
 
+void GameLayer::DrawLinks() const
+{
+    Vector2 mousePos = GetMousePosition();
+    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
+    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
+
+    DrawTexture(instagram, ViewPort::BASE_WIDTH - instagram.width * 2, ViewPort::BASE_HEIGHT - instagram.height * 2, WHITE);
+    DrawTexture(github, ViewPort::BASE_WIDTH - github.width * 3.5, ViewPort::BASE_HEIGHT - github.height * 2, WHITE);
+
+    if (CheckCollisionPointRec(mousePos,
+        Rectangle{static_cast<float>(ViewPort::BASE_WIDTH - instagram.width * 2),
+            static_cast<float>(ViewPort::BASE_HEIGHT - instagram.height * 2),
+            static_cast<float>(instagram.width), static_cast<float>(instagram.height) }) && IsMouseButtonPressed(0))
+    {
+        OpenURL("https://www.instagram.com/_gabrielearmenise");
+    }
+
+    if (CheckCollisionPointRec(mousePos,
+        Rectangle{static_cast<float>(ViewPort::BASE_WIDTH - github.width * 3.5),
+            static_cast<float>(ViewPort::BASE_HEIGHT - github.height * 2.5),
+            static_cast<float>(github.width), static_cast<float>(github.height) }) && IsMouseButtonPressed(0))
+    {
+        OpenURL("https://www.github.com/GabOnTrash");
+    }
+
+}
+
 void GameLayer::UpdateSystem()
 {
     deltaT = GetFrameTime();
@@ -48,7 +75,8 @@ void GameLayer::UpdateSystem()
     {
         menuStars.updateStars(deltaT, 1);
         menuStars.DrawStars();
-        
+        DrawLinks();
+
         break;
     }
     case KILLED:
@@ -404,4 +432,13 @@ int& GameLayer::GetGameScore()
 void GameLayer::SetMaxHearts(int hearts)
 {
     nMaxHearts = hearts;
+}
+
+void GameLayer::InitIcons()
+{
+    if (ViewPort::loadedResources)
+    {
+        instagram = AssetsManager::GetTexture("instagram");
+        github = AssetsManager::GetTexture("github");
+    }
 }

@@ -8,7 +8,10 @@
         "laser": "assets/textures/elements/laser.png",
         "big_laser": "assets/textures/elements/big_laser.png",
         "heart": "assets/textures/elements/heart.png",
-        
+
+        "github": "assets/textures/gui/github.png",
+        "instagram": "assets/textures/gui/instagram.png",
+
         "_big_laser": "assets/textures/modifiers/_big_laser.png",
         "minus_one_heart": "assets/textures/modifiers/minus_one_heart.png",
         "triple_laser": "assets/textures/modifiers/triple_laser.png",

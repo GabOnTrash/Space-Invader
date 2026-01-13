@@ -6,7 +6,6 @@
 class Button : public Widget
 {
 public:
-
 	Button();
 	Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, int segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH);
 	
@@ -62,7 +61,6 @@ public:
 	void setBGH(Color value) override { BGH = value; }
 
 private:
-
 	Font customFont{};
 	Vector2 textSize{ 0, 0 };
 	Color BG = WHITE;	// BACKGROUND
@@ -112,7 +110,6 @@ public:
 	void draw() override;
 
 private:
-
 	void load();
 	const char* pathN = ""; // normal image
 	const char* pathC = ""; // image on click
@@ -123,8 +120,6 @@ private:
 	Vector2 textureNPos{ 0, 0 };
 	Vector2 textureCPos{ 0, 0 };
 
-	int imageW = 0;
-	int imageH = 0;
 	float scale = 1;
 	float originalX = 0;
 	float originalY = 0;

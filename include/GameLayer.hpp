@@ -18,8 +18,19 @@ public:
     GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<MenuLayer> MenuSystem);
 	~GameLayer();
 
-	void UpdateSystem();
+    void UpdateSystem();
+    std::vector<Heart>& GetHeartsArray();
+    int& GetGameScore();
+    void SetMaxHearts(int hearts);
 
+    void Start();
+    void Restart();
+    void Resume();
+    void SetDiff();
+
+    static void InitIcons();
+
+private:
     void UpdateRunMenuLayer();
     void DrawRunMenuLayer();
     void UpdateElements();
@@ -28,16 +39,8 @@ public:
     void ClearEffects();
     void CheckAllCollisions();
 
-    void Start();
-    void Restart();
-    void Resume();
-    void SetDiff();
+    void DrawLinks() const;
 
-    std::vector<Heart>& GetHeartsArray();
-    int& GetGameScore();
-    void SetMaxHearts(int hearts);
-   
-private:
     float deltaT = 0.0f;
 
     int GameScore = 0;
@@ -53,6 +56,9 @@ private:
 
 	Star menuStars;
     Star runningStars;
+
+    static inline Texture2D instagram = {};
+    static inline Texture2D github = {};
 
     Player player;
 
