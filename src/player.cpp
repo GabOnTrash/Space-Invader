@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include "meteor.hpp"
 
 Player::Player() : cooldownTimerLaser(coolDown), cooldownTimerDash(1000)
 {
@@ -43,6 +44,7 @@ void Player::Update(float deltaT)
 	Movement(deltaT);
 	cooldownTimerLaser.update();
     cooldownTimerDash.update();
+    Meteor::playerPos = position;
 }
 
 void Player::clearLaser()

@@ -5,7 +5,6 @@
 class Meteor
 {
 public:
-
 	Meteor();
 	~Meteor();
 
@@ -21,11 +20,11 @@ public:
 
     static inline ByteMask byteMask;
 	static inline float volume = 1.0f;
-
+	static inline Vector2 playerPos = { 0.0f, 0.0f };
 private:
 	int velX = 0;
 	int velY = 0;
-	float direction = 0;
+	Vector2 direction = {0.0f, 0.0f};
 
 	Texture2D* texture = nullptr;
 	MeteorState AsteroidState = INTEGRITY;

@@ -6,14 +6,21 @@ Meteor::Meteor()
 
 	velX = GetRN<int>(250, 300);
 	velY = GetRN<int>(250, 300);
-	direction =	GetRN<float>(-1, 1);
-	position.x = GetRN<float>(50.f, ViewPort::BASE_WIDTH - 50.f);
+
+	position.x = GetRN<float>(-ViewPort::BASE_WIDTH, ViewPort::BASE_WIDTH);
     position.y = GetRN<float>(-texture->height * 2.0f, -texture->height * 1.5f);
 
-	if (direction == 0)
-		direction = 1;
+	direction.x = playerPos.x - position.x;
+	direction.y = playerPos.y - position.y;
 
-	direction *= 0.7f;
+	float len = sqrt(direction.x * direction.x +
+					 direction.y * direction.y);
+
+	if (len != 0)
+	{
+		direction.x /= len;
+		direction.y /= len;
+	}
 }
 Meteor::~Meteor()
 {
@@ -41,8 +48,8 @@ void Meteor::Draw()
 }
 void Meteor::Update(float deltaT)
 {
-    position.x += velX * direction * deltaT;
-    position.y += velY * deltaT;
+    position.x += velX * direction.x * deltaT;
+    position.y += velY * direction.y * deltaT;
 }
 
 void Meteor::NextState()

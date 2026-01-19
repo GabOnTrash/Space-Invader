@@ -30,7 +30,7 @@ public:
     {
         return cooldownTimerLaser;
     }
-	void secooldownTimerLaserTimeToLive(int timeInMs)
+	void setLaserTimeToLive(int timeInMs)
 	{
 		laserTimeToLive = timeInMs;
     }
@@ -38,7 +38,10 @@ public:
 	{ 
 		return isBigLaserActive; 
 	}
-
+	void setDashTimer(int val)
+	{
+		dashTimer = val;
+	}
 	void setTripleLaser(bool val) 
 	{ 
 		tripleLaser = val; 
@@ -78,8 +81,8 @@ private:
 
     bool isDashing = false;
     float dashTimer = 0.0f;
-    float dashDuration = 0.3f;
-    float dashMultiplier = 3.5f;
+    float dashDuration = 0.2f;
+    float dashMultiplier = 4.f;
 
     Vector2 dashDir = { 0, 0 };
 

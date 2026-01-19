@@ -12,7 +12,7 @@ enum MeteorState
 {
     INTEGRITY = 0,
     DAMAGED = 1,
-    DESTRYED = 2
+    DESTROYED = 2
 };
 
 enum Difficulty

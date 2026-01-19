@@ -62,7 +62,6 @@ void GameLayer::DrawLinks() const
     {
         OpenURL("https://www.github.com/GabOnTrash");
     }
-
 }
 
 void GameLayer::UpdateSystem()
@@ -230,9 +229,6 @@ void GameLayer::ClearEffects()
     heartsArray.clear();
 
     player.Reset();
-
-    meteorTimer.duration = std::chrono::milliseconds(400);
-
     GameScore = 0;
 }
 void GameLayer::CheckAllCollisions()
@@ -416,7 +412,8 @@ void GameLayer::Start()
 void GameLayer::SetDiff()
 {
     SetMaxHearts(MenuSystem->GetGameDifficulty() - 2);
-    player.secooldownTimerLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
+    player.setLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
+    player.setDashTimer(4000 / MenuSystem->GetGameDifficulty()); // 800 ms 1000 ms 1333 ms
     meteorTimer.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
     DiffPerModifiers = MenuSystem->GetGameDifficulty() - 1;
 }
