@@ -346,6 +346,7 @@ void MenuLayer::UpdateSystem()
     MainMenuHandler.Update();
     MainMenuHandler.Draw();
 
+        // check for menu bug
     if ((IsKeyPressed(KEY_ESCAPE) || *GameStatus == KILLED) && *GameStatus != START && MainMenuHandler.TopMenu() != PausedMenu)
     {
         bool dead = (*GameStatus == KILLED);

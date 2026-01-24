@@ -77,6 +77,9 @@ void Player::UpdateDash(float deltaT)
 
 void Player::StartDash(Vector2 dir)
 {
+    if (isDashing)
+        return;
+
     isDashing = true;
     dashTimer = 0.0f;
     dashDir = dir;
@@ -99,10 +102,8 @@ void Player::HandleInput()
         direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
     }
 
-    if (!IsKeyPressed(KeyBinds.KeyDASH) || Vector2Length(direction) == 0 || cooldownTimerDash.isRunning)
-        return;
-
-    StartDash(direction);
+    if ((IsKeyPressed(KeyBinds.KeyDASH) && Vector2Length(direction) != 0) && !cooldownTimerDash.isRunning)
+        StartDash(direction);
 }
 
 void Player::Movement(float deltaT)
