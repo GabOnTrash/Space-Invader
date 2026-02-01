@@ -10,13 +10,14 @@ A modern C++17 implementation of the classic "Space Invaders" arcade game, featu
 - **Audio & Visual Effects**: Includes explosion animations and sound effects.
 - **Customizable Controls**: Key bindings and audio settings are saved in a JSON file.
 - **Responsive Window**: The game window adapts to your screen resolution.
-- ![C++](https://img.shields.io/badge/C%2B%2B-Standard-blue?logo=c%2B%2B&logoColor=white)
-- ![Raylib](https://img.shields.io/badge/Based_on-Raylib-brightgreen?logo=raylib&logoColor=white)
-- ![JSON](https://img.shields.io/badge/Uses-JSON-orange?logo=json&logoColor=white)
-- ![Cmake](https://img.shields.io/badge/Build%20system-cmake-green?logo=cmake&logoColor=white)
-- ![Premake](https://img.shields.io/badge/Build%20system-premake5-purple?logo=lua&logoColor=white)
-- ![Windows](https://img.shields.io/badge/Platform-Windows-blue?logo=windows&logoColor=white)
-- ![Linux](https://img.shields.io/badge/Platform-Linux-red?logo=linux&logoColor=white)
+##
+![C++](https://img.shields.io/badge/C%2B%2B-Standard-blue?logo=c%2B%2B&logoColor=white)
+![Raylib](https://img.shields.io/badge/Based_on-Raylib-brightgreen?logo=raylib&logoColor=white)
+![JSON](https://img.shields.io/badge/Uses-JSON-orange?logo=json&logoColor=white)
+![Cmake](https://img.shields.io/badge/Build%20system-cmake-green?logo=cmake&logoColor=white)
+![Premake](https://img.shields.io/badge/Build%20system-premake5-purple?logo=lua&logoColor=white)
+![Windows](https://img.shields.io/badge/Platform-Windows-blue?logo=windows&logoColor=white)
+![Linux](https://img.shields.io/badge/Platform-Linux-red?logo=linux&logoColor=white)
 
 ## Screenshots
 
