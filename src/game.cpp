@@ -116,6 +116,7 @@ void Game::LoadAssets()
 void Game::InitUI()
 {
     MenuSystem->CallStart = [this]() { Gamelayer.Start(); };
+    MenuSystem->CallStartMulti = [this]() { Gamelayer.StartMulti(); };
     MenuSystem->CallRestart = [this]() { Gamelayer.Restart(); };
     MenuSystem->CallResume = [this]() { Gamelayer.Resume(); };
     MenuSystem->CallGetScore = [this]() { return Gamelayer.GetGameScore(); };
@@ -124,7 +125,7 @@ void Game::InitUI()
 }
 void Game::SaveCommands()
 {
-    JsonParser p(PATH_SPACEINVADERS_SETTINGS);
+    JsonParser p(PATH_SPACEINVADER_SETTINGS);
 
     p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
     p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());

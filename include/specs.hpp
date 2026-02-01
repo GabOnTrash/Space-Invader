@@ -42,5 +42,5 @@ extern KeyBindings KeyBinds;
 #define PATH_BYTEMASK_LASER "assets/textures/elements/laser.png"
 #define PATH_BYTEMASK_BIGLASER "assets/textures/elements/big_laser.png"
 #define PATH_BYTEMASK_MODIFIERS "assets/textures/modifiers/plus_one_heart.png"
-#define PATH_SPACEINVADERS_SETTINGS "conf/settings.json"
+#define PATH_SPACEINVADER_SETTINGS "conf/settings.json"
 #define PATH_ASSETS_CONFIG "conf/assets.json"

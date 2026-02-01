@@ -30,3 +30,9 @@ enum ModifierType
     GAINHEART,
     BIGLASER
 };
+
+enum GameMode
+{
+    SINGLEPLAYER = 0,
+    MULTIPLAYER = 1
+};

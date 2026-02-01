@@ -10,7 +10,8 @@ struct Strings
     static inline const char* fullscreen = "Fullscreen: %s";
 
     static inline const char* ready = "Be ready!";
-    static inline const char* start = "Start the game";
+    static inline const char* startSinglePlayer = "Start single player";
+    static inline const char* startMultiPlayer = "Start multi player";
 
     static inline const char* difficulty = "Difficulty: %s";
     static inline const char* score = "Score: %d";

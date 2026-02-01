@@ -28,7 +28,7 @@ void MenuLayer::InitLayers()
     InitAudioControlSettings();
     InitControlsSettings();
 
-    JsonParser settings(PATH_SPACEINVADERS_SETTINGS);
+    JsonParser settings(PATH_SPACEINVADER_SETTINGS);
 
     fullscreen = !settings.GetKey<bool>("video", "Fullscreen"); // Inverted on purpose to match what we get from the Json example (we get true, we set
                                                                 // to false, and the toggle set it back to true)
@@ -173,10 +173,11 @@ const char* MenuLayer::TranslateKey(int key)
 
 void MenuLayer::InitStartMenuSettings()
 {
-    StartMenu->add<Button>("bottoneTitle", Strings::title,                                              GameFontSemiBold, 5 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
-    StartMenu->add<Button>("bottoneStart", Strings::start,                                              GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 140), [this]() { if (CallRestart) this->CallStart(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    StartMenu->add<Button>("bottoneQuitFromStart", Strings::quitGame,                                   GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 140), [this]() { shouldQuit = true; }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("buttonTitle", Strings::title,                                              GameFontSemiBold, 5 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
+    StartMenu->add<Button>("buttonStart", Strings::startMultiPlayer,                                  GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 210), [this]() { if (CallStartMulti) this->CallStartMulti(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("buttonStart", Strings::startSinglePlayer,                                  GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 70), [this]() { if (CallStart) this->CallStart(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 70), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("buttonQuitFromStart", Strings::quitGame,                                   GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 210), [this]() { shouldQuit = true; }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 void MenuLayer::InitRunningOverlay()
 {
@@ -200,7 +201,7 @@ void MenuLayer::InitPausedMenuSettings()
 }
 void MenuLayer::InitAudioControlSettings()
 {
-    JsonParser settings(PATH_SPACEINVADERS_SETTINGS);
+    JsonParser settings(PATH_SPACEINVADER_SETTINGS);
 
     GeneralVolume = settings.GetKey<float>("audio", "GeneralVolume");
     MusicVolume = settings.GetKey<float>("audio", "MusicVolume");
@@ -249,7 +250,7 @@ void MenuLayer::InitAudioControlSettings()
 }
 void MenuLayer::InitControlsSettings()
 {
-    JsonParser settings(PATH_SPACEINVADERS_SETTINGS);
+    JsonParser settings(PATH_SPACEINVADER_SETTINGS);
 
     KeyBinds.KeyUP = settings.GetKey<int>("KeyBindings", "MOVEUP");
     KeyBinds.KeyDOWN = settings.GetKey<int>("KeyBindings", "MOVEDOWN");
@@ -279,11 +280,16 @@ void MenuLayer::InitControlsSettings()
     ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { this->SetLayerPausedMenu(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
-void MenuLayer::SetLayerGame()
+void MenuLayer::SetLayerGame(const GameMode& mode)
 {
     *GameStatus = RUNNING;
     MainMenuHandler.PopMenu();
     MainMenuHandler.PushMenu(RunningMenu);
+
+    if (mode == SINGLEPLAYER)
+        StartMenu->deactive("labelDanger");
+    else
+        StartMenu->activate("labelDanger");
 }
 void MenuLayer::SetLayerStart()
 {

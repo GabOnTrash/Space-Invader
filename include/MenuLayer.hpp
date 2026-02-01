@@ -15,7 +15,7 @@ public:
     const char* TranslateToDifficulty();
     void SetDifficulty();
 
-    void SetLayerGame();
+    void SetLayerGame(const GameMode& mode);
 
     bool WantToQuit()
     {
@@ -38,6 +38,7 @@ public:
 	Difficulty GetGameDifficulty() { return GameDifficulty; }
 
 	std::function<void()> CallStart;
+    std::function<void()> CallStartMulti;
 	std::function<void()> CallRestart;
 	std::function<void()> CallResume;
     std::function<int()> CallGetScore;

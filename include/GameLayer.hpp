@@ -24,6 +24,7 @@ public:
     void SetMaxHearts(int hearts);
 
     void Start();
+    void StartMulti();
     void Restart();
     void Resume();
     void SetDiff();
@@ -59,6 +60,8 @@ private:
 
     static inline Texture2D instagram = {};
     static inline Texture2D github = {};
+
+    GameMode gameMode = SINGLEPLAYER;
 
     Player player;
 

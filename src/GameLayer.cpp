@@ -19,7 +19,7 @@ GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Menu
     collisionThread = std::thread(
         [this]()
         {
-            while (runningCollision)
+            while (runningCollision && gameMode == SINGLEPLAYER)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
                 if (*this->GameStatus == RUNNING && ElementsUpdating)
@@ -127,19 +127,25 @@ void GameLayer::DrawRunMenuLayer()
     for (auto& Meteor : meteors)
         Meteor.Draw();
 
-    for (auto& mod : modifiers)
-        mod.Draw();
+    if (gameMode == SINGLEPLAYER)
+    {
+        for (auto& mod : modifiers)
+            mod.Draw();
+
+        if (player.activeBigLaser())
+            player.getBigLaser().Draw();
+    }
 
     for (auto& laser : player.lasers)
         laser.Draw();
-
-    if (player.activeBigLaser())
-        player.getBigLaser().Draw();
 
     player.Draw();
 
     for (int i = 0; i < heartsArray.size(); i++)
     {
+        if (gameMode != SINGLEPLAYER)
+            break;
+
         heartsArray[i].position = { ViewPort::BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width - 20, 20 };
         heartsArray[i].Draw();
     }
@@ -151,6 +157,9 @@ void GameLayer::UpdateElements()
 
     for (size_t i = 0; i < meteors.size();)
     {
+        if (gameMode != SINGLEPLAYER)
+            break;
+
         meteors[i].Update(deltaT);
 
         if (meteors[i].getBounds().y > ViewPort::BASE_HEIGHT + meteors[i].getBounds().height)
@@ -164,6 +173,9 @@ void GameLayer::UpdateElements()
 
     for (size_t i = 0; i < modifiers.size();)
     {
+        if (gameMode != SINGLEPLAYER)
+            break;
+
         modifiers[i].Update(deltaT);
 
         if (modifiers[i].getBounds().y > ViewPort::BASE_HEIGHT + modifiers[i].getBounds().height)
@@ -203,6 +215,9 @@ void GameLayer::UpdateElements()
 }
 void GameLayer::UpdateTimers()
 {
+    if (gameMode != SINGLEPLAYER)
+        return;
+
     meteorTimer.update();
     modifierTimer.update();
 
@@ -219,16 +234,19 @@ void GameLayer::CreatePowerUp()
 
 void GameLayer::ClearEffects()
 {
+    player.Reset();
+
+    if (gameMode != SINGLEPLAYER)
+        return;
+
+    explosions.clear();
+    heartsArray.clear();
     tripleLaserTimer.deactive();
     bigLaserTimer.deactive();
     reducedVelTimer.deactive();
 
     modifiers.clear();
     meteors.clear();
-    explosions.clear();
-    heartsArray.clear();
-
-    player.Reset();
     GameScore = 0;
 }
 void GameLayer::CheckAllCollisions()
@@ -382,7 +400,7 @@ void GameLayer::Resume()
     timerDelayResume.active();
 
     ElementsUpdating = false;
-    MenuSystem->SetLayerGame();
+    MenuSystem->SetLayerGame(gameMode);
 }
 void GameLayer::Restart()
 {
@@ -390,6 +408,8 @@ void GameLayer::Restart()
 }
 void GameLayer::Start()
 {
+    gameMode = SINGLEPLAYER;
+
     ClearEffects();
 
     switch (MenuSystem->GetGameDifficulty())
@@ -407,13 +427,24 @@ void GameLayer::Start()
         break;
     }
 
-    MenuSystem->SetLayerGame();
+    MenuSystem->SetLayerGame(gameMode);
+}
+void GameLayer::StartMulti()
+{
+    gameMode = MULTIPLAYER;
+
+
+
+    MenuSystem->SetLayerGame(gameMode);
 }
 void GameLayer::SetDiff()
 {
+    if (gameMode != SINGLEPLAYER)
+        return;
+
     SetMaxHearts(MenuSystem->GetGameDifficulty() - 2);
-    player.setLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
     player.setDashTimer(4000 / MenuSystem->GetGameDifficulty()); // 800 ms 1000 ms 1333 ms
+    player.setLaserTimeToLive((MenuSystem->GetGameDifficulty()) * 600); // 3.0 s, 2.4 s, 1.8 s
     meteorTimer.duration = std::chrono::milliseconds(MenuSystem->GetGameDifficulty() * 100);
     DiffPerModifiers = MenuSystem->GetGameDifficulty() - 1;
 }
