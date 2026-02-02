@@ -21,10 +21,10 @@ A modern C++17 implementation of the classic "Space Invaders" arcade game, featu
 
 ## Screenshots
 
-![StartMenu](assets/StartMenu.png)
-![StartMenu](assets/KeybindsMenu.png)
-![StartMenu](assets/AudioMenu.png)
-![StartMenu](assets/GamePlay.png)
+![StartMenu](Game/assets/StartMenu.png)
+![StartMenu](Game/assets/KeybindsMenu.png)
+![StartMenu](Game/assets/AudioMenu.png)
+![StartMenu](Game/assets/GamePlay.png)
 ## Getting Started
 
 ### Prerequisites
@@ -68,14 +68,14 @@ Create in the root the `build` directory move there and type *cmake ..* and choo
 
 #### 2. Compile the game
 
-The project will be compiled based on the platform chosed (e.g. with MinGW you should use `mingw32-make`) and the executable alongside the assets folder and the configuration folder will be placed in the current directory
+The project will be compiled based on the platform chosed (e.g. with MinGW you should use `mingw32-make`) and the executable alongside the Game/assets folder and the configuration folder will be placed in the current directory
 
 
 ## Project Structure
 
 - Source code is in the main directory.
-- Asset files (images, sounds, music) should be placed in the `assets/` directory as referenced in the code.
-- configuration files (e.g. `assets.json` & `SpaceInvaderSettings.json`) are located in the `conf/` directory.
+- Asset files (images, sounds, music) should be placed in the `Game/assets/` directory as referenced in the code.
+- configuration files (e.g. `Game/assets.json` & `SpaceInvaderSettings.json`) are located in the `conf/` directory.
 
 ## Controls
 
@@ -102,13 +102,13 @@ Controls can be customized in the settings menu.
 - Audio and control settings are saved in `SpaceInvaderSettings.json`.
 - Adjust music, sound effects, and difficulty from the in-game menu.
 
-## Assets
+## Game/assets
 
-- Place all images in the `assets/` directory as referenced in the code.
-- Explosion images: `assets/textures/explosion_frames/0.png` to `assets/textures/explosion_frames/20.png`
-- Music: `assets/music/game_music.mp3`
-- Sound: `assets/sounds/explosion.wav`
-- Cursor: `assets/textures/cursors/cursor.png`
+- Place all images in the `Game/assets/` directory as referenced in the code.
+- Explosion images: `Game/assets/textures/explosion_frames/0.png` to `Game/assets/textures/explosion_frames/20.png`
+- Music: `Game/assets/music/game_music.mp3`
+- Sound: `Game/assets/sounds/explosion.wav`
+- Cursor: `Game/assets/textures/cursors/cursor.png`
 
 ## License
 

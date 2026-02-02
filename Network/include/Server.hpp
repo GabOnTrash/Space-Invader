@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Common.h"
-#include "TsQueue.h"
-#include "Message.h"
-#include "Connection.h"
+#include "Common.hpp"
+#include "TsQueue.hpp"
+#include "Message.hpp"
+#include "Connection.hpp"
 
 namespace network
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Common.h"
+#include "Common.hpp"
 
 namespace network
 {
@@ -30,8 +30,8 @@ namespace network
 		template <typename dataType>
 		friend message<T>& operator << (message<T>& msg, dataType& data)
 		{
-			static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed into the vector.");
-
+            static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed into the vector.");
+			
 			size_t start = msg.body.size();
 
 			msg.body.resize(msg.body.size() + sizeof(dataType));
@@ -46,7 +46,7 @@ namespace network
 		template <typename dataType>
 		friend message<T>& operator >> (message<T>& msg, dataType& data)
 		{
-			static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed into the vector.");
+			static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed out of the vector.");
 
 			size_t end = msg.body.size() - sizeof(dataType);
 

@@ -10,6 +10,7 @@
 #include "heart.hpp"
 #include "timer.hpp"
 #include "MenuLayer.hpp"
+#include "../../Network/src/Client.cpp"
 
 class GameLayer
 {
@@ -51,6 +52,8 @@ private:
     int meteorsDelay = 500;
 
     bool ElementsUpdating = true;
+
+    Client client;
 
     std::shared_ptr<GameState> GameStatus;
     std::shared_ptr<MenuLayer> MenuSystem; 

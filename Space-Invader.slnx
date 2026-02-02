@@ -3,6 +3,13 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Folder Name="/Elementi di soluzione/">
+    <File Path=".gitignore" />
+    <File Path="CMakeLists.txt" />
+    <File Path="premake5.lua" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="Game/Game.vcxproj" Id="200d1dfb-f5c0-4cb3-8768-e83d16d09046" />
   <Project Path="Network/Network.vcxproj" Id="1f9e6c19-7cd9-4a02-bc53-3619caa96e99" />
+  <Project Path="Server/Server.vcxproj" Id="5b004c27-10f3-4c22-b841-e9332c3a7bc6" />
 </Solution>
