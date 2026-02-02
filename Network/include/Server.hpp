@@ -14,7 +14,7 @@ namespace network
 		serverInterface(uint16_t port) 
 			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
 		{
-
+			m_asioAcceptor.set_option(asio::socket_base::reuse_address(true));
 		}
 		virtual ~serverInterface()
 		{

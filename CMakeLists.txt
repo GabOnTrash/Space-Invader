@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
-project(Space_Invader LANGUAGES CXX)
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+project(Space-Invader LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,13 +46,11 @@ elseif(UNIX)
     target_link_libraries(ClientServerImplementation PUBLIC pthread)
 endif()
 
-
-set(OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin)
+set(OUTPUT_DIR ${CMAKE_BINARY_DIR})
 
 set_target_properties(ClientServerImplementation PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIR}  # static lib
 )
-
 
 add_executable(Space-Invader
     Game/src/AssetsManager.cpp
@@ -88,36 +87,36 @@ set_target_properties(Space-Invader PROPERTIES
 )
 
 
-add_executable(Server
-    Game/Server/Space-Invader-Server.cpp
+add_executable(Space-Invader-Server
+        Server/src/Space-Invader-Server.cpp
     Network/src/Server.cpp
 )
 
-target_include_directories(Server PRIVATE
+target_include_directories(Space-Invader-Server PRIVATE
     Network/include
     ${asio_SOURCE_DIR}/asio/include
 )
 
-target_link_libraries(Server PRIVATE
+target_link_libraries(Space-Invader-Server PRIVATE
     ClientServerImplementation
 )
 
-set_target_properties(Server PROPERTIES
+set_target_properties(Space-Invader-Server PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}
 )
 
 add_custom_command(TARGET Space-Invader POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
+    ${CMAKE_SOURCE_DIR}/Game/assets
     ${OUTPUT_DIR}/assets
 )
 
 add_custom_command(TARGET Space-Invader POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/conf
+    ${CMAKE_SOURCE_DIR}/Game/conf
     ${OUTPUT_DIR}/conf
 )
 
-add_custom_command(TARGET Server POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Server> ${OUTPUT_DIR}/$<TARGET_FILE_NAME:Server>
+add_custom_command(TARGET Space-Invader-Server POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Space-Invader-Server> ${OUTPUT_DIR}/$<TARGET_FILE_NAME:Space-Invader-Server>
 )

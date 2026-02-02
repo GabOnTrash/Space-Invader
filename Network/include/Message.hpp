@@ -38,7 +38,7 @@ namespace network
             std::memcpy(msg.body.data() + start, &data, sizeof(dataType));
 			// appendind at the end of the body vector the additional data with it's size
 			
-			msg.header.size = msg.size();
+			msg.header.size = msg.body.size();
 
 			return msg;
 		}
@@ -53,7 +53,7 @@ namespace network
 			std::memcpy(&data, msg.body.data() + end, sizeof(dataType));
 			msg.body.resize(end);
 
-			msg.header.size = msg.size();
+			msg.header.size = msg.body.size();
 
 			return msg;
 		}
