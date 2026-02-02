@@ -1,4 +1,4 @@
-# Space Invaders 
+# Space Invader
 
 A modern C++17 implementation of the classic "Space Invaders" arcade game, featuring smooth animations, modifiers, audio effects, and a responsive UI. Built using [Raylib](https://www.raylib.com/) for graphics and audio.
 
