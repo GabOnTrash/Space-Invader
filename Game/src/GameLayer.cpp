@@ -19,10 +19,10 @@ GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Menu
     collisionThread = std::thread(
         [this]()
         {
-            while (runningCollision && gameMode == SINGLEPLAYER)
+            while (runningCollision)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
-                if (*this->GameStatus == RUNNING && ElementsUpdating)
+                if (*this->GameStatus == RUNNING && ElementsUpdating && gameMode == SINGLEPLAYER)
                 {
                     std::lock_guard<std::mutex> lock(collisionMutex);
                     CheckAllCollisions();
@@ -90,9 +90,9 @@ void GameLayer::UpdateSystem()
         UpdateRunMenuLayer();
         DrawRunMenuLayer();
 
-        heartsArray.empty() ? MenuSystem->GetRunningMenu()->activate("labelDanger")
+        heartsArray.empty() && gameMode == SINGLEPLAYER ? MenuSystem->GetRunningMenu()->activate("labelDanger")
                                 : MenuSystem->GetRunningMenu()->deactive("labelDanger");
-        !ElementsUpdating ? MenuSystem->GetRunningMenu()->activate("labelReady")
+        !ElementsUpdating && gameMode == SINGLEPLAYER ? MenuSystem->GetRunningMenu()->activate("labelReady")
                             : MenuSystem->GetRunningMenu()->deactive("labelReady");
 
         break;

@@ -174,7 +174,7 @@ const char* MenuLayer::TranslateKey(int key)
 void MenuLayer::InitStartMenuSettings()
 {
     StartMenu->add<Button>("buttonTitle", Strings::title,                                              GameFontSemiBold, 5 * fontSize, 1000, 400, ViewPort::BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
-    StartMenu->add<Button>("buttonStart", Strings::startMultiPlayer,                                  GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 210), [this]() { if (CallStartMulti) this->CallStartMulti(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    StartMenu->add<Button>("buttonStartMulti", Strings::startMultiPlayer,                                  GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 210), [this]() { if (CallStartMulti) this->CallStartMulti(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     StartMenu->add<Button>("buttonStart", Strings::startSinglePlayer,                                  GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 - 70), [this]() { if (CallStart) this->CallStart(); }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 70), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     StartMenu->add<Button>("buttonQuitFromStart", Strings::quitGame,                                   GameFontMedium, fontSize, buttonWidth, buttonHeight, ViewPort::BASE_WIDTH / 2, (ViewPort::BASE_HEIGHT / 2 + 210), [this]() { shouldQuit = true; }, borderRadius, 10, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
@@ -287,9 +287,17 @@ void MenuLayer::SetLayerGame(const GameMode& mode)
     MainMenuHandler.PushMenu(RunningMenu);
 
     if (mode == SINGLEPLAYER)
-        StartMenu->deactive("labelDanger");
+    {
+        RunningMenu->deactive("labelDanger");
+        RunningMenu->deactive("labelReady");
+        RunningMenu->deactive("labelScore");
+    }
     else
-        StartMenu->activate("labelDanger");
+    {
+        RunningMenu->activate("labelDanger");
+        RunningMenu->activate("labelReady");
+        RunningMenu->activate("labelScore");
+    }
 }
 void MenuLayer::SetLayerStart()
 {
