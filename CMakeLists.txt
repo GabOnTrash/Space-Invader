@@ -54,21 +54,21 @@ set_target_properties(ClientServerImplementation PROPERTIES
 
 
 add_executable(Space-Invader
-    src/AssetsManager.cpp
-    src/explosion.cpp
-    src/game.cpp
-    src/GameLayer.cpp
-    src/heart.cpp
-    src/laser.cpp
-    src/MenuLayer.cpp
-    src/meteor.cpp
-    src/player.cpp
-    src/modifier.cpp
-    src/SpaceInvader.cpp
-    src/stars.cpp
-    UI/Button.cpp
-    UI/Label.cpp
-    UI/Slider.cpp
+    Game/src/AssetsManager.cpp
+    Game/src/explosion.cpp
+    Game/src/game.cpp
+    Game/src/GameLayer.cpp
+    Game/src/heart.cpp
+    Game/src/laser.cpp
+    Game/src/MenuLayer.cpp
+    Game/src/meteor.cpp
+    Game/src/player.cpp
+    Game/src/modifier.cpp
+    Game/src/SpaceInvader.cpp
+    Game/src/stars.cpp
+    Game/UI/Button.cpp
+    Game/UI/Label.cpp
+    Game/UI/Slider.cpp
 )
 
 target_include_directories(Space-Invader PRIVATE
