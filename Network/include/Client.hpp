@@ -11,9 +11,7 @@ namespace network
 	class clientInterface
 	{
 	public:
-		clientInterface() 
-		{
-		}
+		clientInterface() = default;
 
 		virtual ~clientInterface()
 		{

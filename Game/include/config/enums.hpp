@@ -39,9 +39,9 @@ enum GameMode
 
 enum class MultiplayerPacketType : uint32_t
 {
-    SERVER_ACCEPT = 0,
-    PLAYER_MOVE = 1,
-    PLAYER_SHOOT = 2,
-    PLAYER_DASH = 3,
-    PLAYER_DISCONNECT = 4,
+    PLAYER_ADDED,
+    PLAYER_REMOVED,
+    PLAYER_MOVE,
+    PLAYER_SHOOT,
+    PLAYER_DASH,
 };

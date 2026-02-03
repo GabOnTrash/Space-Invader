@@ -1,8 +1,8 @@
 #pragma once
 
 #include "TsQueue.hpp"
-#include "Message.hpp"
 #include "Server.hpp"
+#include "Message.hpp"
 
 namespace network
 {

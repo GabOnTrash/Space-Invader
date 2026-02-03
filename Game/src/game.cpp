@@ -2,8 +2,8 @@
 
 namespace ViewPort
 {
-    int BASE_WIDTH = 3840;
-    int BASE_HEIGHT = 2160;
+    int BASE_WIDTH = 720;
+    int BASE_HEIGHT = 480;
     float scale = 1.0f;
     float offsetX = 0.0f;
     float offsetY = 0.0f;
@@ -15,8 +15,8 @@ Game::Game()
     MenuSystem(std::make_shared<MenuLayer>(GameStatus)),
     Gamelayer(GameStatus, MenuSystem)
 {
-    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-    InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Space Invaders");
+    //SetConfigFlags(FLAG_WINDOW_UNDECORATED);
+    InitWindow(720, 480,/*GetMonitorWidth(0), GetMonitorHeight(0),*/ "Space Invaders");
 
     target = LoadRenderTexture(ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT);
     

@@ -39,7 +39,6 @@ target_include_directories(ClientServerImplementation PUBLIC
 
 target_compile_definitions(ClientServerImplementation PUBLIC ASIO_STANDALONE)
 
-
 if (WIN32)
     target_link_libraries(ClientServerImplementation PUBLIC ws2_32)
 elseif(UNIX)

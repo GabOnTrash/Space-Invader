@@ -16,7 +16,7 @@ namespace network
 		messageHeader<T> header{};
 		std::vector<uint8_t> body;
 
-		size_t size() const
+		[[nodiscard]] size_t size() const
 		{
             return sizeof(messageHeader<T>) + body.size();
 		}
@@ -31,12 +31,13 @@ namespace network
 		friend message<T>& operator << (message<T>& msg, dataType& data)
 		{
             static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed into the vector.");
-			
+			static_assert(std::is_trivially_copyable_v<dataType>, "Data is not trivially copyable (ex. strings vectors or pointers)");
+
 			size_t start = msg.body.size();
 
 			msg.body.resize(msg.body.size() + sizeof(dataType));
             std::memcpy(msg.body.data() + start, &data, sizeof(dataType));
-			// appendind at the end of the body vector the additional data with it's size
+			// appending at the end of the body vector the additional data with his size
 			
 			msg.header.size = msg.body.size();
 
@@ -47,6 +48,7 @@ namespace network
 		friend message<T>& operator >> (message<T>& msg, dataType& data)
 		{
 			static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed out of the vector.");
+			static_assert(std::is_trivially_copyable_v<dataType>, "Data is not trivially copyable (ex. strings vectors or pointers)");
 
 			size_t end = msg.body.size() - sizeof(dataType);
 

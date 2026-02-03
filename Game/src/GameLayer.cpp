@@ -24,7 +24,7 @@ GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Menu
             while (runningCollision)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
-                if (*this->GameStatus == RUNNING && ElementsUpdating && gameMode == SINGLEPLAYER)
+                if (*this->GameStatus == RUNNING && ElementsUpdating)
                 {
                     std::lock_guard<std::mutex> lock(collisionMutex);
                     CheckAllCollisions();
@@ -91,16 +91,23 @@ void GameLayer::UpdateSystem()
     {
         if (gameMode == MULTIPLAYER)
         {
-            client.SendPosition(player.position.x, player.position.y);
+            client.SetPositionAndSend(player.position.x, player.position.y);
         }
 
         UpdateRunMenuLayer();
         DrawRunMenuLayer();
 
-        heartsArray.empty() && gameMode == SINGLEPLAYER ? MenuSystem->GetRunningMenu()->activate("labelDanger")
-                                : MenuSystem->GetRunningMenu()->deactive("labelDanger");
-        !ElementsUpdating && gameMode == SINGLEPLAYER ? MenuSystem->GetRunningMenu()->activate("labelReady")
-                            : MenuSystem->GetRunningMenu()->deactive("labelReady");
+        heartsArray.empty() && gameMode == SINGLEPLAYER
+            ? MenuSystem->GetRunningMenu()->activate("labelDanger")
+            : MenuSystem->GetRunningMenu()->deactive("labelDanger");
+
+        !ElementsUpdating && gameMode == SINGLEPLAYER
+            ? MenuSystem->GetRunningMenu()->activate("labelReady")
+            : MenuSystem->GetRunningMenu()->deactive("labelReady");
+
+        gameMode == SINGLEPLAYER
+            ? MenuSystem->GetRunningMenu()->activate("labelScore")
+            : MenuSystem->GetRunningMenu()->deactive("labelScore");
 
         break;
     }
@@ -129,6 +136,7 @@ void GameLayer::UpdateRunMenuLayer()
 }
 void GameLayer::DrawRunMenuLayer()
 {
+
     runningStars.DrawStars();
 
     for (auto& Meteor : meteors)
@@ -147,6 +155,8 @@ void GameLayer::DrawRunMenuLayer()
         laser.Draw();
 
     player.Draw();
+    for (const auto& c : client.otherPlayers)
+        DrawTexture(Player::texture, static_cast<int>(c.x), static_cast<int>(c.y), WHITE);
 
     for (int i = 0; i < heartsArray.size(); i++)
     {
@@ -406,7 +416,8 @@ void GameLayer::Resume()
     timerDelayResume.deactive();
     timerDelayResume.active();
 
-    ElementsUpdating = false;
+    if (gameMode == SINGLEPLAYER)
+        ElementsUpdating = false;
     MenuSystem->SetLayerGame(gameMode);
 }
 void GameLayer::Restart()

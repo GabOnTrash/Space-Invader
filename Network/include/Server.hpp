@@ -86,13 +86,13 @@ namespace network
 			else
 			{
 				OnClientDisconnect(client);
-				client.reset();
+				// client.reset();
                 m_deqConnections.erase(
 					std::remove(m_deqConnections.begin(), m_deqConnections.end(), client),
                                        m_deqConnections.end());
             }
 		}
-		void MessageAllClient(const message<T>& msg, std::shared_ptr<connection<T>> pIngoreClient)
+		void MessageAllClient(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient)
 		{
             bool bInvalidClientExists = false;
 
@@ -100,13 +100,13 @@ namespace network
 			{
 				if (client && client->IsConnected())
 				{
-					if (client != pIngoreClient)
+					if (client != pIgnoreClient)
 						client->Send(msg);
 				}
 				else
 				{
 					OnClientDisconnect(client);
-					client.reset();
+					// client.reset();
                     bInvalidClientExists = true;
 				}
 			}
@@ -126,6 +126,10 @@ namespace network
 			while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty())
 			{
 				auto msg = m_qMessagesIn.pop_front();
+
+				if (!msg.remote || !msg.remote->IsConnected())
+					continue;
+
 				OnMessage(msg.remote, msg.msg);
 				nMessageCount++;
             }

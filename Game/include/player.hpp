@@ -92,6 +92,6 @@ private:
 
 	Timer<> cooldownTimerLaser;
     Timer<> cooldownTimerDash;
-
+public:
 	static inline Texture2D texture = { 0 };
 };
