@@ -47,6 +47,7 @@ SpaceInvaderSettings.json
 *.userosscache
 *.sdf
 *.sln
+*.slnx
 *.vcxproj
 *.vcxproj.filters
 *.cache
