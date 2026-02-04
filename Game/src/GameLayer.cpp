@@ -91,6 +91,7 @@ void GameLayer::UpdateSystem()
     {
         if (gameMode == MULTIPLAYER)
         {
+            client.PollMessage();
             client.SetPositionAndSend(player.position.x, player.position.y);
         }
 
@@ -136,7 +137,6 @@ void GameLayer::UpdateRunMenuLayer()
 }
 void GameLayer::DrawRunMenuLayer()
 {
-
     runningStars.DrawStars();
 
     for (auto& Meteor : meteors)
@@ -155,8 +155,8 @@ void GameLayer::DrawRunMenuLayer()
         laser.Draw();
 
     player.Draw();
-    for (const auto& c : client.otherPlayers)
-        DrawTexture(Player::texture, static_cast<int>(c.x), static_cast<int>(c.y), WHITE);
+    for (auto const& [id, playerInfo] : client.GetOtherPlayers())
+        DrawTexture(Player::texture, static_cast<int>(playerInfo.x), static_cast<int>(playerInfo.y), WHITE);
 
     for (int i = 0; i < heartsArray.size(); i++)
     {

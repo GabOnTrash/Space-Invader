@@ -40,6 +40,8 @@ enum GameMode
 enum class MultiplayerPacketType : uint32_t
 {
     PLAYER_ADDED,
+    PLAYER_ADD_OTHERS,
+    PLAYER_NOTIFY_ID,
     PLAYER_REMOVED,
     PLAYER_MOVE,
     PLAYER_SHOOT,

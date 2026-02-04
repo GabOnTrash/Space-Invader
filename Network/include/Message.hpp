@@ -28,19 +28,18 @@ namespace network
 		}
 
 		template <typename dataType>
-		friend message<T>& operator << (message<T>& msg, dataType& data)
+		friend message<T>& operator << (message<T>& msg, const dataType& data)
 		{
             static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed into the vector.");
 			static_assert(std::is_trivially_copyable_v<dataType>, "Data is not trivially copyable (ex. strings vectors or pointers)");
 
-			size_t start = msg.body.size();
+			uint32_t start = msg.body.size();
 
 			msg.body.resize(msg.body.size() + sizeof(dataType));
             std::memcpy(msg.body.data() + start, &data, sizeof(dataType));
 			// appending at the end of the body vector the additional data with his size
 			
 			msg.header.size = msg.body.size();
-
 			return msg;
 		}
 		
@@ -50,13 +49,12 @@ namespace network
 			static_assert(std::is_standard_layout<dataType>::value, "Data is too complex to be pushed out of the vector.");
 			static_assert(std::is_trivially_copyable_v<dataType>, "Data is not trivially copyable (ex. strings vectors or pointers)");
 
-			size_t end = msg.body.size() - sizeof(dataType);
+			uint32_t end = msg.body.size() - sizeof(dataType);
 
 			std::memcpy(&data, msg.body.data() + end, sizeof(dataType));
 			msg.body.resize(end);
 
 			msg.header.size = msg.body.size();
-
 			return msg;
 		}
 	};
