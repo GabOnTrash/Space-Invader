@@ -16,8 +16,6 @@ GameLayer::GameLayer(std::shared_ptr<GameState> GameStatus, std::shared_ptr<Menu
     runningStars.InitStars(0);
     menuStars.InitStars(1);
 
-    client.Connect("127.0.0.1", 54000);
-
     collisionThread = std::thread(
         [this]()
         {
@@ -426,6 +424,7 @@ void GameLayer::Restart()
 }
 void GameLayer::Start()
 {
+    client.Disconnect();
     gameMode = SINGLEPLAYER;
 
     ClearEffects();
@@ -450,6 +449,7 @@ void GameLayer::Start()
 void GameLayer::StartMulti()
 {
     gameMode = MULTIPLAYER;
+    client.Connect("127.0.0.1", 54000);
 
     MenuSystem->SetLayerGame(gameMode);
 }

@@ -35,17 +35,18 @@ protected:
     {
         return true;
     }
-    virtual void OnClientValidated(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
+    void OnClientValidated(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
         uint32_t id = client->GetID();
         {
             std::scoped_lock<std::mutex> lock(muxGame);
-            for (auto const& [idP, info] : playersMap)
+            for (const auto& [idP, info] : playersMap)
             {
                 // send all the other users data to the new player
                 network::message<MultiplayerPacketType> othersInfo;
                 othersInfo.header.id = MultiplayerPacketType::PLAYER_ADD_OTHERS;
                 othersInfo << info;
+                std::cout << "[SERVER] Passing player ID in __line__ 49: " << idP << " with in player info: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
                 MessageClient(client, othersInfo);
             }
 
@@ -55,28 +56,36 @@ protected:
         network::message<MultiplayerPacketType> msgID;
         msgID.header.id = MultiplayerPacketType::PLAYER_NOTIFY_ID;
         msgID << id;
+        std::cout << "[SERVER] Sending player his id with msg in __line__ 59: ID: " << id << std::endl;
         MessageClient(client, msgID);
 
         network::message<MultiplayerPacketType> msg;
         msg.header.id = MultiplayerPacketType::PLAYER_ADDED;
+        std::cout << "[SERVER] Sending all other players new p. id from with msg in __line__ 64: ID: " << id << std::endl;
         msg << id;
         MessageAllClient(msg, client);
     }
-    virtual void OnClientDisconnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
+    void OnClientDisconnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
-        std::scoped_lock<std::mutex> lock(muxGame);
         uint32_t id = client->GetID();
-
-        if (playersMap.erase(id) > 0)
         {
-            network::message<MultiplayerPacketType> msg;
-            msg.header.id = MultiplayerPacketType::PLAYER_REMOVED;
-
-            msg << id;
-            MessageAllClient(msg, nullptr);
+            std::scoped_lock<std::mutex> lock(muxGame);
+            if (playersMap.find(id) != playersMap.end())
+            {
+                playersMap.erase(id);
+                std::cout << "[SERVER] Client disconnected: " << id << std::endl;
+            }
+            else return;
         }
+
+        network::message<MultiplayerPacketType> msg;
+        msg.header.id = MultiplayerPacketType::PLAYER_REMOVED;
+
+        msg << id;
+        MessageAllClient(msg, nullptr);
+        std::cout << "[SERVER] Messaging all clients to delete player in __line__ 84: ID: " << id << std::endl;
     }
-    virtual void OnMessage(std::shared_ptr<network::connection<MultiplayerPacketType>> client,
+    void OnMessage(std::shared_ptr<network::connection<MultiplayerPacketType>> client,
                            network::message<MultiplayerPacketType>& msg) override
     {
         switch (msg.header.id)
@@ -85,13 +94,21 @@ protected:
             break;
         case MultiplayerPacketType::PLAYER_MOVE:
         {
-            std::scoped_lock<std::mutex> lock(muxGame);
             PlayerInfo info;
             msg >> info;
-            info.id = client->GetID();
 
-            playersMap[info.id] = info;
-            MessageAllClient(msg, client);
+            info.id = client->GetID();
+            std::cout << "[SERVER] Getting player info to send to other clients in __line__ 96: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
+            {
+                std::scoped_lock<std::mutex> lock(muxGame);
+                playersMap[info.id] = info;
+            }
+
+            network::message<MultiplayerPacketType> outMsg;
+            outMsg.header.id = MultiplayerPacketType::PLAYER_MOVE;
+            outMsg << info;
+            std::cout << "[SERVER] Sending player info to the other clients in __line__ 108: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
+            MessageAllClient(outMsg, client);
         }
         break;
         case MultiplayerPacketType::PLAYER_SHOOT:

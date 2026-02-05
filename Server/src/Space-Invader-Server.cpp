@@ -7,6 +7,7 @@ int main()
     
     while (true)
     {
-        server_instance.Update(-1, true);
+        server_instance.Update(-1, false);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

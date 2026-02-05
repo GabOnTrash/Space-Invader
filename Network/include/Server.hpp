@@ -83,80 +83,41 @@ namespace network
 			{
 				client->Send(msg);
 			}
-			else
-			{
-				OnClientDisconnect(client);
-				// client.reset();
-                m_deqConnections.erase(
-					std::remove(m_deqConnections.begin(), m_deqConnections.end(), client),
-                                       m_deqConnections.end());
-            }
 		}
 		void MessageAllClient(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient)
 		{
-            /*bool bInvalidClientExists = false;
-
             for (auto& client : m_deqConnections)
+            {
+	            if (client && client->IsConnected())
+	            {
+	            	if (client != pIgnoreClient)
+	            		client->Send(msg);
+	            }
+            }
+		}
+		void CleanConnections()
+		{
+			for (auto& client : m_deqConnections)
 			{
-				if (client && client->IsConnected())
-				{
-					if (client != pIgnoreClient)
-						client->Send(msg);
-				}
-				else
-				{
-					// OnClientDisconnect(client);
-					// client.reset();
-                    bInvalidClientExists = true;
-				}
+				if (client && !client->IsConnected())
+					OnClientDisconnect(client);
 			}
 
-			if (bInvalidClientExists)
-			{
-				/*m_deqConnections.erase(
-					std::remove(m_deqConnections.begin(), m_deqConnections.end(), nullptr),
-									   m_deqConnections.end());*/
-				/*m_deqConnections.erase(
-				std::remove_if(m_deqConnections.begin(), m_deqConnections.end(),
-					[this](const std::shared_ptr<connection<T>>& c) {
-						if (c && !c->IsConnected()) {
-							OnClientDisconnect(c);
-							return true;
-						}
-						return !c;
-					}),
-				m_deqConnections.end());
-            }*/
-			auto it = m_deqConnections.begin();
-			while (it != m_deqConnections.end())
-			{
-				if (*it && (*it)->IsConnected())
-				{
-					if (*it != pIgnoreClient)
-						(*it)->Send(msg);
-					++it;
-				}
-				else
-				{
-					// Il client è morto, informiamo il gioco e rimuoviamolo
-					OnClientDisconnect(*it);
-					it = m_deqConnections.erase(it);
-					// erase restituisce l'iteratore successivo, quindi è sicuro
-				}
-			}
+			m_deqConnections.erase(
+			std::remove_if(m_deqConnections.begin(), m_deqConnections.end(),
+				[this](const std::shared_ptr<connection<T>>& c){ return !c->IsConnected(); }),
+			m_deqConnections.end());
 		}
 		void Update(size_t nMaxMessages = -1, bool bWait = false)
 		{
-            if (bWait) m_qMessagesIn.wait();
+            if (bWait)
+            	m_qMessagesIn.wait();
 
+			CleanConnections();
             size_t nMessageCount = 0;
+
 			while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty())
 			{
-				m_deqConnections.erase(
-				std::remove_if(m_deqConnections.begin(), m_deqConnections.end(),
-					[](const std::shared_ptr<connection<T>>& c) { return !c->IsConnected(); }),
-				m_deqConnections.end());
-
 				auto msg = m_qMessagesIn.pop_front();
 
 				if (!msg.remote || !msg.remote->IsConnected())
