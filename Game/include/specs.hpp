@@ -16,7 +16,7 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include "AssetsManager.hpp"
+#include "AssetsManager/AssetsManager.hpp"
 #include "Menu.h"
 #include "MyRandom.hpp"
 #include "timer.hpp"
@@ -25,17 +25,6 @@
 #include "config/keys.hpp"
 #include "config/Strings.hpp"
 
-namespace ViewPort
-{
-	extern int BASE_WIDTH;
-	extern int BASE_HEIGHT;
-	extern float scale;
-	extern float offsetX;
-	extern float offsetY;
-	extern bool loadedResources;
-}
-
-extern KeyBindings KeyBinds;
 
 #define PATH_BYTEMASK_PLAYER "assets/textures/space_ships/Spaceship_5.png"
 #define PATH_BYTEMASK_ASTEROID "assets/textures/elements/meteor.png"

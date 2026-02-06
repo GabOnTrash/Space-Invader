@@ -1,14 +1,14 @@
 #pragma once 
 
-enum GameState
+enum class GameState
 {
-    START = 0,
-    RUNNING = 1,
-    PAUSED = 2,
+    ON_START_MENU,
+    RUNNING_GAME,
+    ON_PAUSED_MENU = 2,
     KILLED = 3,
 };
 
-enum MeteorState
+enum class MeteorState
 {
     INTEGRITY = 0,
     DAMAGED = 1,
@@ -22,7 +22,7 @@ enum Difficulty
     HARD = 3
 };
 
-enum ModifierType
+enum class ModifierType
 {
     SLOWER = 0,
     LOSEHEART,

@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_set>
-#include "JsonParser.hpp"
+#include "../include/SettingsManager/SettingsManager.hpp"
 
 class Menu
 {

@@ -2,8 +2,8 @@
 
 namespace ViewPort
 {
-    int BASE_WIDTH = 1920;
-    int BASE_HEIGHT = 1080;
+    int BASE_WIDTH = 1280;
+    int BASE_HEIGHT = 720;
     float scale = 1.0f;
     float offsetX = 0.0f;
     float offsetY = 0.0f;
@@ -12,17 +12,11 @@ namespace ViewPort
 
 Game::Game() 
     : GameStatus(std::make_shared<GameState>(START)), 
-    MenuSystem(std::make_shared<MenuLayer>(GameStatus)),
+    MenuSystem(std::make_shared<MenuHandle>(GameStatus)),
     Gamelayer(GameStatus, MenuSystem)
 {
     //SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-    InitWindow(1920, 1080,/*GetMonitorWidth(0), GetMonitorHeight(0),*/ "Space Invaders");
 
-    target = LoadRenderTexture(ViewPort::BASE_WIDTH, ViewPort::BASE_HEIGHT);
-    
-    ViewPort::scale = std::min((float)GetScreenWidth() / ViewPort::BASE_WIDTH, (float)GetScreenHeight() / ViewPort::BASE_HEIGHT);
-    ViewPort::offsetX = (GetScreenWidth() - ViewPort::BASE_WIDTH * ViewPort::scale) * 0.5f;
-    ViewPort::offsetY = (GetScreenHeight() - ViewPort::BASE_HEIGHT * ViewPort::scale) * 0.5f;
 
 	SetExitKey(KEY_NULL);
 
@@ -111,7 +105,7 @@ void Game::LoadAssets()
     Modifier::Init();
     Heart::Init();
 
-    GameLayer::InitIcons();
+    SinglePlayerMode::InitIcons();
 }
 void Game::InitUI()
 {
@@ -122,28 +116,4 @@ void Game::InitUI()
     MenuSystem->CallGetScore = [this]() { return Gamelayer.GetGameScore(); };
     MenuSystem->CallSetDiff = [this]() { Gamelayer.SetDiff(); };
     MenuSystem->InitLayers();
-}
-void Game::SaveCommands()
-{
-    JsonParser p(PATH_SPACEINVADER_SETTINGS);
-
-    p.SetKey("audio", "GeneralVolume", MenuSystem->GetGeneralVolume());
-    p.SetKey("audio", "MusicVolume", MenuSystem->GetMusicVolume());
-    p.SetKey("audio", "LaserVolume", MenuSystem->GetcooldownTimerLaserVolume());
-    p.SetKey("audio", "MeteorDamageVolume", MenuSystem->GetMeteorDamageVolume());
-    p.SetKey("audio", "PowerUpVolume", MenuSystem->GetPowerUpVolume());
-    p.SetKey("audio", "ExplosionVolume", MenuSystem->GetExplosionVolume());
-
-    p.SetKey("difficulty", "GameDifficulty", MenuSystem->GetGameDifficulty());
-
-    p.SetKey("KeyBindings", "MOVEUP", KeyBinds.KeyUP);
-    p.SetKey("KeyBindings", "MOVEDOWN", KeyBinds.KeyDOWN);
-    p.SetKey("KeyBindings", "MOVELEFT", KeyBinds.KeyLEFT);
-    p.SetKey("KeyBindings", "MOVERIGHT", KeyBinds.KeyRIGHT);
-    p.SetKey("KeyBindings", "SHOOT", KeyBinds.KeySHOOT);
-    p.SetKey("KeyBindings", "DASH", KeyBinds.KeyDASH);
-
-    p.SetKey("video", "Fullscreen", MenuSystem->GetFullscreen());
-
-    p.SaveData();
 }

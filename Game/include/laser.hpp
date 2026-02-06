@@ -24,6 +24,7 @@ public:
 	static inline float volume = 1.0f;
 	static inline Texture2D texture = { 0 };
 	
+	uint32_t owner;
 private:
 	int vel = 500;
     float alpha = 0;

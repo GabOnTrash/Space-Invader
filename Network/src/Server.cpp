@@ -31,7 +31,7 @@ public:
     }
 
 protected:
-    virtual bool OnClientConnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
+    bool OnClientConnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
         return true;
     }

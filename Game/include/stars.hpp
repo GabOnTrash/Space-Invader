@@ -13,13 +13,12 @@ struct AttribStar
 class Star
 {
 public:
+    Star();
+    void updateStars(float deltaT);
+    void DrawStars();
 
     AttribStar stars[STARS_NUM] = { 0, 0 };
 
-    void InitStars(int tipo);
-    void updateStars(float deltaT, int tipo);
-    void DrawStars();
-
 private:
-    float radius = 3;
+    const float radius = 3.f;
 };

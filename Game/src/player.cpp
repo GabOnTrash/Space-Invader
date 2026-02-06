@@ -1,7 +1,12 @@
 #include "player.hpp"
 #include "meteor.hpp"
 
-Player::Player() : cooldownTimerLaser(coolDown), cooldownTimerDash(1000)
+Player::Player()
+    : cooldownTimerLaser(coolDown),
+    cooldownTimerDash(1000),
+    tripleLaserTimer(5000, [this]() { setTripleLaser(false); }),
+    bigLaserTimer(6000, [this]() { useBigLaser(false); }),
+    reducedVelTimer(5000, [this]() { setReducedVel(false); })
 {
 	Reset();
 }

@@ -1,23 +1,29 @@
 #pragma once
 
-#include "specs.hpp"
-#include "menuHandler.hpp"
+#include "../specs.hpp"
+#include "../menuHandler.hpp"
 
-class MenuLayer
+struct GameContext;
+
+class MenuHandle
 {
 public:
-    MenuLayer() = default;
-    MenuLayer(std::shared_ptr<GameState> GameStatus);
+    MenuHandle() = default;
+    MenuHandle(GameContext& gameContext);
 
     void InitLayers();
-    void UpdateSystem();
+    void Update();
+	void Draw();
 
     const char* TranslateToDifficulty();
     void SetDifficulty();
 
+	void SetMenuSinglePlayer();
+	void SetMenuMultiPlayer();
+
     void SetLayerGame(const GameMode& mode);
 
-    bool WantToQuit()
+    bool UserWantsToQuit()
     {
         return shouldQuit;
     }
@@ -30,19 +36,19 @@ public:
 
     bool GetFullscreen() { return fullscreen; }
 	float GetMusicVolume() { return MusicVolume; }
-	float GetcooldownTimerLaserVolume() { return LaserVolume; }
-	float GetPowerUpVolume() { return PowerUpVolume; }
+	float GetLaserVolume() { return LaserVolume; }
+	float GetModifierVolume() { return PowerUpVolume; }
 	float GetMeteorDamageVolume() { return MeteorDamageVolume; }
 	float GetExplosionVolume() { return ExplosionVolume; }
 	float GetGeneralVolume() { return GeneralVolume; }
 	Difficulty GetGameDifficulty() { return GameDifficulty; }
 
-	std::function<void()> CallStart;
-    std::function<void()> CallStartMulti;
-	std::function<void()> CallRestart;
-	std::function<void()> CallResume;
-    std::function<int()> CallGetScore;
-	std::function<void()> CallSetDiff;
+	std::function<void()> StartSinglePlayer;
+    std::function<void()> StartMultiPlayer;
+	std::function<void()> Restart;
+	std::function<void()> Resume;
+    std::function<int()> GetScore;
+	std::function<void()> SetDiff;
 
 private:
     void RecalculateLayout();

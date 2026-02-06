@@ -3,14 +3,14 @@
 #include "laser.hpp"
 #include "specs.hpp"
 
+
 class Player
 {
 public:
-
 	Player();
 	~Player();
 
-	static void Init(); 
+	static void Init();
     static inline ByteMask byteMask;
 
 	void Reset();
@@ -18,13 +18,13 @@ public:
 	void Update(float deltaT);
 	void Draw();
 
-	Vector2 GetPosition() 
-	{ 
-		return position; 
+	Vector2 GetPosition()
+	{
+		return position;
 	}
-	Texture2D& GetImage() 
-	{ 
-		return Player::texture; 
+	Texture2D& GetImage()
+	{
+		return Player::texture;
 	}
     Timer<>& GetTimer()
     {
@@ -34,33 +34,37 @@ public:
 	{
 		laserTimeToLive = timeInMs;
     }
-	bool activeBigLaser() 
-	{ 
-		return isBigLaserActive; 
+	bool activeBigLaser()
+	{
+		return isBigLaserActive;
 	}
 	void setDashTimer(int val)
 	{
 		dashTimer = val;
 	}
-	void setTripleLaser(bool val) 
-	{ 
-		tripleLaser = val; 
+	void setTripleLaser(bool val)
+	{
+		tripleLaser = val;
 	}
-	void setReducedVel(bool val) 
-	{ 
-		reducedVel = val; 
+	void setReducedVel(bool val)
+	{
+		reducedVel = val;
 	}
-	 void useBigLaser(bool val) 
-	 { 
-		 isBigLaserActive = val; 
+	 void useBigLaser(bool val)
+	 {
+		 isBigLaserActive = val;
 	 }
-	BigLaser& getBigLaser() 
-	{ 
-		return bigLaser; 
+	BigLaser& getBigLaser()
+	{
+		return bigLaser;
 	}
 	Rectangle getBounds();
 	Vector2 position{ 0, 0 };
 	std::vector<Laser> lasers;
+
+	void ActivateTripleLaser() { tripleLaserTimer.active(); };
+	void ActivateReducedVelocity() { reducedVelTimer.active(); };
+	void ActivateBigLaser() { bigLaserTimer.active(); };
 
 private:
     void Movement(float deltaT);
@@ -92,6 +96,10 @@ private:
 
 	Timer<> cooldownTimerLaser;
     Timer<> cooldownTimerDash;
+
+	Timer<> bigLaserTimer;
+	Timer<> reducedVelTimer;
+	Timer<> tripleLaserTimer;
 public:
 	static inline Texture2D texture = { 0 };
 };

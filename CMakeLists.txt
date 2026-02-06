@@ -30,6 +30,12 @@ FetchContent_MakeAvailable(raylib nlohmann_json asio)
 add_library(ClientServerImplementation STATIC
     Network/src/Client.cpp
     Network/src/Server.cpp
+        Game/include/MultiPlayerMode/MultiPlayerMode.hpp
+        Game/include/MultiPlayerMode/MultiPlayerMode.cpp
+        Game/include/Game/Game.cpp
+        Game/include/Game/Game.hpp
+        Game/include/CollisionManager/CollisionManager.cpp
+        Game/include/CollisionManager/CollisionManager.hpp
 )
 
 target_include_directories(ClientServerImplementation PUBLIC
@@ -52,13 +58,13 @@ set_target_properties(ClientServerImplementation PROPERTIES
 )
 
 add_executable(Space-Invader
-    Game/src/AssetsManager.cpp
+        Game/include/AssetsManager/AssetsManager.cpp
     Game/src/explosion.cpp
     Game/src/game.cpp
-    Game/src/GameLayer.cpp
+        Game/include/SinglePlayerMode/SinglePlayerMode.cpp
     Game/src/heart.cpp
     Game/src/laser.cpp
-    Game/src/MenuLayer.cpp
+        Game/include/MenuHandle/MenuHandle.cpp
     Game/src/meteor.cpp
     Game/src/player.cpp
     Game/src/modifier.cpp
@@ -67,6 +73,15 @@ add_executable(Space-Invader
     Game/UI/Button.cpp
     Game/UI/Label.cpp
     Game/UI/Slider.cpp
+        Game/include/MultiPlayerMode/MultiPlayerMode.hpp
+        Game/include/MultiPlayerMode/MultiPlayerMode.cpp
+        Game/include/IGameMode/IGameMode.cpp
+        Game/include/IGameMode/IGameMode.hpp
+        Game/include/Renderer/Renderer.cpp
+        Game/include/Renderer/Renderer.hpp
+        Game/include/SettingsManager/SettingsManager.cpp
+        Game/include/AudioManager/AudioManager.cpp
+        Game/include/AudioManager/AudioManager.hpp
 )
 
 target_include_directories(Space-Invader PRIVATE

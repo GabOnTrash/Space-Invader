@@ -1,6 +1,6 @@
 {
     "textures": {
-        "cursor": "assets/textures/cursors/cursor.png",
+        "game_cursor": "assets/textures/cursors/cursor.png",
         "player": "assets/textures/space_ships/Spaceship_5.png",
         
         "meteor": "assets/textures/elements/meteor.png",

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "MenuLayer.hpp"
-#include "GameLayer.hpp"
+#include "MenuHandle/MenuHandle.hpp"
+#include "SinglePlayerMode/SinglePlayerMode.hpp"
 
 #include "specs.hpp"
-#include "JsonParser.hpp"
 
 class Game
 {
@@ -24,8 +23,8 @@ private:
     RenderTexture2D target;
     
     std::shared_ptr<GameState> GameStatus;
-    std::shared_ptr<MenuLayer> MenuSystem;
-    GameLayer Gamelayer;
+    std::shared_ptr<MenuHandle> MenuSystem;
+    SinglePlayerMode Gamelayer;
 
     Music GameMusic;
     static inline Texture2D GameCursor = { 0 };
