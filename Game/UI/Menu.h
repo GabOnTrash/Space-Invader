@@ -5,29 +5,19 @@
 #include <vector>
 #include <memory>
 #include <unordered_set>
-#include "../include/SettingsManager/SettingsManager.hpp"
+#include "../GameElements/SettingsManager/SettingsManager.hpp"
 
 class Menu
 {
 public:
     Menu() = default;
-  /* Menu(const std::string& path) 
-	{
-        this->path = path;
-	}*/
 
 	template <typename T, typename... Args>
 	void add(Args&&... args) 
 	{ 
 		elements.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)); 
 	}
-    /* template <typename T>
-	void AddWidget(const std::string& id)
-	{
-        UIparser.GetKey<std::string>("button", "id");
-		UIparser
-		elements.emplace_back(std::make_unique<T>());
-	}*/
+
 	bool remove(const std::string& id)
 	{
 		for (auto it = elements.begin(); it != elements.end(); ++it)

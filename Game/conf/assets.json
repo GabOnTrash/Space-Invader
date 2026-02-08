@@ -11,6 +11,7 @@
 
         "github": "assets/textures/gui/github.png",
         "instagram": "assets/textures/gui/instagram.png",
+        "quitBtn": "assets/textures/gui/quitBtn.png",
 
         "_big_laser": "assets/textures/modifiers/_big_laser.png",
         "minus_one_heart": "assets/textures/modifiers/minus_one_heart.png",

@@ -1,4 +1,6 @@
-class RectS  
+#pragma once
+
+class RectS
 {  
 private:  
    float posX = 0;  

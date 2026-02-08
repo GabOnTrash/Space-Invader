@@ -1,6 +1,6 @@
 #include "../include/Common.hpp"
 #include "../include/Client.hpp"
-#include "../../Game/include/config/enums.hpp"
+#include "../../Game/GameElements/util/enums.hpp"
 
 #include <unordered_map>
 

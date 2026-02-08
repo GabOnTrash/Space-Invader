@@ -97,30 +97,53 @@ protected:
 	std::function<void()> function = nullptr;
 };
 
-class ButtonT : public Button
+class TextureButton : public Widget
 {
 public:
+	TextureButton() {}
+	TextureButton(float xPosCenter, float yPosCenter,
+		Texture2D& texture, std::function<void()> func = nullptr)
+			: texture(texture)
+	{
+		position.x = xPosCenter - (texture.width / 2);
+		position.y = yPosCenter - (texture.height / 2);
+		this->func = func;
+	}
+	virtual ~TextureButton() {}
 
-	ButtonT() {}
-	ButtonT(float xPosCenter, float yPosCenter, const char* pathN, std::function<void()> func = nullptr, float scale = 1, const char* pathC = "");
-	~ButtonT() {}
+	void Clicked()
+	{
+		if (/*hovered() && */IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && singleClick)
+		{
+			singleClick = false;
 
-	void update() override;
-	bool OnClick() override;
-	void draw() override;
+			if (func != nullptr)
+				func();
+		}
+		else
+			singleClick = true;
+	}
+	void update() override
+	{
+		Clicked();
+	}
+	void draw() override
+	{
+		DrawTexture(texture, position.x, position.y, WHITE);
+	}
 
 private:
-	void load();
-	const char* pathN = ""; // normal image
-	const char* pathC = ""; // image on click
+	/*bool TextureButton::hovered()
+	{
+		Vector2 mousePos = GetMousePosition();
+		mousePos.x = (mousePos.x - co offsetX) / ViewPort::scale;
+		mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
 
-	Texture2D textureN = { 0, 0, 0, 0, 0 };
-	Texture2D textureC = { 0, 0, 0, 0, 0 };
+		return (mousePos.x >= posX && mousePos.x <= posX + width && mousePos.y >= posY && mousePos.y <= posY + height);
+	}*/
 
-	Vector2 textureNPos{ 0, 0 };
-	Vector2 textureCPos{ 0, 0 };
-
-	float scale = 1;
-	float originalX = 0;
-	float originalY = 0;
+	Texture2D texture{ 0 };
+	Vector2 position{ 0, 0 };
+	std::function<void()> func;
+	bool singleClick = false;
 };

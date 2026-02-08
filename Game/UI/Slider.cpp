@@ -1,13 +1,12 @@
-#include "specs.hpp" // for 'ViewPort::scale'
 #include "Slider.h"
 
 Slider::Slider(std::string id, RectS& rectangle, PointerS& point)
 	: id(id), rect(rectangle), pointer(point)
 {
-	// Determina se lo slider è verticale o orizzontale
+	// Determina se lo slider ï¿½ verticale o orizzontale
 	vert = (rect.getHeight() > rect.getWidth());
 
-	// Se il puntatore è rettangolare, dimezza il lato principale
+	// Se il puntatore ï¿½ rettangolare, dimezza il lato principale
 	if (!pointer.isRect()) pointer.setSide1(pointer.getSide1() / 2);
 
 	// Centro rettangolo
@@ -30,7 +29,7 @@ Slider::Slider(std::string id, RectS& rectangle, PointerS& point)
 
 	if (vert)
 	{
-		// Slider verticale: il valore alto è in alto (quindi invertiamo 1.0f - t)
+		// Slider verticale: il valore alto ï¿½ in alto (quindi invertiamo 1.0f - t)
 		float minY = rect.getPosY() + pointer.getSide2() / 2;
 		float maxY = rect.getPosY() + rect.getHeight() - pointer.getSide2() / 2;
 		float centerY = minY + (1.0f - t) * (maxY - minY);
@@ -66,10 +65,10 @@ void Slider::draw()
 }
 void Slider::setPointerVert()
 {
-    mousePos = GetMousePosition();
+    /*mousePos = GetMousePosition();
     mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
     mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-
+*/
 	ButtonDown = Pressed();
 
 	if (mousePos.y != pointer.getCenterY() && ButtonDown && clicked)
@@ -83,10 +82,10 @@ void Slider::setPointerVert()
 }
 void Slider::setPointerHoriz()
 {
-    mousePos = GetMousePosition();
+    /*mousePos = GetMousePosition();
     mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
     mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-
+*/
 	ButtonDown = Pressed();
 
 	if (mousePos.x != pointer.getCenterX() && ButtonDown && clicked)
@@ -113,18 +112,18 @@ bool Slider::Pressed()
 }
 bool Slider::hoveredR()
 {
-    mousePos = GetMousePosition();
+    /*mousePos = GetMousePosition();
     mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
     mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-
+*/
 	return CheckCollisionPointRec(mousePos, { rect.getPosX(), rect.getPosY(), rect.getWidth(), rect.getHeight() });
 }
 bool Slider::hoveredP()
 {
-    mousePos = GetMousePosition();
+    /*mousePos = GetMousePosition();
     mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
     mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-
+*/
 	return CheckCollisionPointCircle(mousePos, { pointer.getPosX(), pointer.getPosY() }, pointer.getSide1());
 }
 void Slider::update()
