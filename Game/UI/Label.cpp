@@ -15,10 +15,7 @@ bool Label::OnClick()
 }
 bool Label::hovered()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-	*/
+	mousePos = renderer->GetVirtualMouse();
 	return (mousePos.x >= posX && mousePos.x <= posX + textSize.x && mousePos.y >= posY && mousePos.y <= posY + textSize.y);
 }
 void Label::draw()

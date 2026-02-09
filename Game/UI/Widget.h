@@ -5,9 +5,16 @@
 #include <raylib.h>
 #include <string>
 
+#include "GameElements/Renderer/Renderer.hpp"
+
 class Widget
 {
 public:
+	static void setRenderer(Renderer* r)
+	{
+		renderer = r;
+	}
+	static Renderer* renderer;
 
 	virtual void draw() {}
 	virtual void update() {}

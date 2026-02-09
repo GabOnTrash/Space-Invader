@@ -65,10 +65,7 @@ void Slider::draw()
 }
 void Slider::setPointerVert()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-*/
+	mousePos = renderer->GetVirtualMouse();
 	ButtonDown = Pressed();
 
 	if (mousePos.y != pointer.getCenterY() && ButtonDown && clicked)
@@ -82,10 +79,7 @@ void Slider::setPointerVert()
 }
 void Slider::setPointerHoriz()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-*/
+	mousePos = renderer->GetVirtualMouse();
 	ButtonDown = Pressed();
 
 	if (mousePos.x != pointer.getCenterX() && ButtonDown && clicked)
@@ -112,18 +106,12 @@ bool Slider::Pressed()
 }
 bool Slider::hoveredR()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-*/
+	mousePos = renderer->GetVirtualMouse();
 	return CheckCollisionPointRec(mousePos, { rect.getPosX(), rect.getPosY(), rect.getWidth(), rect.getHeight() });
 }
 bool Slider::hoveredP()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-*/
+	mousePos = renderer->GetVirtualMouse();
 	return CheckCollisionPointCircle(mousePos, { pointer.getPosX(), pointer.getPosY() }, pointer.getSide1());
 }
 void Slider::update()

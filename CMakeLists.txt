@@ -87,6 +87,8 @@ add_executable(Space-Invader
 
 # Include directories so you can do #include "Player/Player.hpp" or #include "Game/Game.hpp"
 target_include_directories(Space-Invader PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Game/assets
+        ${CMAKE_CURRENT_SOURCE_DIR}/Game/conf
         ${CMAKE_CURRENT_SOURCE_DIR}/Game
         ${CMAKE_CURRENT_SOURCE_DIR}/Game/UI
         ${CMAKE_CURRENT_SOURCE_DIR}/Network/include

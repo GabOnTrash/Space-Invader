@@ -1,5 +1,7 @@
 #include "Button.h"
 
+Renderer* Widget::renderer = nullptr;
+
 Button::Button() {}
 Button::Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, int segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH)
 	: id(id), text(text), customFont(fontJ), fontS(fontS), width(width), height(height), posX(xPosCenter - (width / 2)), posY(yPosCenter - (height / 2)), roundness(round), segments(segm), thickness(thickness), FG(FG), BG(BG), BGH(BGH), BD(BD), BDH(BDH)
@@ -27,10 +29,7 @@ void Button::draw()
 }
 bool Button::hovered()
 {
-    /*mousePos = GetMousePosition();
-    mousePos.x = (mousePos.x - ViewPort::offsetX) / ViewPort::scale;
-    mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
-	*/
+    mousePos = renderer->GetVirtualMouse();
 	return (mousePos.x >= posX && mousePos.x <= posX + width && mousePos.y >= posY && mousePos.y <= posY + height);
 }
 void Button::update()
