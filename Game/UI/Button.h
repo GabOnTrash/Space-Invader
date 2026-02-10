@@ -101,31 +101,34 @@ class TextureButton : public Widget
 {
 public:
 	TextureButton() {}
-	TextureButton(float xPosCenter, float yPosCenter,
+	TextureButton(std::string id, float xPosCenter, float yPosCenter,
 		Texture2D& texture, std::function<void()> func = nullptr)
 			: texture(texture)
 	{
+		this->id = id;
 		position.x = xPosCenter - (texture.width / 2);
 		position.y = yPosCenter - (texture.height / 2);
-		this->func = func;
+		this->function = func;
 	}
 	virtual ~TextureButton() {}
 
-	void Clicked()
+	bool OnClick()
 	{
-		if (/*hovered() && */IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && singleClick)
+		if (hovered() && IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && singleClick)
 		{
 			singleClick = false;
 
-			if (func != nullptr)
-				func();
+			if (function != nullptr)
+				function();
+			return true;
 		}
-		else
-			singleClick = true;
+		else singleClick = true;
+
+		return false;
 	}
 	void update() override
 	{
-		Clicked();
+		OnClick();
 	}
 	void draw() override
 	{
@@ -133,17 +136,14 @@ public:
 	}
 
 private:
-	/*bool TextureButton::hovered()
+	bool hovered()
 	{
-		Vector2 mousePos = GetMousePosition();
-		mousePos.x = (mousePos.x - co offsetX) / ViewPort::scale;
-		mousePos.y = (mousePos.y - ViewPort::offsetY) / ViewPort::scale;
+		Vector2 mousePos = renderer->GetVirtualMouse();
+		return (mousePos.x >= position.x && mousePos.x <= position.x + texture.width && mousePos.y >= position.y && mousePos.y <= position.y + texture.height);
+	}
 
-		return (mousePos.x >= posX && mousePos.x <= posX + width && mousePos.y >= posY && mousePos.y <= posY + height);
-	}*/
-
-	Texture2D texture{ 0 };
+	Texture2D texture{};
 	Vector2 position{ 0, 0 };
-	std::function<void()> func;
+	std::function<void()> function = nullptr;
 	bool singleClick = false;
 };

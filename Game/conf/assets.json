@@ -45,7 +45,7 @@
         "game_music": "assets/music/game_music.mp3"
     },
     "sounds": {
-        "meteor_damage": "assets/sounds/meteor_damage.mp3",
+        "meteor_damage": "assets/sounds/meteor_damage.ogg",
         "laser_shot": "assets/sounds/laser_shot.wav",
         "explosion": "assets/sounds/explosion.wav",
         "modifier_sound": "assets/sounds/modifier_sound.mp3"
