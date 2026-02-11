@@ -15,7 +15,7 @@ public:
     MenuHandle();
     MenuHandle(GameContext& gameContext);
 
-	void Update();
+    void Update();
 	void Draw();
 
 	bool IsFullscreen();
@@ -44,8 +44,8 @@ private:
 	void InitAllMenus();
 	void InitStartMenu();
 	void ShowCountDown();
-	void InitRunOverlay();
 	void InitPausedMenu();
+	void InitRunOverlay();
 	void InitAudioControl();
 	void InitBindsControls();
     void GoBackToMain();
@@ -71,8 +71,6 @@ private:
 	Texture2D instagram;
 	Texture2D github;
 	/////////////////////////////////
-
-    void InitLayers();
 
     const char* TranslateToDifficulty() const;
     void SetDifficulty();

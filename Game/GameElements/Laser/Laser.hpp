@@ -22,7 +22,7 @@ public:
 	
 	uint32_t owner;
 private:
-	int vel = 500;
+	int vel = 600;
     float alpha = 0;
 	static inline Sound audio = {};
 	Timer<> shouldDieTimer;

@@ -85,33 +85,41 @@ void Player::StartDash(Vector2 dir)
 
 void Player::HandleInput()
 {
-    if (IsKeyDown(ctx.keyBindings.KeyUP))
-        direction.y -= 1.f;
-    if (IsKeyDown(ctx.keyBindings.KeyDOWN))
-        direction.y += 1.f;
-    if (IsKeyDown(ctx.keyBindings.KeyLEFT))
-        direction.x -= 1.f;
-    if (IsKeyDown(ctx.keyBindings.KeyRIGHT))
-        direction.x += 1.f;
+    wantToDash = false;
+    direction = { 0.f, 0.f };
 
-    if (sqrtf(direction.x * direction.x + direction.y * direction.y) != 0)
+    ctx.keyBindings.forEach([this](const std::string& action, int keyCode)
     {
-        direction.x /= sqrtf(direction.x * direction.x + direction.y * direction.y);
-        direction.y /= sqrtf(direction.x * direction.x + direction.y * direction.y);
+        if (IsKeyDown(keyCode))
+        {
+            if (action == "UP")    direction.y -= 1.f;
+            if (action == "DOWN")  direction.y += 1.f;
+            if (action == "LEFT")  direction.x -= 1.f;
+            if (action == "RIGHT") direction.x += 1.f;
+            if (action == "SHOOT" && !cooldownTimerLaser.isRunning) wantToGenerateLaser = true;
+            if (action == "DASH" && !cooldownTimerDash.isRunning) wantToDash = true;
+        }
+    });
+
+    float length = sqrtf(direction.x * direction.x + direction.y * direction.y);
+    if (length != 0)
+    {
+        direction.x /= length;
+        direction.y /= length;
     }
 
-    if ((IsKeyPressed(ctx.keyBindings.KeyDASH) && Vector2Length(direction) != 0) && !cooldownTimerDash.isRunning)
+    if (length > 0 && wantToDash)
         StartDash(direction);
 }
 
 void Player::Movement(float dt)
 {
+    HandleInput();
+
     if (isDashing)
         UpdateDash(dt);
 
     vel = reducedVelTimer.isRunning ? 250 : 500;
-
-    HandleInput();
 
     newPosition.x = position.x + direction.x * vel * dt;
     newPosition.y = position.y + direction.y * vel * dt;
@@ -127,22 +135,16 @@ void Player::Movement(float dt)
         bigLaser.position.x = position.x + (texture.width / 2.0f) - (BigLaser::texture.width / 2.0f);
         bigLaser.position.y = position.y - (BigLaser::texture.height);
     }
-    else if ((IsKeyPressed(ctx.keyBindings.KeySHOOT) || IsKeyDown(ctx.keyBindings.KeySHOOT)) && !cooldownTimerLaser.isRunning)
-        wantToGenerateLaser = true;
-
-    direction = { 0.f, 0.f };
 }
 void Player::generateLaser(std::vector<Laser>& lasers)
 {
     const float laserCenterX = position.x + (texture.width / 2.0f) - (Laser::texture.width / 2.0f);
-    const float laserY = position.y - Laser::texture.height;
-
-    lasers.emplace_back(Vector2{ laserCenterX, laserY }, laserTimeToLive);
+    lasers.emplace_back(Vector2{ laserCenterX,  position.y }, laserTimeToLive);
 
     if (tripleLaserTimer.isRunning)
     {
-        lasers.emplace_back(Vector2{ laserCenterX - Laser::texture.width * 2, laserY }, laserTimeToLive);
-        lasers.emplace_back(Vector2{ laserCenterX + Laser::texture.width * 2, laserY }, laserTimeToLive);
+        lasers.emplace_back(Vector2{ laserCenterX - Laser::texture.width * 2,  position.y + 20 }, laserTimeToLive);
+        lasers.emplace_back(Vector2{ laserCenterX + Laser::texture.width * 2,  position.y + 20 }, laserTimeToLive);
     }
     cooldownTimerLaser.active();
 }

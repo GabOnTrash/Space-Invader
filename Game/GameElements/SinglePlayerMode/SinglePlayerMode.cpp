@@ -7,7 +7,7 @@ SinglePlayerMode::SinglePlayerMode(GameContext& ctx, MenuHandle& handle)
         meteorTimer(0, [this]() { CreateMeteor(); }, true, true),
         modifierTimer(6000, [this]() { CreateModifier(); }, true, true)
 {
-    Init();
+    SinglePlayerMode::Init();
 }
 
 SinglePlayerMode::~SinglePlayerMode()
@@ -60,6 +60,7 @@ void SinglePlayerMode::Init()
 {
     ClearEffects();
 
+    menuHandle.SetMenuSinglePlayer();
     menuHandle.UpdateDifficulty();
 
     player.setDashTimer(4000 / menuHandle.GameDifficulty); // 800 ms 1000 ms 1333 ms
@@ -69,7 +70,7 @@ void SinglePlayerMode::Init()
 }
 void SinglePlayerMode::OnExit()
 {
-
+    SettingsManager::SaveData(gameContext.keyBindings, menuHandle);
 }
 void SinglePlayerMode::CreateMeteor()
 {

@@ -49,14 +49,9 @@ Font& AssetsManager::GetFont(const std::string& id)
     fonts[id] = LoadFont(path.c_str());
     return fonts[id];
 }
-#include <iostream>
+
 Font& AssetsManager::GetFontEx(const std::string& id, int fontSize, int* codepoints, int codepointCount)
 {
-
-    if (assets.empty()) {
-        std::cout << "ERRORE: L'oggetto JSON assets è VUOTO!" << std::endl;
-    }
-
     std::string key = id + "_" + std::to_string(fontSize);
 
     if (fonts.find(key) != fonts.end())
@@ -66,7 +61,6 @@ Font& AssetsManager::GetFontEx(const std::string& id, int fontSize, int* codepoi
     fonts[key] = LoadFontEx(path.c_str(), fontSize, codepoints, codepointCount);
     return fonts[key];
 }
-
 
 void AssetsManager::Unload()
 {

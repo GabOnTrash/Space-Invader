@@ -50,7 +50,6 @@ void Game::Run()
 
         renderer.EndAndDraw();
     }
-    SettingsManager::SaveData(gameContext, *menuHandle);
     AssetsManager::Unload();
     CloseWindow();
 }

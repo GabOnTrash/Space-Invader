@@ -1,10 +1,10 @@
 {
     "KeyBindings": {
         "DASH": 340,
-        "MOVEDOWN": 83,
-        "MOVELEFT": 65,
-        "MOVERIGHT": 68,
-        "MOVEUP": 87,
+        "DOWN": 83,
+        "LEFT": 65,
+        "RIGHT": 68,
+        "UP": 87,
         "SHOOT": 32
     },
     "audio": {

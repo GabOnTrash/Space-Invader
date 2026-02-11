@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../util/specs.hpp"
-
 #include "../IGameMode/IGameMode.hpp"
 
 #include "../Meteor/Meteor.hpp"

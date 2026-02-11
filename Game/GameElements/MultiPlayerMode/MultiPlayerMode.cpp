@@ -26,4 +26,5 @@ void MultiPlayerMode::Draw()
 void MultiPlayerMode::OnExit()
 {
     this->Disconnect();
+    SettingsManager::SaveData(gameContext.keyBindings, menuHandle);
 }

@@ -59,6 +59,7 @@ private:
 	int laserTimeToLive		= 2000; // in ms
 
     bool isDashing = false;
+	bool wantToDash = false;
     float dashTimer = 0.0f;
     float dashDuration = 0.2f;
     float dashMultiplier = 4.f;

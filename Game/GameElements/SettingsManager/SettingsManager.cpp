@@ -16,7 +16,7 @@ void SettingsManager::Init(const std::string& jsonPath)
     settings = nlohmann::json::object();
 }
 
-void SettingsManager::SaveData(const GameContext& ctx, MenuHandle& menu)
+void SettingsManager::SaveData(const KeyBindings& keys, MenuHandle& menu)
 {
     SetKey("audio", "GeneralVolume", AudioManager::GetGeneralVolume());
     SetKey("audio", "MusicVolume", AudioManager::GetMusicVolume());
@@ -25,12 +25,12 @@ void SettingsManager::SaveData(const GameContext& ctx, MenuHandle& menu)
     SetKey("audio", "PowerUpVolume", AudioManager::GetModifierVolume());
     SetKey("audio", "ExplosionVolume", AudioManager::GetExplosionVolume());
     SetKey("difficulty", "GameDifficulty", menu.GameDifficulty);
-    SetKey("KeyBindings", "MOVEUP", ctx.keyBindings.KeyUP);
-    SetKey("KeyBindings", "MOVEDOWN", ctx.keyBindings.KeyDOWN);
-    SetKey("KeyBindings", "MOVELEFT", ctx.keyBindings.KeyLEFT);
-    SetKey("KeyBindings", "MOVERIGHT", ctx.keyBindings.KeyRIGHT);
-    SetKey("KeyBindings", "SHOOT", ctx.keyBindings.KeySHOOT);
-    SetKey("KeyBindings", "DASH", ctx.keyBindings.KeyDASH);
+
+    keys.forEach([](const std::string& key, int val)
+    {
+        SetKey("KeyBindings", key, val);
+    });
+
     SetKey("video", "Fullscreen", menu.IsFullscreen());
 
     std::ofstream file(settingsPath);

@@ -1,16 +1,49 @@
 #pragma once
 
 #include "raylib.h"
-#include <unordered_map>
+#include <map>
 
-struct KeyBindings
+class KeyBindings
 {
-    int KeyUP = KEY_W;
-    int KeyDOWN = KEY_S;
-    int KeyLEFT = KEY_A;
-    int KeyRIGHT = KEY_D;
-    int KeySHOOT = KEY_SPACE;
-    int KeyDASH = KEY_LEFT_SHIFT;
+    std::map<std::string, int> bindings;
+
+public:
+    KeyBindings()
+    {
+        bindings["UP"]    = KEY_W;
+        bindings["DOWN"]  = KEY_S;
+        bindings["LEFT"]  = KEY_A;
+        bindings["RIGHT"] = KEY_D;
+        bindings["SHOOT"] = KEY_SPACE;
+        bindings["DASH"]  = KEY_LEFT_SHIFT;
+    }
+
+    [[nodiscard]] int getKey(const std::string& action) const
+    {
+        auto it = bindings.find(action);
+        if (it != bindings.end())
+            return it->second;
+
+        return KEY_NULL;
+    }
+
+    void setKey(const std::string& action, int newKey)
+    {
+        if (bindings.find(action) != bindings.end())
+            bindings[action] = newKey;
+    }
+
+    void forEach(std::function<void(const std::string& action, int key)> func) const
+    {
+        for (const auto& [action, key] : bindings)
+            func(action, key);
+    }
+
+    void forEachMutable(std::function<void(const std::string& action, int& key)> func)
+    {
+        for (auto& [action, key] : bindings)
+            func(action, key);
+    }
 };
 
 static inline std::unordered_map<int, std::string> RaylibKeyToString = {

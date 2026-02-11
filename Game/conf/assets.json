@@ -11,7 +11,12 @@
 
         "github": "assets/textures/gui/github.png",
         "instagram": "assets/textures/gui/instagram.png",
-        "quitBtn": "assets/textures/gui/quitBtn.png",
+        "btnQuit": "assets/textures/gui/btnQuit.png",
+        "btnQuitGame": "assets/textures/gui/btnQuitGame.png",
+        "btnRestart": "assets/textures/gui/btnRestart.png",
+        "btnResume": "assets/textures/gui/btnResume.png",
+        "btnStartSinglePlayer": "assets/textures/gui/btnStartSinglePlayer.png",
+        "btnStartMultiPlayer": "assets/textures/gui/btnStartMultiPlayer.png",
 
         "_big_laser": "assets/textures/modifiers/_big_laser.png",
         "minus_one_heart": "assets/textures/modifiers/minus_one_heart.png",

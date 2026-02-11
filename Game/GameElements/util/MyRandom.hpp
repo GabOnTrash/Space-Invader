@@ -6,9 +6,9 @@
 inline std::mt19937& GetRNG()
 {
 	static std::random_device seed;
-	static std::mt19937 genera(seed());
+	static std::mt19937 gen(seed());
 
-	return genera;
+	return gen;
 }
 
 template <typename T>

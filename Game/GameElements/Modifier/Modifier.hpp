@@ -21,7 +21,7 @@ public:
 	static inline float volume = 1.0f;
 
 private:
-	int vel = 200;
+	int vel = 300;
 	Texture2D* texture = nullptr;
 	static inline Texture2D arraymodifiers[5] = { 0 };
 };

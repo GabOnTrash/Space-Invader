@@ -12,7 +12,7 @@ class SettingsManager
 {
 public:
     static void Init(const std::string& jsonPath);
-    static void SaveData(const GameContext& ctx, MenuHandle& menu);
+    static void SaveData(const KeyBindings& keys, MenuHandle& menu);
     static void DeleteKey(const std::string& type);
 
     // audio manager calls this to set up the initial volumes
