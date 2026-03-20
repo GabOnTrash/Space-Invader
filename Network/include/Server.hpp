@@ -25,16 +25,15 @@ namespace network
             try
             {
                 WaitForClientConnection();
-
 				m_threadContext = std::thread([this]() { m_asioContext.run(); });
             }
 			catch (std::exception& e)
 			{
-				std::cerr << "[SERVER] exception: " << e.what() << "\n";
+				LOG_ERROR(e.what());
 				return false;
 			}
 
-			std::cout << "[SERVER] started!\n";
+			LOG_INFO("-- Server started! --");
             return true;
         }
 		void Stop()
@@ -44,7 +43,7 @@ namespace network
 			if (m_threadContext.joinable())
                 m_threadContext.join();
 
-			std::cout << "[SERVER] stopped!\n";
+			LOG_INFO("-- Server stopped! --");
 		}
 		void WaitForClientConnection()
 		{
@@ -53,7 +52,7 @@ namespace network
 				{
 					if (!ec)
 					{
-						std::cout << "[SERVER] New Connection: " << socket.remote_endpoint() << "\n";
+						LOG_INFO("New Connection: " + socket.remote_endpoint().address().to_string());
 						std::shared_ptr<connection<T>> newconn =
 							std::make_shared<connection<T>>(connection<T>::owner::server,
 								m_asioContext, std::move(socket), m_qMessagesIn);
@@ -62,17 +61,17 @@ namespace network
 						{
                             m_deqConnections.push_back(std::move(newconn));
                             m_deqConnections.back()->ConnectToClient(this, nIDCounter++);
-							
-							std::cout << "[" << m_deqConnections.back()->GetID() << "] Connection Approved\n";
+
+							LOG_INFO("[Player #" + std::to_string(m_deqConnections.back()->GetID()) + "] Connection approved");
 						}
 						else
 						{
-							std::cout << "[SERVER] Connection Denied\n";
+							LOG_WARN("Connection denied from server");
 						}
 					}
 					else
 					{
-						std::cout << "[SERVER] New Connection Error: " << ec.message() << "\n";
+						LOG_ERROR("New Connection Error: " + ec.message());
 					}
 					WaitForClientConnection();
                 });

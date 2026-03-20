@@ -4,7 +4,6 @@ MultiPlayerMode::MultiPlayerMode(GameContext& ctx, MenuHandle& menu)
     : IGameMode(ctx, menu)
 {
     value = 7;
-    Init();
 }
 MultiPlayerMode::~MultiPlayerMode()
 {
@@ -17,6 +16,9 @@ void MultiPlayerMode::Init()
 
 void MultiPlayerMode::Update(float dt)
 {
+    PollMessage();
+
+    //SetPositionAndSend(player.position.x, player.position.y);
 }
 
 void MultiPlayerMode::Draw()
@@ -25,6 +27,6 @@ void MultiPlayerMode::Draw()
 
 void MultiPlayerMode::OnExit()
 {
-    this->Disconnect();
+    Disconnect();
     SettingsManager::SaveData(gameContext.keyBindings, menuHandle);
 }

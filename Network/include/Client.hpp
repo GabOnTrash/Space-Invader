@@ -41,7 +41,7 @@ namespace network
 			}
 			catch (std::exception& e)
 			{
-				std::cerr << "Client exception: " << e.what() << "\n";
+				LOG_ERROR(e.what());
 				return false;
 			}
 

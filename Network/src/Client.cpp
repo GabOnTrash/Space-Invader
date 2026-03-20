@@ -50,13 +50,13 @@ public:
             {
                 case MultiplayerPacketType::PLAYER_NOTIFY_ID:
                     msg >> thisPlayer.id;
-                    std::cout << "[CLIENT] Getting player ID in __line__ 53: " << thisPlayer.id << std::endl;
+                    LOG_INFO("[Player #" + std::to_string(thisPlayer.id) + "] got notified of own ID");
 
                 break;
                 case MultiplayerPacketType::PLAYER_ADDED:
                     uint32_t id;
                     msg >> id;
-                    std::cout << "[CLIENT] Storing player ID from msg in __line__ 59: " << id << std::endl;
+                    LOG_INFO("[Player #" + std::to_string(thisPlayer.id) + "] got notified of [Player #" + std::to_string(id) + "]");
                     if (id != thisPlayer.id)
                         otherPlayers[id] = {0.0f, 0.0f, id };
                 break;

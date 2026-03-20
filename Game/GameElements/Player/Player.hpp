@@ -56,7 +56,7 @@ private:
 
 	int vel				= 500;
 	int coolDown		= 400;
-	int laserTimeToLive		= 2000; // in ms
+	int laserTimeToLive	= 2000; // in ms
 
     bool isDashing = false;
 	bool wantToDash = false;

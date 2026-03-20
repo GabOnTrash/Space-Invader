@@ -34,6 +34,7 @@ FetchContent_MakeAvailable(raylib nlohmann_json asio)
 add_library(ClientServerImplementation STATIC
         Network/src/Client.cpp
         Network/src/Server.cpp
+        Game/GameElements/util/Logger.hpp
 )
 
 target_include_directories(ClientServerImplementation PUBLIC

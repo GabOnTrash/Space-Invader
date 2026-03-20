@@ -1,10 +1,18 @@
 #include "../../Network/src/Server.cpp"
 
-int main()
+int main(int argc, char** argv)
 {
-    Server server_instance(54000);
+    Logger::Get().Init("Server_Log.txt");
+
+    if (argc == 2)
+    {
+        if (std::string(argv[1]) == "-clean")
+            Logger::Get().CleanUp();
+    }
+
+    Server server_instance(56000);
     server_instance.Start();
-    
+
     while (true)
     {
         server_instance.Update(-1, false);

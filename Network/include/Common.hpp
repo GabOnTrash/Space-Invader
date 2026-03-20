@@ -11,6 +11,9 @@
 #include <chrono>
 #include <cstdint>
 
+// for logging purposes
+#include "../../Game/GameElements/util/Logger.hpp"
+
 #ifdef _WIN32
 	#define _WIN32_WINNT 0x0A00
 #endif
