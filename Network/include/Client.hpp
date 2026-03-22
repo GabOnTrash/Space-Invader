@@ -63,9 +63,8 @@ namespace network
 		{
 			if (m_connection)
 				return m_connection->IsConnected();
-				
-			else 
-				return false;
+
+			return false;
 		}
 		tsqueue<owned_message<T>>& Incoming()
 		{

@@ -34,19 +34,22 @@ public:
         m_file.open(path, std::ios::out | std::ios::trunc);
 
         if (m_file.is_open())
-            m_file << GetTimeStamp() + " [" + LevelToString(Level::INFO) + "] " + "File was too big, cleanup was done.";
+            m_file << GetTimeStamp() + " [" + LevelToString(Level::INFO).first + "] " + "File was too big, or cleanup called, file was reset.\n";
     }
 
-    void Log(Level level, const std::string& message)
+    void Log(Level level, const std::string& message, bool ts = true)
     {
         std::lock_guard<std::mutex> lock(m_mux);
-
         if (std::filesystem::file_size(path) >= FILE_SIZE)
             CleanUp();
 
-        std::string output = GetTimeStamp() + " [" + LevelToString(level) + "] " + message;
+        std::string tm = ts ? GetTimeStamp() : "";
+        std::pair<std::string, std::string> type_color = LevelToString(level);
 
-        std::cout << output << std::endl;
+        std::string output = tm + type_color.second + " [" + type_color.first + "] " + message + "\033[0m";
+
+        std::cout << "\r\033[2K" << output << "\n> " << std::flush;
+        output = tm + " [" + type_color.first + "] " + message;
         if (m_file.is_open())
             m_file << output << std::endl;
     }
@@ -66,15 +69,15 @@ private:
         return ss.str();
     }
 
-    std::string LevelToString(Level level)
+    std::pair<std::string, std::string> LevelToString(Level level)
     {
         switch (level)
         {
-            case Level::INFO:   return "INFO";
-            case Level::DEBUG:  return "DEBUG";
-            case Level::WARN:   return "WARN";
-            case Level::ERROR:  return "ERROR";
-            default:            return "UNKNOWN";
+        case Level::INFO:   return { "INFO", "\033[1;32m" };
+        case Level::DEBUG:  return { "DEBUG", "\033[1;36m" };
+        case Level::WARN:   return { "WARN", "\033[1;33m" };
+        case Level::ERROR:  return { "ERROR", "\033[1;31m" };
+        default:            return { "UNKNOWN", "\033[0m" };
         }
     }
 
@@ -88,3 +91,7 @@ private:
 #define LOG_DEBUG(msg) Logger::Get().Log(Logger::Level::DEBUG, msg)
 #define LOG_WARN(msg) Logger::Get().Log(Logger::Level::WARN, msg)
 #define LOG_ERROR(msg) Logger::Get().Log(Logger::Level::ERROR, msg)
+#define LOG_INFO_NTIME(msg) Logger::Get().Log(Logger::Level::INFO, msg, false)
+#define LOG_DEBUG_NTIME(msg) Logger::Get().Log(Logger::Level::DEBUG, msg, false)
+#define LOG_WARN_NTIME(msg) Logger::Get().Log(Logger::Level::WARN, msg, false)
+#define LOG_ERROR_NTIME(msg) Logger::Get().Log(Logger::Level::ERROR, msg, false)

@@ -15,7 +15,6 @@ struct PlayerInfo
 
 class Client : public network::clientInterface<MultiplayerPacketType>
 {
-private:
     std::unordered_map<uint32_t, PlayerInfo> otherPlayers;
     PlayerInfo thisPlayer;
 public:
@@ -64,14 +63,16 @@ public:
                 case MultiplayerPacketType::PLAYER_ADD_OTHERS:
                     PlayerInfo info;
                     msg >> info;
-                    std::cout << "[CLIENT] Getting player struct from msg in __line__ 67: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
+                    LOG_INFO("[Player #" + std::to_string(thisPlayer.id) + "] retrieved player #" + std::to_string(info.id)
+                        + " struct {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
+
                     if (info.id != thisPlayer.id)
                         otherPlayers[info.id] = info;
                 break;
                 case MultiplayerPacketType::PLAYER_REMOVED:
                     uint32_t deadID;
                     msg >> deadID;
-                    std::cout << "[CLIENT] Getting id from msg to delete from map in __line__ 74: ID: " << deadID << std::endl;
+                    LOG_INFO("[Player #" + std::to_string(thisPlayer.id) + "] notified deletion of player #" + std::to_string(deadID));
                     otherPlayers.erase(deadID);
                 break;
 

@@ -19,6 +19,7 @@ public:
 	void Draw();
 
 	bool IsFullscreen();
+	void GoBackToMain();
 	void UpdateDifficulty();
 	void SetMenuSinglePlayer();
 	void SetMenuMultiPlayer();
@@ -48,7 +49,6 @@ private:
 	void InitRunOverlay();
 	void InitAudioControl();
 	void InitBindsControls();
-    void GoBackToMain();
     void UpdateSinglePlayerOverlay();
 	void UpdateMultiPlayerOverlay();
 	void HandleStateChange(GameState newState);

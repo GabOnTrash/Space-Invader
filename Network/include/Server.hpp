@@ -14,6 +14,7 @@ namespace network
 		serverInterface(uint16_t port) 
 			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
 		{
+			this->port = port;
 			m_asioAcceptor.set_option(asio::socket_base::reuse_address(true));
 		}
 		virtual ~serverInterface()
@@ -33,7 +34,7 @@ namespace network
 				return false;
 			}
 
-			LOG_INFO("-- Server started! --");
+			LOG_INFO("-- Server started on port " + std::to_string(port) + "! --");
             return true;
         }
 		void Stop()
@@ -163,5 +164,6 @@ namespace network
 
 		asio::ip::tcp::acceptor m_asioAcceptor;
         uint32_t nIDCounter = 0;
+		uint16_t port = 0;
 	};
 }

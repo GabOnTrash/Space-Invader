@@ -111,7 +111,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("[Connection #" + std::to_string(id) + "] Read Header Fail.");
+                        LOG_WARN("[Connection #" + std::to_string(id) + "] Read Header Fail.");
                         m_socket.close();
                     }
                 });
@@ -127,7 +127,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("[Connection #" + std::to_string(id) + "] Read Body Fail.");
+                        LOG_WARN("[Connection #" + std::to_string(id) + "] Read Body Fail.");
                         m_socket.close();
                     }
                 });
@@ -154,7 +154,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("[Connection #" + std::to_string(id) + "] Write Header Fail.");
+                        LOG_WARN("[Connection #" + std::to_string(id) + "] Write Header Fail.");
                         m_socket.close();
                     }
                 });
@@ -174,7 +174,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("[Connection #" + std::to_string(id) + "] Write Body Fail.");
+                        LOG_WARN("[Connection #" + std::to_string(id) + "] Write Body Fail.");
                         m_socket.close();
                     }
                 });

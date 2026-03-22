@@ -24,11 +24,24 @@ private:
 public:
     Server(uint16_t port) : network::serverInterface<MultiplayerPacketType>(port)
     {
-
     }
     virtual ~Server()
     {
     }
+
+    void ListPlayers()
+    {
+        for (const auto& [_, info] : playersMap)
+            LOG_INFO("[Player #" + std::to_string(info.id) + "]: {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
+    }
+    void KickPlayer(uint32_t id)
+    {
+        for (auto& conn : m_deqConnections)
+        {
+            if (id == conn->GetID())
+                conn->Disconnect();
+        }
+    };
 
 protected:
     bool OnClientConnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
@@ -46,7 +59,8 @@ protected:
                 network::message<MultiplayerPacketType> othersInfo;
                 othersInfo.header.id = MultiplayerPacketType::PLAYER_ADD_OTHERS;
                 othersInfo << info;
-                std::cout << "[SERVER] Passing player ID in __line__ 49: " << idP << " with in player info: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
+                LOG_INFO("[SERVER] Passing to player #" + std::to_string(id) + " info of player #"
+                    + std::to_string(info.id) + " {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
                 MessageClient(client, othersInfo);
             }
 
@@ -56,12 +70,12 @@ protected:
         network::message<MultiplayerPacketType> msgID;
         msgID.header.id = MultiplayerPacketType::PLAYER_NOTIFY_ID;
         msgID << id;
-        std::cout << "[SERVER] Sending player his id with msg in __line__ 59: ID: " << id << std::endl;
+        LOG_INFO("[SERVER] Sending player #" + std::to_string(id) + " own id");
         MessageClient(client, msgID);
 
         network::message<MultiplayerPacketType> msg;
         msg.header.id = MultiplayerPacketType::PLAYER_ADDED;
-        std::cout << "[SERVER] Sending all other players new p. id from with msg in __line__ 64: ID: " << id << std::endl;
+        LOG_INFO("[SERVER] Sending player #" + std::to_string(id) + " infos to all");
         msg << id;
         MessageAllClient(msg, client);
     }
@@ -73,17 +87,17 @@ protected:
             if (playersMap.find(id) != playersMap.end())
             {
                 playersMap.erase(id);
-                std::cout << "[SERVER] Client disconnected: " << id << std::endl;
+                LOG_INFO("[SERVER] Player #" + std::to_string(id) + " disconnected");
             }
             else return;
         }
 
         network::message<MultiplayerPacketType> msg;
         msg.header.id = MultiplayerPacketType::PLAYER_REMOVED;
-
         msg << id;
+
         MessageAllClient(msg, nullptr);
-        std::cout << "[SERVER] Messaging all clients to delete player in __line__ 84: ID: " << id << std::endl;
+        LOG_INFO("[SERVER] Messaging all players to delete player #" + std::to_string(id));
     }
     void OnMessage(std::shared_ptr<network::connection<MultiplayerPacketType>> client,
                            network::message<MultiplayerPacketType>& msg) override
@@ -98,7 +112,7 @@ protected:
             msg >> info;
 
             info.id = client->GetID();
-            std::cout << "[SERVER] Getting player info to send to other clients in __line__ 96: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
+            LOG_INFO("[SERVER] Retrieving/Sending info from player #" + std::to_string(info.id) + "{ " + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
             {
                 std::scoped_lock<std::mutex> lock(muxGame);
                 playersMap[info.id] = info;
@@ -107,7 +121,6 @@ protected:
             network::message<MultiplayerPacketType> outMsg;
             outMsg.header.id = MultiplayerPacketType::PLAYER_MOVE;
             outMsg << info;
-            std::cout << "[SERVER] Sending player info to the other clients in __line__ 108: ID: " << info.id << " x: " << info.x << " y: " << info.y << std::endl;
             MessageAllClient(outMsg, client);
         }
         break;
@@ -118,3 +131,4 @@ protected:
         }
     }
 };
+

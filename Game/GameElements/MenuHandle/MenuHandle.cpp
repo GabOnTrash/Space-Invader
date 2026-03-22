@@ -221,6 +221,7 @@ void MenuHandle::GoBackToMain()
 {
     if (BackToMainMenu)
         BackToMainMenu();
+
     isSinglePlayer = false;
     *(gameContext.gameStatus) = GameState::ON_START_MENU;
     MainMenuHandler.PushMenu(StartMenu);
@@ -291,10 +292,14 @@ void MenuHandle::UpdateDifficulty()
 void MenuHandle::SetMenuSinglePlayer()
 {
     isSinglePlayer = true;
+    RunningMenu->activate("labelDanger");
+    RunningMenu->activate("labelScore");
 }
 void MenuHandle::SetMenuMultiPlayer()
 {
     isSinglePlayer = false;
+    RunningMenu->deactive("labelDanger");
+    RunningMenu->deactive("labelScore");
 }
 void MenuHandle::ResumeGame()
 {

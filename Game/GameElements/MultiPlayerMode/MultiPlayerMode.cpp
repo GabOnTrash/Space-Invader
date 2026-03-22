@@ -11,13 +11,15 @@ MultiPlayerMode::~MultiPlayerMode()
 
 void MultiPlayerMode::Init()
 {
+    Logger::Get().Init("Server_Log.txt");
     Connect("127.0.0.1", 56000);
 }
 
 void MultiPlayerMode::Update(float dt)
 {
     PollMessage();
-
+    if (!IsConnected())
+        menuHandle.GoBackToMain();
     //SetPositionAndSend(player.position.x, player.position.y);
 }
 
