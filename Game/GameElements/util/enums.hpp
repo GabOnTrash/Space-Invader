@@ -6,6 +6,7 @@ enum class GameState
     RUNNING_GAME,
     ON_PAUSED_MENU = 2,
     KILLED = 3,
+    ON_IP_MENU
 };
 
 enum class MeteorState

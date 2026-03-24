@@ -41,7 +41,8 @@ namespace network
 			}
 			catch (std::exception& e)
 			{
-				LOG_ERROR(e.what());
+				LOG_ERROR_EVERYWHERE(e.what());
+				std::cerr << e.what() << std::endl;
 				return false;
 			}
 

@@ -111,7 +111,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_WARN("[Connection #" + std::to_string(id) + "] Read Header Fail.");
+                        LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Header Fail.");
                         m_socket.close();
                     }
                 });
@@ -127,7 +127,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_WARN("[Connection #" + std::to_string(id) + "] Read Body Fail.");
+                        LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Body Fail.");
                         m_socket.close();
                     }
                 });
@@ -154,7 +154,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_WARN("[Connection #" + std::to_string(id) + "] Write Header Fail.");
+                        LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Header Fail.");
                         m_socket.close();
                     }
                 });
@@ -174,7 +174,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_WARN("[Connection #" + std::to_string(id) + "] Write Body Fail.");
+                        LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Body Fail.");
                         m_socket.close();
                     }
                 });
@@ -210,7 +210,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("Client disconnected due to fail validation");
+                        LOG_ERROR_EVERYWHERE("Client disconnected due to fail validation");
                         m_socket.close();
                     }
                 });
@@ -226,14 +226,14 @@ namespace network
                         {
                             if (m_nHandshakeIn == m_nHandshakeCheck)
                             {
-                                LOG_INFO("Client validated");
+                                LOG_INFO_EVERYWHERE("Client #" + std::to_string(id) + " validated");
                                 server->OnClientValidated(this->shared_from_this());
                             
                                 ReadHeader();
                             }
                             else
                             {
-                                LOG_ERROR("Client disconnected due to fail validation");
+                                LOG_ERROR_EVERYWHERE("Client #" + std::to_string(id) + " disconnected due to fail validation");
                                 m_socket.close();
                             }
                         }
@@ -245,7 +245,7 @@ namespace network
                     }
                     else
                     {
-                        LOG_ERROR("Client disconnected most likely due to multiple connections");
+                        LOG_ERROR_EVERYWHERE("Client disconnected most likely due to multiple connections");
                         m_socket.close();
                     }
                 });
@@ -257,7 +257,6 @@ namespace network
 
         tsqueue<message<T>> m_qMessagesOut;
         tsqueue<owned_message<T>>& m_qMessagesIn;
-
 
         uint64_t m_nHandshakeOut = 0;
         uint64_t m_nHandshakeIn = 0;

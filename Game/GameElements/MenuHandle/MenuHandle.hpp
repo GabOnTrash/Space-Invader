@@ -18,16 +18,22 @@ public:
     void Update();
 	void Draw();
 
+	std::string GetIP() { return this->IP; }
+	uint16_t GetPort() { return this->PORT; }
+
 	bool IsFullscreen();
 	void GoBackToMain();
 	void UpdateDifficulty();
 	void SetMenuSinglePlayer();
 	void SetMenuMultiPlayer();
-	bool UserWantsToQuit()
+    void ConnectToServer();
+
+    bool UserWantsToQuit()
 	{
 		return shouldQuit;
 	}
-	std::function<void()> StartSinglePlayer;
+
+    std::function<void()> StartSinglePlayer;
 	std::function<void()> StartMultiPlayer;
 	std::function<void()> BackToMainMenu;
 	std::function<void()> Restart;
@@ -54,14 +60,18 @@ private:
 	void HandleStateChange(GameState newState);
 	void InitLinksIcons();
 	void DrawLinksIcons();
+	void InitConnectionMenu();
 
 	MenuHandler MainMenuHandler;
+
 	std::shared_ptr<Menu> StartMenu;
 	std::shared_ptr<Menu> RunningMenu;
 	std::shared_ptr<Menu> PausedMenu;
 	std::shared_ptr<Menu> AudioMenu;
 	std::shared_ptr<Menu> ControlsMenu;
 	std::shared_ptr<Menu> PreviousMenu;
+
+	std::shared_ptr<Menu> ConnectionMenu;
 
 	Timer<> timerDelayResume;
 
@@ -75,7 +85,6 @@ private:
     const char* TranslateToDifficulty() const;
     void SetDifficulty();
 
-private:
     void RecalculateLayout();
 
     void ChangeDifficulty();
@@ -84,6 +93,9 @@ private:
     const char* TranslateKey(int key);
 
     void ToggleFullscreen();
+
+	std::string IP;
+	uint16_t PORT;
 
     std::string waitingForKeyBind = "";
 

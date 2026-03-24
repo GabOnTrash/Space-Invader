@@ -50,10 +50,6 @@ elseif(UNIX)
     target_link_libraries(ClientServerImplementation PUBLIC pthread)
 endif()
 
-# --- 2. Space-Invader Client (The Game) ---
-
-# Define the source files for the game.
-# Adjusted paths assuming "Game/Name/Name.cpp" structure.
 set(GAME_SOURCES
         Game/GameElements/AssetsManager/AssetsManager.cpp
         Game/GameElements/AudioManager/AudioManager.cpp
@@ -77,7 +73,10 @@ set(GAME_SOURCES
         Game/UI/Label.cpp
         Game/UI/Slider.cpp
         # Managers (Entities)
-        Game/GameElements/EntitiesManaging/EntityManager.hpp # Headers are usually optional in add_executable but good for IDEs
+        Game/GameElements/EntitiesManaging/EntityManager.hpp
+        Game/UI/TextBox.cpp
+        Game/UI/TextBox.hpp
+        Game/GameElements/MenuHandle/MenuInitializer.cpp # Headers are usually optional in add_executable but good for IDEs
 )
 
 # Main Executable

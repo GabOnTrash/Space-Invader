@@ -5,13 +5,15 @@
 class MultiPlayerMode : public IGameMode, public Client
 {
 public:
-    MultiPlayerMode(GameContext& ctx, MenuHandle& menu);
+    MultiPlayerMode(GameContext& ctx, MenuHandle& menu, std::string ip, uint16_t port);
     ~MultiPlayerMode();
 
     void Init() override;
     void Update(float dt) override;
     void Draw() override;
     void OnExit() override;
+
 private:
-    int value = 3;
+    std::string ip;
+    uint16_t port;
 };

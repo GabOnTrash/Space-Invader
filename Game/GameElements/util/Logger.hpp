@@ -37,21 +37,31 @@ public:
             m_file << GetTimeStamp() + " [" + LevelToString(Level::INFO).first + "] " + "File was too big, or cleanup called, file was reset.\n";
     }
 
-    void Log(Level level, const std::string& message, bool ts = true)
+    void LogConsole(Level level, const std::string& message)
+    {
+        std::lock_guard<std::mutex> lock(m_mux);
+
+        auto type_color = LevelToString(level);
+        std::string output = type_color.second + " [" + type_color.first + "] " + message + "\033[0m";
+
+        std::cout << "\r\033[2K" << output << "\n> " << std::flush;
+    }
+    void LogFile(Level level, const std::string& message)
     {
         std::lock_guard<std::mutex> lock(m_mux);
         if (std::filesystem::file_size(path) >= FILE_SIZE)
             CleanUp();
 
-        std::string tm = ts ? GetTimeStamp() : "";
-        std::pair<std::string, std::string> type_color = LevelToString(level);
+        std::string output = GetTimeStamp() + " [" + LevelToString(level).first + "] " + message;
 
-        std::string output = tm + type_color.second + " [" + type_color.first + "] " + message + "\033[0m";
-
-        std::cout << "\r\033[2K" << output << "\n> " << std::flush;
-        output = tm + " [" + type_color.first + "] " + message;
         if (m_file.is_open())
             m_file << output << std::endl;
+    }
+
+    void Log(Level level, const std::string& message)
+    {
+        LogFile(level, message);
+        LogConsole(level, message);
     }
 
 private:
@@ -87,11 +97,17 @@ private:
     const uintmax_t FILE_SIZE = 1024 * 1024 * 10;
 };
 
-#define LOG_INFO(msg) Logger::Get().Log(Logger::Level::INFO, msg)
-#define LOG_DEBUG(msg) Logger::Get().Log(Logger::Level::DEBUG, msg)
-#define LOG_WARN(msg) Logger::Get().Log(Logger::Level::WARN, msg)
-#define LOG_ERROR(msg) Logger::Get().Log(Logger::Level::ERROR, msg)
-#define LOG_INFO_NTIME(msg) Logger::Get().Log(Logger::Level::INFO, msg, false)
-#define LOG_DEBUG_NTIME(msg) Logger::Get().Log(Logger::Level::DEBUG, msg, false)
-#define LOG_WARN_NTIME(msg) Logger::Get().Log(Logger::Level::WARN, msg, false)
-#define LOG_ERROR_NTIME(msg) Logger::Get().Log(Logger::Level::ERROR, msg, false)
+#define LOG_INFO_EVERYWHERE(msg) Logger::Get().Log(Logger::Level::INFO, msg)
+#define LOG_DEBUG_EVERYWHERE(msg) Logger::Get().Log(Logger::Level::DEBUG, msg)
+#define LOG_WARN_EVERYWHERE(msg) Logger::Get().Log(Logger::Level::WARN, msg)
+#define LOG_ERROR_EVERYWHERE(msg) Logger::Get().Log(Logger::Level::ERROR, msg)
+
+#define LOG_INFO_FILE(msg) Logger::Get().LogFile(Logger::Level::INFO, msg)
+#define LOG_DEBUG_FILE(msg) Logger::Get().LogFile(Logger::Level::DEBUG, msg)
+#define LOG_WARN_FILE(msg) Logger::Get().LogFile(Logger::Level::WARN, msg)
+#define LOG_ERROR_FILE(msg) Logger::Get().LogFile(Logger::Level::ERROR, msg)
+
+#define LOG_INFO_CONSOLE(msg) Logger::Get().LogConsole(Logger::Level::INFO, msg)
+#define LOG_DEBUG_CONSOLE(msg) Logger::Get().LogConsole(Logger::Level::DEBUG, msg)
+#define LOG_WARN_CONSOLE(msg) Logger::Get().LogConsole(Logger::Level::WARN, msg)
+#define LOG_ERROR_CONSOLE(msg) Logger::Get().LogConsole(Logger::Level::ERROR, msg)

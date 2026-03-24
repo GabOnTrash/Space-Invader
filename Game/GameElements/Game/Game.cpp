@@ -40,6 +40,7 @@ void Game::Run()
 
         if (currentMode)
             currentMode->Draw();
+
         menuHandle->Draw();
 
         if (*gameStatus != GameState::RUNNING_GAME)
@@ -82,9 +83,10 @@ void Game::LoadMultiPlayerMode()
     if (currentMode)
         currentMode->OnExit();
 
-    currentMode = std::make_unique<MultiPlayerMode>(gameContext, *menuHandle);
+    currentMode = std::make_unique<MultiPlayerMode>(gameContext, *menuHandle,
+        menuHandle->GetIP(), menuHandle->GetPort());
+
     currentMode->Init();
-    *gameStatus = GameState::RUNNING_GAME;
     menuHandle->SetMenuMultiPlayer();
 }
 void Game::SetUICallBacks()

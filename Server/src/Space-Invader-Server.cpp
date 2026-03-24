@@ -22,26 +22,30 @@ void cliThread(Server& srv)
     std::deque<std::vector<std::string>> history;
     std::unordered_map<std::string, CommandFunc> commands;
 
+    commands["reboot"] = [&] (auto args) { srv.Stop(); srv.Start(); LOG_INFO_CONSOLE("Server rebooted!"); };
     commands["stop"] = [&] (auto args){ srv.Stop(); exit(0); };
     commands["plist"] = [&] (auto args) { srv.ListPlayers(); };
-    commands["cleanup"] = [&] (auto args) { Logger::Get().CleanUp(); };
+    commands["cleanup"] = [&] (auto args) { Logger::Get().CleanUp();  LOG_ERROR_CONSOLE("Log file was cleaned"); };
     commands["help"] = [&] (auto args)
     {
-        LOG_INFO_NTIME("Available commands:");
-        for (const auto& [name, _] : commands) LOG_INFO_NTIME("- " + name);
+        LOG_INFO_CONSOLE("Available commands:");
+        for (const auto& [name, _] : commands) LOG_INFO_CONSOLE("- " + name);
     };
     commands["kick"] = [&] (auto args)
     {
         uint32_t id;
         if (args.size() < 1)
         {
-            LOG_WARN_NTIME("Usage: kick <ID>");
+            LOG_WARN_CONSOLE("Usage: kick <ID>");
             return;
         }
         try { id = std::stoi(args[0]); }
-        catch (std::exception& ex) { LOG_ERROR_NTIME("Not a valid ID"); return; }
-        srv.KickPlayer(id);
-        LOG_INFO("kicked player");
+        catch (std::exception& ex) { LOG_ERROR_CONSOLE("Not a valid ID"); return; }
+
+        if (srv.KickPlayer(id))
+            LOG_WARN_CONSOLE("Kicked player " + std::to_string(id));
+        else
+            LOG_ERROR_EVERYWHERE("Could not kick player with id #" + std::to_string(id));
     };
     commands["history"] = [&] (auto args)
     {
@@ -57,22 +61,22 @@ void cliThread(Server& srv)
         case 1:
         {
             try { quantity = std::stoi(args[0]); }
-            catch (std::exception& ex) { LOG_ERROR_NTIME("Not a valid quantity"); return; }
+            catch (std::exception& ex) { LOG_ERROR_CONSOLE("Not a valid quantity"); return; }
             break;
         }
         default:
-            LOG_WARN_NTIME("Usage: history <quant/empty>");
+            LOG_WARN_CONSOLE("Usage: history <quant/empty>");
             return;
         }
 
-        LOG_DEBUG_NTIME("Commands history of last " + std::to_string(quantity) + " commands, most to least recent");
+        LOG_DEBUG_CONSOLE("Commands history of last " + std::to_string(quantity) + " commands, most to least recent");
         for (size_t i = 0; i < quantity; i++)
         {
             std::ostringstream cmd;
             for (const auto& item : history[i])
                 cmd << item << " ";
 
-            LOG_DEBUG_NTIME(std::to_string(i + 1) + ". " + cmd.str());
+            LOG_DEBUG_CONSOLE(std::to_string(i + 1) + ". " + cmd.str());
         }
     };
 
@@ -103,10 +107,10 @@ void cliThread(Server& srv)
                 commands[cmdName](parts);
                 line.clear();
             }  // function call w/ params
-            catch (std::exception& ex) { LOG_ERROR("Error while executing command: " + std::string(ex.what())); }
+            catch (std::exception& ex) { LOG_ERROR_CONSOLE("Error while executing command: " + std::string(ex.what())); }
         }
         else
-            LOG_WARN_NTIME("Unknown command: " + cmdName + ", type 'help' to find suggestions");
+            LOG_WARN_CONSOLE("Unknown command: " + cmdName + ", type 'help' to find suggestions");
     }
 }
 
@@ -116,7 +120,7 @@ int main(int argc, char** argv)
 
     if (argc != 2)
     {
-        LOG_WARN("Usage: " + std::string(argv[0]) + " <port>");
+        LOG_WARN_CONSOLE("Usage: " + std::string(argv[0]) + " <port>");
         return 1;
     }
 
@@ -126,7 +130,7 @@ int main(int argc, char** argv)
     }
     catch (std::exception& ex)
     {
-        LOG_ERROR_NTIME("Couldn't convert input to port");
+        LOG_ERROR_CONSOLE("Couldn't convert input to port");
         return 1;
     }
 
