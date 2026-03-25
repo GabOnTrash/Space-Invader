@@ -36,7 +36,6 @@ namespace network
 					m_qMessagesIn);
 
 				m_connection->ConnectToServer(endpoints);
-
 				thrContext = std::thread([this]() { m_context.run(); });
 			}
 			catch (std::exception& e)
@@ -58,7 +57,7 @@ namespace network
 			if (thrContext.joinable())
 				thrContext.join();
 
-			m_connection.release();
+			m_connection.reset();
 		}
 		bool IsConnected()
 		{

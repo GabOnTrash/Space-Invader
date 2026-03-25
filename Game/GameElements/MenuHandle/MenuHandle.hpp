@@ -18,8 +18,8 @@ public:
     void Update();
 	void Draw();
 
-	std::string GetIP() { return this->IP; }
-	uint16_t GetPort() { return this->PORT; }
+	std::string GetIP();
+	uint16_t GetPort();
 
 	bool IsFullscreen();
 	void GoBackToMain();
@@ -61,8 +61,9 @@ private:
 	void InitLinksIcons();
 	void DrawLinksIcons();
 	void InitConnectionMenu();
+    void InitMultiPlayerOverlay();
 
-	MenuHandler MainMenuHandler;
+    MenuHandler MainMenuHandler;
 
 	std::shared_ptr<Menu> StartMenu;
 	std::shared_ptr<Menu> RunningMenu;
@@ -70,6 +71,7 @@ private:
 	std::shared_ptr<Menu> AudioMenu;
 	std::shared_ptr<Menu> ControlsMenu;
 	std::shared_ptr<Menu> PreviousMenu;
+    std::shared_ptr<Menu> MultiPlayerOverlay;
 
 	std::shared_ptr<Menu> ConnectionMenu;
 
@@ -93,9 +95,6 @@ private:
     const char* TranslateKey(int key);
 
     void ToggleFullscreen();
-
-	std::string IP;
-	uint16_t PORT;
 
     std::string waitingForKeyBind = "";
 

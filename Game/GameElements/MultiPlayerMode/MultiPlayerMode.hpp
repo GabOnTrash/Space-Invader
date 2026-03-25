@@ -16,4 +16,5 @@ public:
 private:
     std::string ip;
     uint16_t port;
+    Timer<> timeToConnect;
 };

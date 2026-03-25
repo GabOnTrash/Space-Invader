@@ -61,7 +61,7 @@ void Game::Update()
     backgroundStars.updateStars(dt);
 
     menuHandle->Update();
-    if (currentMode && *gameStatus == GameState::RUNNING_GAME)
+    if (currentMode)
         currentMode->Update(dt);
 
     if (currentMode && *gameStatus == GameState::ON_PAUSED_MENU)

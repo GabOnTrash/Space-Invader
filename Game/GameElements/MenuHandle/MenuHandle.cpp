@@ -118,8 +118,22 @@ void MenuHandle::UpdateSinglePlayerOverlay()
 
 void MenuHandle::UpdateMultiPlayerOverlay()
 {
+    /*auto* mpMode = dynamic_cast<MultiPlayerMode*>(gameContext.currentMode.get());
+    if (!mpMode) return;
 
-}
+    // Aggiorna il numero di giocatori (te + altri)
+    int totalPlayers = mpMode->GetOtherPlayers().size() + 1;
+    auto lblCount = MultiPlayerOverlay->getByID("lblPlayerCount");
+    if (lblCount) {
+        lblCount->setText(TextFormat("Players Online: %d", totalPlayers));
+    }
+
+    // Aggiorna il tuo ID se disponibile
+    auto lblID = MultiPlayerOverlay->getByID("lblMyID");
+    if (lblID) {
+        // Supponendo che tu abbia un metodo GetID() in Client o MultiPlayerMode
+        lblID->setText(TextFormat("Your ID: %d", mpMode->GetID()));
+*/}
 
 void MenuHandle::Draw()
 {
@@ -137,6 +151,16 @@ void MenuHandle::Draw()
     if (isSinglePlayer)
         for (auto & i : heartsArray)
             i.Draw();
+}
+
+std::string MenuHandle::GetIP()
+{
+    return ConnectionMenu->getByID("txtIp")->getText();
+}
+
+uint16_t MenuHandle::GetPort()
+{
+    return std::stoi(ConnectionMenu->getByID("txtPort")->getText());
 }
 
 bool MenuHandle::IsFullscreen()
@@ -176,15 +200,6 @@ void MenuHandle::SetMenuMultiPlayer()
     RunningMenu->deactive("labelDanger");
     RunningMenu->deactive("labelScore");
     *(gameContext.gameStatus) = GameState::RUNNING_GAME;
-}
-
-void MenuHandle::ConnectToServer()
-{
-    IP = ConnectionMenu->getByID("txtIp")->getText();
-    PORT = std::stoi(ConnectionMenu->getByID("txtPort")->getText());
-
-    if (StartMultiPlayer)
-        StartMultiPlayer();
 }
 
 void MenuHandle::ResumeGame()

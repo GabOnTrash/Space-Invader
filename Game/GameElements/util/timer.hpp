@@ -8,7 +8,6 @@ template<typename... Args>
 class Timer
 {
 public:
-
     std::chrono::milliseconds duration;
     std::chrono::high_resolution_clock::time_point initialTime;
 

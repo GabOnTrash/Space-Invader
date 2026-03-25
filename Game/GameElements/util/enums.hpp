@@ -38,6 +38,5 @@ enum class MultiplayerPacketType : uint32_t
     PLAYER_NOTIFY_ID,
     PLAYER_REMOVED,
     PLAYER_MOVE,
-    PLAYER_SHOOT,
-    PLAYER_DASH,
+    PLAYER_SHOOT
 };

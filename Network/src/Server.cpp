@@ -18,10 +18,8 @@ struct PlayerInfo
 
 class Server : public network::serverInterface<MultiplayerPacketType>
 {
-private:
     std::mutex muxGame;
     std::unordered_map<uint32_t, PlayerInfo> playersMap;
-    bool showPacketTrace = false;
 
 public:
     Server(uint16_t port) : network::serverInterface<MultiplayerPacketType>(port)
@@ -31,17 +29,15 @@ public:
     {
     }
 
-    void TogglePacketTrace()
+    bool ListPlayers()
     {
-        showPacketTrace = !showPacketTrace;
-    }
-
-    void ListPlayers()
-    {
-        if (playersMap.empty()) return;
+        if (playersMap.empty())
+            return false;
 
         for (const auto& [_, info] : playersMap)
             LOG_INFO_CONSOLE("[Player #" + std::to_string(info.id) + "]: {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
+
+        return true;
     }
     bool KickPlayer(uint32_t id)
     {
@@ -127,7 +123,7 @@ protected:
             msg >> info;
 
             info.id = client->GetID();
-            if (showPacketTrace)
+            if (false)
                 LOG_DEBUG_CONSOLE("[SERVER] Retrieving/Sending info from player #" + std::to_string(info.id) + "{ " + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
             {
                 std::scoped_lock<std::mutex> lock(muxGame);
@@ -141,7 +137,6 @@ protected:
         }
         break;
         case MultiplayerPacketType::PLAYER_SHOOT:
-        case MultiplayerPacketType::PLAYER_DASH:
         default:
             break;
         }

@@ -85,7 +85,7 @@ void MenuHandle::InitAudioControl()
     pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
     AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
 
-    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), nullptr, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { MainMenuHandler.PopMenu(); MainMenuHandler.PushMenu(PausedMenu); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
 void MenuHandle::InitBindsControls()
@@ -152,11 +152,18 @@ void MenuHandle::InitConnectionMenu()
 
     ConnectionMenu->add<TextBox>("txtIp", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 15, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
     ConnectionMenu->add<TextBox>("txtPort", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3 + 130, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 5, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+    ConnectionMenu->add<Label>("lblStatus", "", nullptr, GameFontMedium, 40, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2 + 50, RED, RED);
 
-    ConnectionMenu->add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnResume"), [this]() { ConnectToServer(); });
+    ConnectionMenu->add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnResume"), [this]() { if (StartMultiPlayer) StartMultiPlayer(); });
     ConnectionMenu->add<TextureButton>("btQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { GoBackToMain(); });
 }
+void MenuHandle::InitMultiPlayerOverlay()
+{
+    MultiPlayerOverlay = std::make_shared<Menu>();
 
+    MultiPlayerOverlay->add<Label>("lblPlayerCount", "Players: 0", nullptr, GameFontMedium, 30, 150, 50, WHITE, WHITE);
+    MultiPlayerOverlay->add<Label>("lblMyID", "ID: ?", nullptr, GameFontMedium, 30, gameContext.renderer.BASE_WIDTH - 150, 50, GREEN, GREEN);
+}
 
 void MenuHandle::InitLinksIcons()
 {
