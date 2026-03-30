@@ -7,29 +7,52 @@ MenuHandle::MenuHandle(GameContext& ctx)
     Widget::setRenderer(&ctx.renderer);
 
     LoadGameFont(); // maybe will be removed
-    RecalculateLayout();
-
     InitAllMenus();
-    InitLinksIcons();
 
     GameDifficulty = static_cast<Difficulty>(SettingsManager::GetKey<int>("difficulty", "GameDifficulty"));
-    ChangeDifficulty();
+    SetDifficulty();
 
     fullscreen = !SettingsManager::GetKey<bool>("video", "Fullscreen");
     ToggleFullscreen();
 
-    MainMenuHandler.PushMenu(StartMenu);
+    menus = {
+        { GameState::ON_START_MENU, startMenu },
+        { GameState::ON_PAUSE_MENU, pauseMenu },
+        { GameState::ON_KILLED_MENU, deathMenu },
+        { GameState::ON_AUDIO_MENU, audioMenu },
+        { GameState::ON_CONTROLS_MENU, controlsMenu },
+        { GameState::ON_CONNECTION_MENU, connectionMenu },
+        { GameState::RUNNING_SINGLE_PLAYER, singlePlayerHUD },
+        { GameState::RUNNING_MULTI_PLAYER, multiPlayerHUD },
+    };
+
+    currentMenu = &menus.at(GameState::ON_START_MENU);
+}
+void MenuHandle::LoadGameFont()
+{
+    GameFontMedium = AssetsManager::GetFontEx("medium", 100, nullptr, 0);
+    GameFontSemiBold = AssetsManager::GetFontEx("semibold", 100, nullptr, 0);
+    SetTextureFilter(GameFontMedium.texture, TEXTURE_FILTER_BILINEAR);
+}
+
+void MenuHandle::InitAllMenus()
+{
+    RecalculateLayout();
+
+    InitStartMenu();
+    InitPauseMenu();
+    InitAudioMenu();
+    InitBindsMenu();
+    InitConneMenu();
+    InitDeathMenu();
+
+    InitSinglePlayerHUD();
+    InitMultiPlayerHUD();
 }
 
 void MenuHandle::Update()
 {
-    MainMenuHandler.Update();
-
-    if (isSinglePlayer)
-        timerDelayResume.update();
-
-    if (IsKeyPressed(KEY_ESCAPE) && *(gameContext.gameStatus) != GameState::KILLED)
-        *(gameContext.gameStatus) = GameState::ON_PAUSED_MENU;
+    currentMenu->Update();
 
     static GameState lastState = GameState::ON_START_MENU;
     GameState currentState = *(gameContext.gameStatus);
@@ -40,31 +63,56 @@ void MenuHandle::Update()
         lastState = currentState;
     }
 
-    if (!waitingForKeyBind.empty())
-        updateKeyBinding();
-
-    if (currentState == GameState::RUNNING_GAME)
+    switch (*(gameContext.gameStatus))
     {
-        if (isSinglePlayer) UpdateSinglePlayerOverlay();
-        else UpdateMultiPlayerOverlay();
+    case GameState::ON_START_MENU:
+        if (Reset)
+            Reset();
+        break;
+    case GameState::RUNNING_SINGLE_PLAYER:
+        timerDelayResume.update();
+        UpdateSinglePlayerHUD();
+        if (IsKeyPressed(KEY_ESCAPE))
+            *(gameContext.gameStatus) = GameState::ON_PAUSE_MENU;
+        break;
+    case GameState::RUNNING_MULTI_PLAYER:
+        UpdateMultiPlayerHUD();
+        if (IsKeyPressed(KEY_ESCAPE))
+            *(gameContext.gameStatus) = GameState::ON_PAUSE_MENU;
+        break;
+    case GameState::ON_CONTROLS_MENU:
+        updateKeyBinding();
+        break;
+    case GameState::ON_PAUSE_MENU:
+        AudioManager::Update();
+        break;
+    default: ;
     }
 }
 
-void MenuHandle::LoadGameFont()
+void MenuHandle::Draw()
 {
-    GameFontMedium = AssetsManager::GetFontEx("medium", 100, nullptr, 0);
-    GameFontSemiBold = AssetsManager::GetFontEx("semibold", 100, nullptr, 0);
-    SetTextureFilter(GameFontMedium.texture, TEXTURE_FILTER_BILINEAR);
-}
+    switch (*(gameContext.gameStatus))
+    {
+    case GameState::RUNNING_SINGLE_PLAYER:
+        for (auto & i : heartsArray)
+            i.Draw();
+        if (timerDelayResume.isRunning)
+            ShowCountDown();
+        break;
+    case GameState::RUNNING_MULTI_PLAYER:
+    case GameState::ON_CONNECTION_MENU:
+        break;
+    case GameState::ON_PAUSE_MENU:
+    case GameState::ON_AUDIO_MENU:
+    case GameState::ON_CONTROLS_MENU:
+    case GameState::ON_KILLED_MENU:
+        DrawRectangle(0, 0, gameContext.renderer.BASE_WIDTH, gameContext.renderer.BASE_HEIGHT, Fade(BLACK, 0.5f));
+        break;
+    default: ;
+    }
 
-void MenuHandle::InitAllMenus()
-{
-    InitStartMenu();
-    InitRunOverlay();
-    InitPausedMenu();
-    InitAudioControl();
-    InitBindsControls();
-    InitConnectionMenu();
+    currentMenu->Draw();
 }
 
 void MenuHandle::ShowCountDown()
@@ -92,75 +140,65 @@ void MenuHandle::ShowCountDown()
     DrawTextEx(GameFontMedium, text, pos, fontSize, 5, c);
 }
 
-void MenuHandle::GoBackToMain()
+void MenuHandle::UpdateSinglePlayerHUD()
 {
-    isSinglePlayer = false;
-    *(gameContext.gameStatus) = GameState::ON_START_MENU;
-    MainMenuHandler.PushMenu(StartMenu);
-
-    if (BackToMainMenu)
-        BackToMainMenu();
-}
-
-void MenuHandle::UpdateSinglePlayerOverlay()
-{
-    *(gameContext.gameStatus) = GameState::RUNNING_GAME;
-
     for (int i = 0; i < heartsArray.size(); i++)
         heartsArray[i].position = { gameContext.renderer.BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width - 20, 20 };
 
-    if (heartsArray.empty())
-        RunningMenu->activate("labelDanger");
-
-    else
-        RunningMenu->deactive("labelDanger");
+    heartsArray.empty() ? singlePlayerHUD.activate("labelDanger") : singlePlayerHUD.deactive("labelDanger");
 }
 
-void MenuHandle::UpdateMultiPlayerOverlay()
+void MenuHandle::UpdateMultiPlayerHUD()
 {
-    /*auto* mpMode = dynamic_cast<MultiPlayerMode*>(gameContext.currentMode.get());
-    if (!mpMode) return;
+    if (!stillTryingConnecting)
+    {
+        multiPlayerHUD.activate("lblPlayerCount");
+        if (lastMatchSize != MATCH_SIZE)
+        {
+            multiPlayerHUD.getByID("lblPlayerCount")->setText(TextFormat("Players: %d", MATCH_SIZE));
+            lastMatchSize = MATCH_SIZE;
+        }
 
-    // Aggiorna il numero di giocatori (te + altri)
-    int totalPlayers = mpMode->GetOtherPlayers().size() + 1;
-    auto lblCount = MultiPlayerOverlay->getByID("lblPlayerCount");
-    if (lblCount) {
-        lblCount->setText(TextFormat("Players Online: %d", totalPlayers));
+        multiPlayerHUD.activate("lblMyID");
+        if (lastID != ID)
+        {
+            multiPlayerHUD.getByID("lblMyID")->setText(TextFormat("ID: %d", ID));
+            lastID = ID;
+        }
+
+        multiPlayerHUD.deactive("lblConnecting");
     }
-
-    // Aggiorna il tuo ID se disponibile
-    auto lblID = MultiPlayerOverlay->getByID("lblMyID");
-    if (lblID) {
-        // Supponendo che tu abbia un metodo GetID() in Client o MultiPlayerMode
-        lblID->setText(TextFormat("Your ID: %d", mpMode->GetID()));
-*/}
-
-void MenuHandle::Draw()
-{
-    if (*(gameContext.gameStatus) == GameState::ON_START_MENU)
-        DrawLinksIcons();
-
-    else if (*(gameContext.gameStatus) != GameState::RUNNING_GAME)
-        DrawRectangle(0, 0, gameContext.renderer.BASE_WIDTH, gameContext.renderer.BASE_HEIGHT, Fade(BLACK, 0.5f));
-
-    MainMenuHandler.Draw();
-
-    if (timerDelayResume.isRunning && *(gameContext.gameStatus) == GameState::RUNNING_GAME)
-        ShowCountDown();
-
-    if (isSinglePlayer)
-        for (auto & i : heartsArray)
-            i.Draw();
+    else
+    {
+        multiPlayerHUD.activate("lblConnecting");
+        multiPlayerHUD.deactive("lblPlayerCount");
+        multiPlayerHUD.deactive("lblMyID");
+    }
 }
 
 std::string MenuHandle::GetIP()
 {
-    return ConnectionMenu->getByID("txtIp")->getText();
+    std::vector<std::string> substrs = {
+        connectionMenu.getByID("txtFirstTerne")->getText(),
+        connectionMenu.getByID("txtSecondTerne")->getText(),
+        connectionMenu.getByID("txtThirdTerne")->getText(),
+        connectionMenu.getByID("txtFourthTerne")->getText()
+    };
+
+    std::string ip = "";
+    for (int i = 0; i < substrs.size(); i++)
+    {
+        ip += substrs[i];
+        if (i < 3)
+            ip += ".";
+    }
+
+    return ip;
 }
 
-uint16_t MenuHandle::GetPort()
+std::string MenuHandle::GetPort()
 {
-    return std::stoi(ConnectionMenu->getByID("txtPort")->getText());
+    return connectionMenu.getByID("txtPort")->getText();
 }
 
 bool MenuHandle::IsFullscreen()
@@ -170,6 +208,10 @@ bool MenuHandle::IsFullscreen()
 
 void MenuHandle::UpdateDifficulty()
 {
+    heartsArray.clear();
+    nMaxHearts = GameDifficulty - 2;
+    DiffPerModifiers = GameDifficulty - 1;
+
     switch (GameDifficulty)
     {
     case EASY:
@@ -184,106 +226,47 @@ void MenuHandle::UpdateDifficulty()
     default:
         break;
     }
-
-    nMaxHearts = GameDifficulty - 2;
-    DiffPerModifiers = GameDifficulty - 1;
-}
-void MenuHandle::SetMenuSinglePlayer()
-{
-    isSinglePlayer = true;
-    RunningMenu->activate("labelDanger");
-    RunningMenu->activate("labelScore");
-}
-void MenuHandle::SetMenuMultiPlayer()
-{
-    isSinglePlayer = false;
-    RunningMenu->deactive("labelDanger");
-    RunningMenu->deactive("labelScore");
-    *(gameContext.gameStatus) = GameState::RUNNING_GAME;
 }
 
-void MenuHandle::ResumeGame()
+void MenuHandle::ResumeGame(GameState st)
 {
-    *(gameContext.gameStatus) = GameState::RUNNING_GAME;
+    //////// to correct
+    *gameContext.gameStatus = GameState::RUNNING_SINGLE_PLAYER;
     GameShouldUpdate = false;
     timerDelayResume.active();
-    MainMenuHandler.PopMenu();
 }
+
 void MenuHandle::HandleStateChange(GameState newState)
 {
-    MainMenuHandler.PopMenu();
-
-    switch (newState)
-    {
-    case GameState::ON_START_MENU:
-        MainMenuHandler.PushMenu(StartMenu);
-        break;
-    case GameState::RUNNING_GAME:
-        MainMenuHandler.PushMenu(RunningMenu);
-        break;
-    case GameState::ON_PAUSED_MENU:
-        PausedMenu->activate("btnResume");
-        PausedMenu->getByID("btnRestart")->setWidth(240);
-        PausedMenu->getByID("btnRestart")->setPosX(centerX + (130));
-        MainMenuHandler.PushMenu(PausedMenu);
-        break;
-    case GameState::KILLED:
-        PausedMenu->deactive("btnResume");
-        PausedMenu->getByID("btnRestart")->setWidth(buttonWidth);
-        PausedMenu->getByID("btnRestart")->setPosX(centerX);
-        MainMenuHandler.PushMenu(PausedMenu);
-        break;
-    case GameState::ON_IP_MENU:
-        MainMenuHandler.PushMenu(ConnectionMenu);
-        isSinglePlayer = false;
-        break;
-    }
+    currentMenu = nullptr;
+    currentMenu = &menus.at(newState);
 }
 
-void MenuHandle::DrawLinksIcons()
+std::string MenuHandle::SetDifficulty(bool change)
 {
-    Vector2 mousePos = gameContext.renderer.GetVirtualMouse();
-    
-    DrawTexture(instagram, gameContext.renderer.BASE_WIDTH - instagram.width * 2, gameContext.renderer.BASE_HEIGHT - instagram.height * 2, WHITE);
-    DrawTexture(github, gameContext.renderer.BASE_WIDTH - github.width * 3.5, gameContext.renderer.BASE_HEIGHT - github.height * 2, WHITE);
+    if (change)
+        GameDifficulty = static_cast<Difficulty>(3 + ((static_cast<int>(GameDifficulty) - 1) % 3));
 
-    if (CheckCollisionPointRec(mousePos,
-        Rectangle{static_cast<float>(gameContext.renderer.BASE_WIDTH - instagram.width * 2),
-            static_cast<float>(gameContext.renderer.BASE_HEIGHT - instagram.height * 2),
-            static_cast<float>(instagram.width), static_cast<float>(instagram.height) }) && IsMouseButtonPressed(0))
-    {
-        OpenURL("https://www.instagram.com/_gabrielearmenise");
-    }
-
-    if (CheckCollisionPointRec(mousePos,
-        Rectangle{static_cast<float>(gameContext.renderer.BASE_WIDTH - github.width * 3.5),
-            static_cast<float>(gameContext.renderer.BASE_HEIGHT - github.height * 2.5),
-            static_cast<float>(github.width), static_cast<float>(github.height) }) && IsMouseButtonPressed(0))
-    {
-        OpenURL("https://www.github.com/GabOnTrash");
-    }
-}
-
-const char* MenuHandle::TranslateToDifficulty() const
-{
+    std::string diff = "";
     switch (GameDifficulty)
     {
-    case EASY: return Strings::easy;
-    case NORMAL: return Strings::normal;
-    case HARD: return Strings::hard;
-    default: return Strings::notFound;
+    case EASY:
+        diff = Strings::easy;
+        break;
+    case NORMAL:
+        diff = Strings::normal;
+        break;
+    case HARD:
+        diff = Strings::hard;
+        break;
+    default:
+        diff = Strings::notFound;
     }
-}
 
-void MenuHandle::SetDifficulty()
-{
-    GameDifficulty = static_cast<Difficulty>(3 + ((static_cast<int>(GameDifficulty) - 1) % 3));
-    ChangeDifficulty();
-}
-void MenuHandle::ChangeDifficulty()
-{
-    StartMenu->getByID("difficButton")->setText(TextFormat(Strings::difficulty, TranslateToDifficulty()));
-    PausedMenu->getByID("difficButton2")->setText(TextFormat(Strings::difficulty, TranslateToDifficulty()));
+    UpdateDifficulty();
+    auto p = pauseMenu.getByID("difficButton");
+    if (p) p->setText(TextFormat(Strings::difficulty, diff.c_str()));
+    return diff;
 }
 
 void MenuHandle::setToBind(const std::string& id)
@@ -292,7 +275,10 @@ void MenuHandle::setToBind(const std::string& id)
     {
         std::string oldAction = waitingForKeyBind.substr(3);
         int currentKey = gameContext.keyBindings.getKey(oldAction);
-        ControlsMenu->getByID(waitingForKeyBind)->setText(TextFormat("%s: %s", oldAction.c_str(), TranslateKey(currentKey)));
+
+        auto it = RaylibKeyToString.find(currentKey);
+        std::string temp = (it != RaylibKeyToString.end()) ? it->second : "Unknown";
+        controlsMenu.getByID(waitingForKeyBind)->setText(TextFormat("%s: %s", oldAction.c_str(), temp.c_str()));
     }
 
     if (id.empty())
@@ -306,7 +292,9 @@ void MenuHandle::setToBind(const std::string& id)
         gameContext.keyBindings = KeyBindings();
         gameContext.keyBindings.forEach([this](const std::string& key, int val)
         {
-            ControlsMenu->getByID("btn" + key)->setText(TextFormat("%s: %s", key.c_str(), TranslateKey(val)));
+            auto it = RaylibKeyToString.find(val);
+            std::string temp = (it != RaylibKeyToString.end()) ? it->second : "Unknown";
+            controlsMenu.getByID("btn" + key)->setText(TextFormat("%s: %s", key.c_str(), temp.c_str()));
         });
 
         waitingForKeyBind = "";
@@ -314,10 +302,9 @@ void MenuHandle::setToBind(const std::string& id)
     }
 
     waitingForKeyBind = id;
-    auto btnToBind = ControlsMenu->getByID(id);
-    if (btnToBind)
-        btnToBind->setText(Strings::waitingKey);
+    controlsMenu.getByID(id)->setText(Strings::waitingKey);
 }
+
 void MenuHandle::updateKeyBinding()
 {
     if (waitingForKeyBind.empty()) return;
@@ -332,7 +319,7 @@ void MenuHandle::updateKeyBinding()
     }
 
     bool alreadyUsed = false;
-    if (key == 256 || key > 512) return;
+    if (key == 255 || key > 512) return;
     gameContext.keyBindings.forEach([key, &alreadyUsed](const std::string& k, int val)
     {
         if (val == key) alreadyUsed = true;
@@ -345,21 +332,13 @@ void MenuHandle::updateKeyBinding()
         if (actionToBind == action)
         {
             val = key;
-            ControlsMenu->getByID(waitingForKeyBind)
-            ->setText(TextFormat("%s: %s", action.c_str(), TranslateKey(key)));
+            auto it = RaylibKeyToString.find(key);
+            std::string temp = (it != RaylibKeyToString.end()) ? it->second : "Unknown";
+            controlsMenu.getByID(waitingForKeyBind)->setText(TextFormat("%s: %s", action.c_str(), temp.c_str()));
         }
     });
 
     waitingForKeyBind = "";
-}
-const char* MenuHandle::TranslateKey(int key)
-{
-    static std::string temp;
-
-    auto it = RaylibKeyToString.find(key);
-    temp = (it != RaylibKeyToString.end()) ? it->second : "Unknown";
-    
-    return temp.c_str();
 }
 
 void MenuHandle::ToggleFullscreen()
@@ -368,14 +347,14 @@ void MenuHandle::ToggleFullscreen()
     {
         SetWindowPosition(0, 0);
         SetWindowSize(gameContext.renderer.BASE_WIDTH, gameContext.renderer.BASE_HEIGHT - taskbar);
-        PausedMenu->getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "Off"));
+        pauseMenu.getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "Off"));
         fullscreen = false;
     }
     else
     {
         SetWindowPosition(0, 0);
         SetWindowSize(gameContext.renderer.BASE_WIDTH, gameContext.renderer.BASE_HEIGHT);
-        PausedMenu->getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "On"));
+        pauseMenu.getByID("btnFullScreen")->setText(TextFormat(Strings::fullscreen, "On"));
         fullscreen = true;
     }
 }

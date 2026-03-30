@@ -1,7 +1,7 @@
 #include "TextBox.hpp"
 
-TextBox::TextBox(std::string id, float x, float y, float width, float height, Font font, int fontSize, int maxLength, Color fg, Color bg, Color bd, Color focusedBd)
-    : id(id), maxLength(maxLength), customFont(font), fontS(fontSize), focusedBD(focusedBd)
+TextBox::TextBox(std::string id, float x, float y, float width, float height, Font font, int fontSize, int maxLength, int minRange, int maxRange, Color fg, Color bg, Color bd, Color focusedBd)
+    : id(id), maxLength(maxLength), customFont(font), fontS(fontSize), focusedBD(focusedBd), min(minRange), max(maxRange)
 {
     this->posX = x - width / 2;
     this->posY = y - height / 2;
@@ -41,7 +41,7 @@ void TextBox::update()
         int key = GetCharPressed();
         while (key > 0)
         {
-            if ((key >= 32) && (key <= 125) && (text.length() < maxLength))
+            if ((key >= min) && (key <= max) && (text.length() < maxLength))
             {
                 text += (char) key;
             }

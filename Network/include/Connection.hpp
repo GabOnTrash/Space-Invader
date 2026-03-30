@@ -69,7 +69,7 @@ namespace network
         }
         bool IsConnected() const
         {
-            return m_socket.is_open();
+            return m_socket.is_open() && m_bHandshakeComplete;
         }
 
         void Send(const message<T>& msg)
@@ -206,7 +206,10 @@ namespace network
                     if (!ec)
                     {
                         if (m_nOwnerType == owner::client)
+                        {
+                            m_bHandshakeComplete = true;
                             ReadHeader();
+                        }
                     }
                     else
                     {
@@ -228,7 +231,6 @@ namespace network
                             {
                                 LOG_INFO_EVERYWHERE("Client #" + std::to_string(id) + " validated");
                                 server->OnClientValidated(this->shared_from_this());
-                            
                                 ReadHeader();
                             }
                             else
@@ -258,6 +260,7 @@ namespace network
         tsqueue<message<T>> m_qMessagesOut;
         tsqueue<owned_message<T>>& m_qMessagesIn;
 
+        bool m_bHandshakeComplete = false;	// to secure if the connection has really happened
         uint64_t m_nHandshakeOut = 0;
         uint64_t m_nHandshakeIn = 0;
         uint64_t m_nHandshakeCheck = 0;

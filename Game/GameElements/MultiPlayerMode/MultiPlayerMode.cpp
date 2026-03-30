@@ -14,30 +14,39 @@ void MultiPlayerMode::Init()
 {
     Logger::Get().Init("Server_Log.txt");
     if (!Connect(ip, port))
-        *(gameContext.gameStatus) = GameState::ON_IP_MENU;
+        *(gameContext.gameStatus) = GameState::ON_START_MENU;
 
     timeToConnect.active();
+    player.Reset();
 }
 
 void MultiPlayerMode::Update(float dt)
 {
     PollMessage();
-    timeToConnect.update();
 
-    if (timeToConnect.isRunning)
-        std::cout << "Trying to connect\n";
+    if (!IsConnected())
+        timeToConnect.update();
 
-    if (!timeToConnect.isRunning && !IsConnected())
+    if (IsConnected())
     {
-        *(gameContext.gameStatus) = GameState::ON_START_MENU;
-        menuHandle.BackToMainMenu();
-    }
+        menuHandle.stillTryingConnecting = false;
+        menuHandle.SetSizeAndId(otherPlayers.size() + 1, thisPlayer);
 
-    SetPositionAndSend(player.position.x, player.position.y);
+        player.Update(dt);
+        timeToConnect.deactive();
+        SendPosition(player.position.x, player.position.y);
+    }
+    else if (!timeToConnect.isRunning && !IsConnected())
+        *(gameContext.gameStatus) = GameState::ON_START_MENU;
 }
 
 void MultiPlayerMode::Draw()
 {
+    for (const auto& [_, p] : otherPlayers)
+        DrawTexture(player.texture, p.x, p.y, WHITE);
+
+    if (IsConnected())
+        player.Draw();
 }
 
 void MultiPlayerMode::OnExit()

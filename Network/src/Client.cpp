@@ -15,28 +15,18 @@ struct PlayerInfo
 
 class Client : public network::clientInterface<MultiplayerPacketType>
 {
+protected:
     std::unordered_map<uint32_t, PlayerInfo> otherPlayers;
-    PlayerInfo thisPlayer;
-    bool isValidated = false;
+    uint32_t thisPlayer = -1;
 
 public:
     std::unordered_map<uint32_t, PlayerInfo>& GetOtherPlayers() { return otherPlayers; }
 
-    void SetPositionAndSend(float x, float y)
-    {
-        if (!isValidated || (thisPlayer.x == x && thisPlayer.y == y))
-            return;
-
-        thisPlayer.x = x;
-        thisPlayer.y = y;
-
-        SendPosition();
-    }
-    void SendPosition()
+    void SendPosition(float x, float y)
     {
         network::message<MultiplayerPacketType> msg;
         msg.header.id = MultiplayerPacketType::PLAYER_MOVE;
-        msg << thisPlayer;
+        msg << PlayerInfo{ x, y, thisPlayer };
         Send(msg);
     }
     void PollMessage()
@@ -50,16 +40,15 @@ public:
             switch (msg.header.id)
             {
                 case MultiplayerPacketType::PLAYER_NOTIFY_ID:
-                    msg >> thisPlayer.id;
-                    LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer.id) + "] got notified of own ID");
-                    isValidated = true;
+                    msg >> thisPlayer;
+                    LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of own ID");
 
                 break;
                 case MultiplayerPacketType::PLAYER_ADDED:
                     uint32_t id;
                     msg >> id;
-                    LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer.id) + "] got notified of [Player #" + std::to_string(id) + "]");
-                    if (id != thisPlayer.id)
+                    LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of [Player #" + std::to_string(id) + "]");
+                    if (id != thisPlayer)
                         otherPlayers[id] = {0.0f, 0.0f, id };
                 break;
                 case MultiplayerPacketType::PLAYER_MOVE:
@@ -67,19 +56,15 @@ public:
                     PlayerInfo info;
                     msg >> info;
 
-                    LOG_INFO_EVERYWHERE("[Player #" + std::to_string(thisPlayer.id) + "] retrieved player #" + std::to_string(info.id)
-                    + " struct {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
-
-                    if (info.id != thisPlayer.id)
+                    if (info.id != thisPlayer)
                         otherPlayers[info.id] = info;
                 break;
                 case MultiplayerPacketType::PLAYER_REMOVED:
                     uint32_t deadID;
                     msg >> deadID;
-                    LOG_INFO_EVERYWHERE("[Player #" + std::to_string(thisPlayer.id) + "] got notified of deletion of player #" + std::to_string(deadID));
+                    LOG_INFO_EVERYWHERE("[Player #" + std::to_string(thisPlayer) + "] got notified of deletion of player #" + std::to_string(deadID));
                     otherPlayers.erase(deadID);
                 break;
-
             }
         }
     }

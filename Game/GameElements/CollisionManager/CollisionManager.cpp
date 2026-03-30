@@ -89,9 +89,9 @@ void CollisionManager::HandlePlayerMeteors(Player& player, std::vector<Meteor>& 
         {
             if (Player::byteMask.checkPixelCollision(Meteor::byteMask, player.position, meteors[i].position, GetCollisionRec(rPlayer, rAsteroid)))
             {
-                if (hearts.size() == 0)
+                if (hearts.empty())
                 {
-                    *status = GameState::KILLED;
+                    *status = GameState::ON_KILLED_MENU;
                     return;
                 }
 
@@ -122,25 +122,20 @@ void CollisionManager::HandlePlayerModifiers(Player& player, std::vector<Modifie
                 case ModifierType::SLOWER:
                     player.ActivateReducedVelocity();
                     break;
-
                 case ModifierType::LOSEHEART:
                     if (!hearts.empty()) hearts.pop_back();
-                    else *status = GameState::KILLED;
+                    else *status = GameState::ON_KILLED_MENU;
                     break;
-
                 case ModifierType::TRIPLELASER:
                     player.ActivateTripleLaser();
                     break;
-
                 case ModifierType::GAINHEART:
                     if (hearts.size() < maxHearts) hearts.emplace_back();
                     break;
-
                 case ModifierType::BIGLASER:
                     player.ActivateBigLaser();
                     break;
                 }
-
                 modifiers[i] = modifiers.back();
                 modifiers.pop_back();
                 continue;

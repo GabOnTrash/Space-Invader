@@ -122,9 +122,6 @@ protected:
             PlayerInfo info;
             msg >> info;
 
-            info.id = client->GetID();
-            if (false)
-                LOG_DEBUG_CONSOLE("[SERVER] Retrieving/Sending info from player #" + std::to_string(info.id) + "{ " + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
             {
                 std::scoped_lock<std::mutex> lock(muxGame);
                 playersMap[info.id] = info;

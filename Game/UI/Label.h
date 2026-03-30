@@ -25,12 +25,17 @@ public:
 	// Setters
 	void setId(std::string newId) override { id = newId; }
 	void setText(std::string newText) override 
-	{ 
-		text = newText;
+	{
+		Vector2 newSize = MeasureTextEx(customFont, newText.c_str(), static_cast<float>(fontS), 1);
 		textSize = MeasureTextEx(customFont, text.c_str(), static_cast<float>(fontS), 1);
+		text = newText;
 
-		posX = posX - (textSize.x / 2);
-		posY = posY - (textSize.y / 2);
+		Vector2 difference;
+		difference.x = newSize.x - textSize.x;
+		difference.y = newSize.y - textSize.y;
+
+		posX = posX - (difference.x / 2);
+		posY = posY - (difference.y / 2);
 	}
 	void setActive(bool val) override { activated = val; }
 

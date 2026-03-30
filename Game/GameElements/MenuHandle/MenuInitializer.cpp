@@ -1,104 +1,81 @@
 #include "MenuHandle.hpp"
-#include "TextBox.hpp"
 
 void MenuHandle::InitStartMenu()
 {
-    StartMenu = std::make_shared<Menu>();
+    startMenu.Add<Button>("buttonTitle", Strings::title, GameFontSemiBold, 5 * fontSize, 1000, 400, gameContext.renderer.BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
 
-    StartMenu->add<Button>("buttonTitle", Strings::title,                                              GameFontSemiBold, 5 * fontSize, 1000, 400, gameContext.renderer.BASE_WIDTH / 2, 5 * 30, nullptr, borderRadius, 10, 4, TEXT_COLOR_NHOVER, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR, TRANSPARENT_COLOR);
+    startMenu.Add<TextureButton>("buttonStartMulti", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 - 210), AssetsManager::GetTexture("btnStartMultiPlayer"), [this]() { *(gameContext.gameStatus) = GameState::ON_CONNECTION_MENU; });
+    startMenu.Add<TextureButton>("buttonStart", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 - 70), AssetsManager::GetTexture("btnStartSinglePlayer"), [this]() { if (StartSinglePlayer) StartSinglePlayer(); });
 
-    StartMenu->add<TextureButton>("buttonStartMulti", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 - 210), AssetsManager::GetTexture("btnStartMultiPlayer"), [this]() { *(gameContext.gameStatus) = GameState::ON_IP_MENU; });
-    StartMenu->add<TextureButton>("buttonStart", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 - 70), AssetsManager::GetTexture("btnStartSinglePlayer"), [this]() { if (StartSinglePlayer) StartSinglePlayer(); });
-    StartMenu->add<Button>("difficButton", TextFormat(Strings::difficulty, TranslateToDifficulty()),    GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 70), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    StartMenu->add<TextureButton>("txtBtnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 210), AssetsManager::GetTexture("btnQuitGame"), [this]() { shouldQuit = true; });
+    Texture2D instagram =   AssetsManager::GetTexture("instagram");
+    Texture2D github =      AssetsManager::GetTexture("github");
+
+    startMenu.Add<TextureButton>("openIg", gameContext.renderer.BASE_WIDTH - instagram.width * 2, gameContext.renderer.BASE_HEIGHT - instagram.height * 2, instagram, []() { OpenURL("https://www.instagram.com/_gabrielearmenise"); });
+    startMenu.Add<TextureButton>("openGh", gameContext.renderer.BASE_WIDTH - github.width * 3.5, gameContext.renderer.BASE_HEIGHT - github.height * 2, github, []() { OpenURL("https://www.github.com/GabOnTrash"); });
+
+    startMenu.Add<TextureButton>("txtBtnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 70), AssetsManager::GetTexture("btnQuitGame"), [this]() { shouldQuit = true; });
 }
 
-void MenuHandle::InitRunOverlay()
+void MenuHandle::InitPauseMenu()
 {
-    RunningMenu = std::make_shared<Menu>();
+    pauseMenu.Add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { ResumeGame(*gameContext.gameStatus); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<Button>("btnRestart", Strings::restart, GameFontMedium,                                   fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 + 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { if (Restart) Restart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
-    RunningMenu->add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, gameContext.renderer.BASE_WIDTH - MeasureText(Strings::danger, 70) / 2 * 1.5f, MeasureText(Strings::danger, 70) / 4, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    RunningMenu->add<Label>("labelScore", TextFormat(Strings::score, [this]() { if (GetScore) { return GetScore(); }}), nullptr, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<Button>("btnctrl", Strings::control, GameFontMedium,                                      fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 60), [this]() { *gameContext.gameStatus = GameState::ON_CONTROLS_MENU; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<Button>("btnAudio", Strings::audioSettings, GameFontMedium,                               fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 + 130), (gameContext.renderer.BASE_HEIGHT / 2 - 60), [this]() { *gameContext.gameStatus = GameState::ON_AUDIO_MENU; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+
+    pauseMenu.Add<Button>("difficButton", TextFormat(Strings::difficulty, SetDifficulty().c_str()), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(true); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<TextureButton>("btnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
 }
 
-void MenuHandle::InitPausedMenu()
+void MenuHandle::InitDeathMenu()
 {
-    PausedMenu = std::make_shared<Menu>();
-
-    PausedMenu->add<Label>("labelMenuScore", TextFormat(Strings::score, [this]() { if (GetScore) { return GetScore(); }}), nullptr, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-
-    PausedMenu->add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { ResumeGame(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnRestart", Strings::restart, GameFontMedium,                                   fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 + 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { if (Restart) Restart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-
-    PausedMenu->add<Button>("btnctrl", Strings::control, GameFontMedium,                                      fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 60), [this]() { MainMenuHandler.PopMenu(); MainMenuHandler.PushMenu(ControlsMenu); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnAudio", Strings::audioSettings, GameFontMedium,                               fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 + 130), (gameContext.renderer.BASE_HEIGHT / 2 - 60), [this]() { MainMenuHandler.PopMenu(); MainMenuHandler.PushMenu(AudioMenu); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-
-    PausedMenu->add<Button>("difficButton2", TextFormat(Strings::difficulty, TranslateToDifficulty()), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<Button>("btnFullScreen", TextFormat(Strings::fullscreen, fullscreen ? "On" : "Off"), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 220), [this]() { this->ToggleFullscreen(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    PausedMenu->add<TextureButton>("btnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { GoBackToMain(); });
+    deathMenu.Add<Button>("btnRestart", Strings::restart, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { if (Restart) Restart(); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    deathMenu.Add<Label>("labelMenuScore", TextFormat(Strings::score, [this]() { if (GetScore) { return GetScore(); }}), nullptr, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    deathMenu.Add<TextureButton>("btnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
+    deathMenu.Add<Button>("difficButton", TextFormat(Strings::difficulty, SetDifficulty().c_str()), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(true); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
-void MenuHandle::InitAudioControl()
+void MenuHandle::InitAudioMenu()
 {
-    AudioMenu = std::make_shared<Menu>();
+    std::vector<AudioSetting> settings = {
+        {"GeneralVolume",      "labelGeneralAudio",   Strings::generalVolume,  "GeneralSliderVolume",   GeneralVolume},
+        {"MusicVolume",        "labelMusicAudio",     Strings::musicVolume,    "MusicSliderVolume",     MusicVolume},
+        {"LaserVolume",        "labelLaserAudio",     Strings::laserVolume,    "LaserSliderVolume",     LaserVolume},
+        {"MeteorDamageVolume", "labelAsteoridAudio",  Strings::meteorVolume,   "AsteroidSliderVolume",  MeteorDamageVolume},
+        {"ExplosionVolume",    "labelExplosionAudio", Strings::explosionVolume, "ExplosionSliderVolume", ExplosionVolume},
+        {"PowerUpVolume",      "labelPowerUpsAudio",  Strings::modifierVolume, "PowerUpSliderVolume",   PowerUpVolume}
+    };
 
-    GeneralVolume = SettingsManager::GetKey<float>("audio", "GeneralVolume");
-    MusicVolume = SettingsManager::GetKey<float>("audio", "MusicVolume");
-    LaserVolume = SettingsManager::GetKey<float>("audio", "LaserVolume");
-    MeteorDamageVolume = SettingsManager::GetKey<float>("audio", "MeteorDamageVolume");
-    ExplosionVolume = SettingsManager::GetKey<float>("audio", "ExplosionVolume");
-    PowerUpVolume = SettingsManager::GetKey<float>("audio", "PowerUpVolume");
+    for (size_t i = 0; i < settings.size(); ++i)
+    {
+        auto& s = settings[i];
+        int offsetMultiplier = static_cast<int>(i) - 3;
+        float currentY = centerY + (offsetMultiplier * blockSpacing);
 
-    // BLOCCO 1
-    AudioMenu->add<Label>("labelGeneralAudio", Strings::generalVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 3 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY - 3 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 1, &GeneralVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("GeneralSliderVolume", rect, pointer);
+        s.volumeVar = SettingsManager::GetKey<float>("audio", s.key);
 
-    // BLOCCO 2
-    AudioMenu->add<Label>("labelMusicAudio", Strings::musicVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY - 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MusicVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("MusicSliderVolume", rect, pointer);
+        // Label
+        audioMenu.Add<Label>(s.labelId, s.labelText, nullptr, GameFontMedium, fontSize, sliderX, currentY, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
-    // BLOCCO 3
-    AudioMenu->add<Label>("labelLaserAudio", Strings::laserVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY - 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY - 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &LaserVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("LaserSliderVolume", rect, pointer);
+        // Slider
+        rect = RectS(sliderX, currentY + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &s.volumeVar, FILL_COLOR_NHOVER);
+        pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
+        audioMenu.Add<Slider>(s.sliderId, rect, pointer);
+    }
 
-    // BLOCCO 4
-    AudioMenu->add<Label>("labelAsteoridAudio", Strings::meteorVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 0 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY + 0 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &MeteorDamageVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("AsteroidSliderVolume", rect, pointer);
-
-    // BLOCCO 5
-    AudioMenu->add<Label>("labelExplosionAudio", Strings::explosionVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 1 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY + 1 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &ExplosionVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("ExplosionSliderVolume", rect, pointer);
-
-    // BLOCCO 6
-    AudioMenu->add<Label>("labelPowerUpsAudio", Strings::modifierVolume, nullptr, GameFontMedium, fontSize, sliderX, centerY + 2 * blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    rect = RectS(sliderX, centerY + 2 * blockSpacing + sliderOffset, sliderWidth, sliderHeight, borderRadius, 0, 0, 100, &PowerUpVolume, FILL_COLOR_NHOVER);
-    pointer = PointerS(true, pointerWidth, sliderHeight, borderRadius, 0, FILL_COLOR_HOVER);
-    AudioMenu->add<Slider>("PowerUpSliderVolume", rect, pointer);
-
-    AudioMenu->add<Button>("Go Back Button", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { MainMenuHandler.PopMenu(); MainMenuHandler.PushMenu(PausedMenu); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    audioMenu.Add<Button>("Go Back Button", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { *(gameContext.gameStatus) = GameState::ON_PAUSE_MENU; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
-void MenuHandle::InitBindsControls()
+void MenuHandle::InitBindsMenu()
 {
-    ControlsMenu = std::make_shared<Menu>();
-
-    // loading
     gameContext.keyBindings.forEachMutable([this](const std::string& key, int val)
     {
         gameContext.keyBindings.setKey(key, SettingsManager::GetKey<int>("KeyBindings", key));
     });
 
-    // checking and reset
+    // checking and reset if error
     gameContext.keyBindings.forEach([this](const std::string& key, int val)
     {
         if (gameContext.keyBindings.getKey(key) <= 0)
@@ -111,9 +88,11 @@ void MenuHandle::InitBindsControls()
     {
         std::string btnID = "btn" + action;
 
-        ControlsMenu->add<Button>(
+        auto it = RaylibKeyToString.find(key);
+        std::string temp = (it != RaylibKeyToString.end()) ? it->second : "Unknown";
+        controlsMenu.Add<Button>(
             btnID,
-            TextFormat("%s: %s", action.c_str(), TranslateKey(key)),
+            TextFormat("%s: %s", action.c_str(), temp.c_str()),
             GameFontMedium, fontSize, buttonWidth, buttonHeight,
             centerX, yStart + (fontSize + spacing) * i,
             [this, btnID]() { setToBind(btnID); },
@@ -122,8 +101,38 @@ void MenuHandle::InitBindsControls()
         i++;
     });
 
-    ControlsMenu->add<Button>("Reset", Strings::reset, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 6, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    ControlsMenu->add<Button>("GoBackButton", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { MainMenuHandler.PopMenu(); MainMenuHandler.PushMenu(PausedMenu); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    controlsMenu.Add<Button>("Reset", Strings::reset, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, yStart + (fontSize + spacing) * 6, [this]() { setToBind("Reset"); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    controlsMenu.Add<Button>("GoBackButton", "Go Back", GameFontMedium, fontSize, buttonWidth / 2, buttonHeight, centerX, (centerY + buttonWidth), [this]() { *(gameContext.gameStatus) = GameState::ON_PAUSE_MENU; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+}
+
+void MenuHandle::InitConneMenu()
+{
+    connectionMenu.Add<Label>("labelScore", "IP:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.6, gameContext.renderer.BASE_HEIGHT / 3, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    connectionMenu.Add<TextBox>("txtFirstTerne", gameContext.renderer.BASE_WIDTH / 2 - sliderWidth + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+    connectionMenu.Add<TextBox>("txtSecondTerne", gameContext.renderer.BASE_WIDTH / 2 - sliderWidth / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+    connectionMenu.Add<TextBox>("txtThirdTerne", gameContext.renderer.BASE_WIDTH / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+    connectionMenu.Add<TextBox>("txtFourthTerne", gameContext.renderer.BASE_WIDTH / 2 + sliderWidth / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+
+    connectionMenu.Add<Label>("labelScore", "Port:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.4, gameContext.renderer.BASE_HEIGHT / 3 + 130, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    connectionMenu.Add<TextBox>("txtPort", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3 + 130, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 5, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
+
+    connectionMenu.Add<Label>("lblStatus", "", nullptr, GameFontMedium, 40, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2 + 50, RED, RED);
+
+    connectionMenu.Add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnResume"), [this]() { if (StartMultiPlayer) StartMultiPlayer(); });
+    connectionMenu.Add<TextureButton>("btQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
+}
+
+void MenuHandle::InitSinglePlayerHUD()
+{
+    singlePlayerHUD.Add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, gameContext.renderer.BASE_WIDTH - MeasureText(Strings::danger, 70) / 2 * 1.5f, MeasureText(Strings::danger, 70) / 4, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    singlePlayerHUD.Add<Label>("labelScore", TextFormat(Strings::score, [this]() { if (GetScore) { return GetScore(); }}), nullptr, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+}
+
+void MenuHandle::InitMultiPlayerHUD()
+{
+    multiPlayerHUD.Add<Label>("lblConnecting", "Trying to connect...", nullptr, GameFontMedium, fontSize * 3, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2, YELLOW, YELLOW);
+    multiPlayerHUD.Add<Label>("lblPlayerCount", "Players: 0", nullptr, GameFontMedium, fontSize, 150, 50, WHITE, WHITE);
+    multiPlayerHUD.Add<Label>("lblMyID", "ID: ?", nullptr, GameFontMedium, fontSize, gameContext.renderer.BASE_WIDTH / 2, 150, GREEN, GREEN);
 }
 
 void MenuHandle::RecalculateLayout()
@@ -144,29 +153,4 @@ void MenuHandle::RecalculateLayout()
     spacing = 90;
     totalHeight = (buttonHeight * 6) + (spacing * 5);
     yStart = (gameContext.renderer.BASE_HEIGHT / 2) - (totalHeight / 2);
-}
-
-void MenuHandle::InitConnectionMenu()
-{
-    ConnectionMenu = std::make_shared<Menu>();
-
-    ConnectionMenu->add<TextBox>("txtIp", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 15, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
-    ConnectionMenu->add<TextBox>("txtPort", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3 + 130, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 5, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
-    ConnectionMenu->add<Label>("lblStatus", "", nullptr, GameFontMedium, 40, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2 + 50, RED, RED);
-
-    ConnectionMenu->add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnResume"), [this]() { if (StartMultiPlayer) StartMultiPlayer(); });
-    ConnectionMenu->add<TextureButton>("btQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { GoBackToMain(); });
-}
-void MenuHandle::InitMultiPlayerOverlay()
-{
-    MultiPlayerOverlay = std::make_shared<Menu>();
-
-    MultiPlayerOverlay->add<Label>("lblPlayerCount", "Players: 0", nullptr, GameFontMedium, 30, 150, 50, WHITE, WHITE);
-    MultiPlayerOverlay->add<Label>("lblMyID", "ID: ?", nullptr, GameFontMedium, 30, gameContext.renderer.BASE_WIDTH - 150, 50, GREEN, GREEN);
-}
-
-void MenuHandle::InitLinksIcons()
-{
-    instagram = AssetsManager::GetTexture("instagram");
-    github = AssetsManager::GetTexture("github");
 }

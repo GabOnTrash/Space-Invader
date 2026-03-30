@@ -43,7 +43,8 @@ void Game::Run()
 
         menuHandle->Draw();
 
-        if (*gameStatus != GameState::RUNNING_GAME)
+        if (*gameStatus != GameState::RUNNING_MULTI_PLAYER
+            && *gameStatus != GameState::RUNNING_SINGLE_PLAYER)
         {
             Vector2 vMouse = renderer.GetVirtualMouse();
             DrawTexture(gameCursor, vMouse.x, vMouse.y, WHITE);
@@ -63,38 +64,54 @@ void Game::Update()
     menuHandle->Update();
     if (currentMode)
         currentMode->Update(dt);
-
-    if (currentMode && *gameStatus == GameState::ON_PAUSED_MENU)
-        AudioManager::Update();
 }
 
 void Game::LoadSinglePlayerMode()
 {
     if (currentMode)
+    {
         currentMode->OnExit();
+        currentMode.reset();
+    }
 
     currentMode = std::make_unique<SinglePlayerMode>(gameContext, *menuHandle);
     currentMode->Init();
-    *gameStatus = GameState::RUNNING_GAME;
-    menuHandle->SetMenuSinglePlayer();
+    *gameStatus = GameState::RUNNING_SINGLE_PLAYER;
 }
 void Game::LoadMultiPlayerMode()
 {
     if (currentMode)
+    {
         currentMode->OnExit();
+        currentMode.reset();
+    }
 
-    currentMode = std::make_unique<MultiPlayerMode>(gameContext, *menuHandle,
-        menuHandle->GetIP(), menuHandle->GetPort());
+    std::string ip = menuHandle->GetIP();
+    std::string port = menuHandle->GetPort();
 
+    if (ip.empty() || port.empty())
+    {
+        *gameStatus = GameState::ON_CONNECTION_MENU;
+        return;
+    }
+
+    uint16_t p = std::stoi(port);
+    if (p > 65535)
+    {
+        *gameStatus = GameState::ON_CONNECTION_MENU;
+        return;
+    }
+
+    currentMode = std::make_unique<MultiPlayerMode>(gameContext, *menuHandle, ip, p);
     currentMode->Init();
-    menuHandle->SetMenuMultiPlayer();
+    *gameStatus = GameState::RUNNING_MULTI_PLAYER;
 }
 void Game::SetUICallBacks()
 {
     menuHandle->StartSinglePlayer = [this]() { this->LoadSinglePlayerMode(); };
     menuHandle->StartMultiPlayer = [this]() { this->LoadMultiPlayerMode(); };
     menuHandle->Restart = [this]() { LoadSinglePlayerMode(); };
-    menuHandle->BackToMainMenu = [this]() { if (currentMode) { currentMode->OnExit(); currentMode.reset(); } };
+    menuHandle->Reset = [this]() { currentMode.reset(); };
 }
 
 void Game::DrawBackGround()

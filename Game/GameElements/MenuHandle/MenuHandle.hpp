@@ -4,10 +4,20 @@
 #include "../util/enums.hpp"
 
 #include "../util/specs.hpp"
-#include "../util/menuHandler.hpp"
 #include "../Renderer/Renderer.hpp"
 
 #include "../../UI/Menu.h"
+#include "../SettingsManager/SettingsManager.hpp"
+
+struct AudioSetting
+{
+	std::string key;
+	std::string labelId;
+	const char* labelText;
+	std::string sliderId;
+	float& volumeVar;
+};
+
 
 class MenuHandle
 {
@@ -17,16 +27,13 @@ public:
 
     void Update();
 	void Draw();
+	void SetSizeAndId(size_t size, uint16_t id) { this->MATCH_SIZE = size; this->ID = id; }
 
 	std::string GetIP();
-	uint16_t GetPort();
+    std::string GetPort();
 
 	bool IsFullscreen();
-	void GoBackToMain();
 	void UpdateDifficulty();
-	void SetMenuSinglePlayer();
-	void SetMenuMultiPlayer();
-    void ConnectToServer();
 
     bool UserWantsToQuit()
 	{
@@ -35,64 +42,65 @@ public:
 
     std::function<void()> StartSinglePlayer;
 	std::function<void()> StartMultiPlayer;
-	std::function<void()> BackToMainMenu;
 	std::function<void()> Restart;
+	std::function<void()> Reset;
 	std::function<int()> GetScore;
 
+	bool stillTryingConnecting = true;
 	bool GameShouldUpdate = true;
 	int DiffPerModifiers = 0;
 	int nMaxHearts = 0;
 	std::vector<Heart> heartsArray;
 	Difficulty GameDifficulty = NORMAL;
+    uint16_t ID;
+	size_t MATCH_SIZE;
 
 private:
     void LoadGameFont();
-	void ResumeGame();
-	void InitAllMenus();
-	void InitStartMenu();
 	void ShowCountDown();
-	void InitPausedMenu();
-	void InitRunOverlay();
-	void InitAudioControl();
-	void InitBindsControls();
-    void UpdateSinglePlayerOverlay();
-	void UpdateMultiPlayerOverlay();
+	void ResumeGame(GameState st);
+
+	void InitAllMenus();
+	void InitSinglePlayerHUD();
+    void InitMultiPlayerHUD();
+
+	void InitStartMenu();
+	void InitPauseMenu();
+    void InitDeathMenu();
+    void InitAudioMenu();
+	void InitBindsMenu();
+	void InitConneMenu();
+
+	void UpdateMultiPlayerHUD();
+    void UpdateSinglePlayerHUD();
 	void HandleStateChange(GameState newState);
-	void InitLinksIcons();
-	void DrawLinksIcons();
-	void InitConnectionMenu();
-    void InitMultiPlayerOverlay();
 
-    MenuHandler MainMenuHandler;
+	Menu* currentMenu;
+	Menu startMenu;
+	Menu pauseMenu;
+	Menu deathMenu;
+	Menu audioMenu;
+	Menu controlsMenu;
+	Menu connectionMenu;
+	Menu singlePlayerHUD;
+    Menu multiPlayerHUD;
 
-	std::shared_ptr<Menu> StartMenu;
-	std::shared_ptr<Menu> RunningMenu;
-	std::shared_ptr<Menu> PausedMenu;
-	std::shared_ptr<Menu> AudioMenu;
-	std::shared_ptr<Menu> ControlsMenu;
-	std::shared_ptr<Menu> PreviousMenu;
-    std::shared_ptr<Menu> MultiPlayerOverlay;
+	std::unordered_map<GameState, Menu&> menus;
 
-	std::shared_ptr<Menu> ConnectionMenu;
+	int lastID = -1;
+	int lastMatchSize = -1;
 
 	Timer<> timerDelayResume;
-
-	bool isSinglePlayer = true;
-
 	GameContext& gameContext;
-	Texture2D instagram;
-	Texture2D github;
+
 	/////////////////////////////////
 
-    const char* TranslateToDifficulty() const;
-    void SetDifficulty();
+    std::string SetDifficulty(bool change = false);
 
     void RecalculateLayout();
 
-    void ChangeDifficulty();
     void setToBind(const std::string& id);
     void updateKeyBinding();
-    const char* TranslateKey(int key);
 
     void ToggleFullscreen();
 
@@ -133,15 +141,11 @@ private:
     Font GameFontMedium;
     Font GameFontSemiBold;
 
-    Color GrigioChiaro = Color{ 65, 65, 65, 255 };
-    Color GrigioScuro = Color{ 30, 30, 30, 255 };
     Color Background = Color{ 58, 46, 63, 255 };
-    Color transparent = Color{ 0, 0, 0, 0 };
-    Color white = Color{ 255, 255, 255, 255 };
 
-#define TRANSPARENT_COLOR transparent
-#define FILL_COLOR_NHOVER GrigioScuro
-#define FILL_COLOR_HOVER GrigioChiaro
-#define TEXT_COLOR_NHOVER white
+#define TRANSPARENT_COLOR Color{ 0, 0, 0, 0 }
+#define FILL_COLOR_NHOVER Color{ 30, 30, 30, 255 }
+#define FILL_COLOR_HOVER Color{ 65, 65, 65, 255 }
+#define TEXT_COLOR_NHOVER Color{ 255, 255, 255, 255 }
 };
 

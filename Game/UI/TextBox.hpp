@@ -5,7 +5,7 @@
 class TextBox : public Widget
 {
 public:
-    TextBox(std::string id, float x, float y, float width, float height, Font font, int fontSize, int maxLength, Color fg, Color bg, Color bd, Color focusedBd);
+    TextBox(std::string id, float x, float y, float width, float height, Font font, int fontSize, int maxLength, int minRange, int maxRange, Color fg, Color bg, Color bd, Color focusedBd);
 
     void draw() override;
     void update() override;
@@ -28,9 +28,10 @@ private:
     Font customFont;
     int fontS;
 
-    Color focusedBD; // Colore del bordo quando selezionato
+    Color focusedBD;
     bool isFocused = false;
-    int framesCounter = 0; // Usato per il cursore lampeggiante e il backspace continuo
+    int framesCounter = 0;
+    int min, max;
 
     Vector2 mousePos{ 0, 0 };
 };

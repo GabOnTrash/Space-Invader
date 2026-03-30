@@ -1,24 +1,27 @@
 #pragma once
 
-#include "UI.h"
+#include "Button.h"
+#include "Label.h"
+#include "Slider.h"
+#include "TextBox.hpp"
+#include "Widget.h"
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <unordered_set>
-#include "../GameElements/SettingsManager/SettingsManager.hpp"
-
 class Menu
 {
 public:
     Menu() = default;
 
 	template <typename T, typename... Args>
-	void add(Args&&... args) 
+	void Add(Args&&... args)
 	{ 
 		elements.emplace_back(std::make_unique<T>(std::forward<Args>(args)...)); 
 	}
 
-	bool remove(const std::string& id)
+	bool Remove(const std::string& id)
 	{
 		for (auto it = elements.begin(); it != elements.end(); ++it)
 		{
@@ -31,7 +34,7 @@ public:
 		}
 		return false;
 	}
-	void draw() 
+	void Draw()
 	{
 		for (auto& element : elements)
 		{
@@ -41,7 +44,7 @@ public:
 			}
 		}
 	}
-	void update() 
+	void Update()
 	{ 
 		for (auto& element : elements)
 		{
@@ -56,10 +59,10 @@ public:
 	}
 	Widget* getByID(const std::string& id)
 	{
-		for (size_t i = 0; i < elements.size(); i++)
+		for (const auto& element : elements)
 		{
-			if (elements[i]->getId() == id)
-				return elements[i].get();
+			if (element->getId() == id)
+				return element.get();
 		}
 
 		std::cerr << "Unhandled exception when accessing a deleted widget!\n";
@@ -84,5 +87,4 @@ private:
 	*/
 	std::unordered_set<std::string> hiddenIDs; // O(1) lookup
 	std::vector<std::unique_ptr<Widget>> elements;
-
 };

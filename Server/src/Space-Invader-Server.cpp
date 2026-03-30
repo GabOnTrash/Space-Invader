@@ -22,11 +22,11 @@ void cliThread(Server& srv)
     std::deque<std::vector<std::string>> history;
     std::unordered_map<std::string, CommandFunc> commands;
 
-    commands["reboot"] = [&] (auto args) { srv.Stop(); srv.Start(); LOG_INFO_CONSOLE("Server rebooted!"); };
-    commands["stop"] = [&] (auto args){ srv.Stop(); exit(0); };
-    commands["plist"] = [&] (auto args) { if (!srv.ListPlayers()) LOG_INFO_CONSOLE("No player is connected"); };
-    commands["cleanup"] = [&] (auto args) { Logger::Get().CleanUp();  LOG_DEBUG_CONSOLE("Log file was cleaned"); };
-    commands["help"] = [&] (auto args)
+    commands["reboot"] = [&] (const auto& args) { srv.Stop(); srv.Start(); LOG_INFO_CONSOLE("Server rebooted!"); };
+    commands["stop"] = [&] (const auto& args){ srv.Stop(); exit(0); };
+    commands["plist"] = [&] (const auto& args) { if (!srv.ListPlayers()) LOG_INFO_CONSOLE("No player is connected"); };
+    commands["cleanup"] = [&] (const auto& args) { Logger::Get().CleanUp();  LOG_DEBUG_CONSOLE("Log file was cleaned"); };
+    commands["help"] = [&] (const auto& args)
     {
         LOG_INFO_CONSOLE("Available commands:");
         for (const auto& [name, _] : commands) LOG_INFO_CONSOLE("- " + name);

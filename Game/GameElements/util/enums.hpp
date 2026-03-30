@@ -3,10 +3,13 @@
 enum class GameState
 {
     ON_START_MENU,
-    RUNNING_GAME,
-    ON_PAUSED_MENU = 2,
-    KILLED = 3,
-    ON_IP_MENU
+    ON_PAUSE_MENU,
+    ON_KILLED_MENU,
+    ON_CONTROLS_MENU,
+    ON_AUDIO_MENU,
+    ON_CONNECTION_MENU,
+    RUNNING_SINGLE_PLAYER,
+    RUNNING_MULTI_PLAYER,
 };
 
 enum class MeteorState

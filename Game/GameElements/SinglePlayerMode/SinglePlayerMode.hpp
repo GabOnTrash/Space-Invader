@@ -21,7 +21,6 @@ public:
     void Draw() override;
     void OnExit() override;
 
-    float dt = 0.0f;
     int GameScore = 0;
     int modifierType = 0;
 

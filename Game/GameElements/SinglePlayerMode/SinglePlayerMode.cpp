@@ -16,9 +16,7 @@ SinglePlayerMode::~SinglePlayerMode()
 
 void SinglePlayerMode::Update(float dt)
 {
-    this->dt = dt;
-
-    if (*(gameContext.gameStatus) == GameState::RUNNING_GAME && menuHandle.GameShouldUpdate)
+    if (*(gameContext.gameStatus) == GameState::RUNNING_SINGLE_PLAYER && menuHandle.GameShouldUpdate)
     {
         entityManager.Update(dt);
         player.Update(dt);
@@ -60,7 +58,6 @@ void SinglePlayerMode::Init()
 {
     ClearEffects();
 
-    menuHandle.SetMenuSinglePlayer();
     menuHandle.UpdateDifficulty();
 
     player.setDashTimer(4000 / menuHandle.GameDifficulty); // 800 ms 1000 ms 1333 ms
