@@ -13,6 +13,7 @@ public:
     virtual ~IEntityContainer() = default;
     virtual void UpdateAll(float dt) = 0;
     virtual void DrawAll() = 0;
+    virtual void Clear() = 0;
 };
 
 template <typename T>
@@ -37,10 +38,11 @@ public:
 
     void UpdateAll(float dt) override
     {
-        for (auto& e : elements)
+        for (size_t i = 0; i < elements.size();)
         {
-            e.Update(dt);
-            CheckLifeSpan();
+            elements[i].Update(dt);
+            if (CheckLifeSpan(elements[i]))
+                i++;
         }
     }
 
@@ -50,17 +52,20 @@ public:
             e.Draw();
     }
 
-    void CheckLifeSpan()
+    void Clear() override
     {
-        for (auto it = elements.begin(); it != elements.end(); )
+        elements.clear();
+    }
+
+    bool CheckLifeSpan(T& elem)
+    {
+        if (elem.ShouldDie(ctx.renderer.BASE_HEIGHT))
         {
-            if (it->ShouldDie(ctx.renderer.BASE_HEIGHT))
-            {
-                *it = std::move(elements.back());
-                elements.pop_back();
-            }
-            else ++it;
+            elem = std::move(elements.back());
+            elements.pop_back();
+            return false;
         }
+        return true;
     }
 
     std::vector<T>& getElements() { return elements; }

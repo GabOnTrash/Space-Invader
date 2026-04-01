@@ -8,7 +8,7 @@ SinglePlayerMode::SinglePlayerMode(GameContext& ctx, MenuHandle& handle)
         modifierTimer(6000, [this]() { CreateModifier(); }, true, true),
         timerDelayResume(3000, []() {})
 {
-    SinglePlayerMode::Init();
+    Init();
 }
 
 SinglePlayerMode::~SinglePlayerMode()
@@ -31,17 +31,18 @@ void SinglePlayerMode::Update(float dt)
         return;
     }
 
+    if (menuHandle.wantToRestartSinglePlayer)
+    {
+        this->Init();
+        *gameContext.gameStatus = GameState::RUNNING_SINGLE_PLAYER;
+        menuHandle.wantToRestartSinglePlayer = false;
+    }
+
     if (*gameContext.gameStatus != GameState::RUNNING_SINGLE_PLAYER)
         return;
 
     entityManager.Update(dt);
     player.Update(dt);
-
-    if (menuHandle.wantToRestartSinglePlayer)
-    {
-        this->Init();
-        menuHandle.wantToRestartSinglePlayer = false;
-    }
 
     if (player.wantToGenerateLaser)
     {
@@ -71,8 +72,8 @@ void SinglePlayerMode::Draw()
     entityManager.Draw();
     player.Draw();
 
-    if (timerDelayResume.isRunning)
-        menuHandle.RenderCountDown(3000 - timerDelayResume.elapsedTime());
+    if (timerDelayResume.isRunning && *gameContext.gameStatus == GameState::RUNNING_SINGLE_PLAYER)
+        ShowCountDown();
 }
 
 void SinglePlayerMode::ClearEffects()

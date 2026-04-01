@@ -41,6 +41,6 @@ public:
     void ClearAllContainers()
     {
         for (auto& [type, container] : containers)
-            if (container) container.reset();
+            if (container) container->Clear();
     }
 };
