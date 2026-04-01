@@ -2,13 +2,13 @@
 #include "../Game/Game.hpp"
 
 MenuHandle::MenuHandle(GameContext& ctx)
-    : gameContext(ctx), timerDelayResume(3000, [this]() { GameShouldUpdate = true; })
+    : gameContext(ctx)
 {
     Widget::setRenderer(&ctx.renderer);
 
     LoadGameFont(); // maybe will be removed
     settings = std::vector<AudioSetting>{
-            {"GeneralVolume",      "labelGeneralAudio",   Strings::generalVolume,  "GeneralSliderVolume",   AudioManager::Instance().getGlobalVolume() },
+            {"GeneralVolume",      "labelGeneralAudio",   Strings::generalVolume,  "GeneralSliderVolume",   AudioManager::Instance().getGeneralVolume() },
             {"MusicVolume",        "labelMusicAudio",     Strings::musicVolume,    "MusicSliderVolume",     AudioManager::Instance().getMusicVolume() },
             {"LaserVolume",        "labelLaserAudio",     Strings::laserVolume,    "LaserSliderVolume",     AudioManager::Instance().getLaserVolume() },
             {"MeteorDamageVolume", "labelAsteroidAudio",  Strings::meteorVolume,   "AsteroidSliderVolume",  AudioManager::Instance().getMeteorVolume() },
@@ -78,7 +78,6 @@ void MenuHandle::Update()
             Reset();
         break;
     case GameState::RUNNING_SINGLE_PLAYER:
-        timerDelayResume.update();
         UpdateSinglePlayerHUD();
         if (IsKeyPressed(KEY_ESCAPE))
             *(gameContext.gameStatus) = GameState::ON_PAUSE_MENU;
@@ -92,6 +91,7 @@ void MenuHandle::Update()
         updateKeyBinding();
         break;
     case GameState::ON_PAUSE_MENU:
+
         break;
     default: ;
     }
@@ -104,8 +104,6 @@ void MenuHandle::Draw()
     case GameState::RUNNING_SINGLE_PLAYER:
         for (auto & i : heartsArray)
             i.Draw();
-        if (timerDelayResume.isRunning)
-            ShowCountDown();
         break;
     case GameState::RUNNING_MULTI_PLAYER:
     case GameState::ON_CONNECTION_MENU:
@@ -120,31 +118,6 @@ void MenuHandle::Draw()
     }
 
     currentMenu->Draw();
-}
-
-void MenuHandle::ShowCountDown()
-{
-    int remainingSeconds = ((int) timerDelayResume.duration.count() - timerDelayResume.elapsedTime()) / 1000 + 1;
-
-    Color c;
-    if (remainingSeconds <= 3 && remainingSeconds > 2)
-        c = GREEN;
-    else if (remainingSeconds <= 2 && remainingSeconds > 1)
-        c = YELLOW;
-    else
-        c = RED;
-
-    const char* text = TextFormat("%d", remainingSeconds);
-
-    float fontSize = 200.0f;
-    Vector2 textSize = MeasureTextEx(GameFontMedium, text, fontSize, 5);
-    Vector2 pos = {
-        (gameContext.renderer.BASE_WIDTH - textSize.x) / 2.0f,
-        (gameContext.renderer.BASE_HEIGHT - textSize.y) / 2.0f
-    };
-
-    DrawTextEx(GameFontMedium, text, {pos.x + 4, pos.y + 4}, fontSize, 5, BLACK);
-    DrawTextEx(GameFontMedium, text, pos, fontSize, 5, c);
 }
 
 void MenuHandle::UpdateSinglePlayerHUD()
@@ -235,12 +208,41 @@ void MenuHandle::UpdateDifficulty()
     }
 }
 
+void MenuHandle::setCurrentScore(int gameScore)
+{
+    singlePlayerHUD.getByID("labelScore")->setText(TextFormat(Strings::score, gameScore));
+    deathMenu.getByID("labelMenuScore")->setText(TextFormat(Strings::score, gameScore));
+}
+
+void MenuHandle::RenderCountDown(int remainingSeconds)
+{
+    Color c;
+    if (remainingSeconds <= 3000 && remainingSeconds > 2000)
+        c = GREEN;
+    else if (remainingSeconds <= 2000 && remainingSeconds > 1000)
+        c = YELLOW;
+    else
+        c = RED;
+
+    const char* text = TextFormat("%d", (remainingSeconds / 1000) + 1);
+
+    float fontSize = 200.0f;
+    Vector2 textSize = MeasureTextEx(GameFontMedium, text, fontSize, 5);
+    Vector2 pos = {
+        (gameContext.renderer.BASE_WIDTH - textSize.x) / 2.0f,
+        (gameContext.renderer.BASE_HEIGHT - textSize.y) / 2.0f
+    };
+
+    DrawTextEx(GameFontMedium, text, {pos.x + 4, pos.y + 4}, fontSize, 5, BLACK);
+    DrawTextEx(GameFontMedium, text, pos, fontSize, 5, c);
+}
+
 void MenuHandle::ResumeGame(GameState st)
 {
     //////// to correct
-    *gameContext.gameStatus = GameState::RUNNING_SINGLE_PLAYER;
-    GameShouldUpdate = false;
-    timerDelayResume.active();
+    shouldResumeTheGame = true;
+    //*gameContext.gameStatus = GameState::RUNNING_SINGLE_PLAYER;
+    // valid only for singleplayer
 }
 
 void MenuHandle::HandleStateChange(GameState newState)

@@ -5,7 +5,8 @@
 SinglePlayerMode::SinglePlayerMode(GameContext& ctx, MenuHandle& handle)
     : IGameMode(ctx, handle), entityManager(ctx),
         meteorTimer(0, [this]() { CreateMeteor(); }, true, true),
-        modifierTimer(6000, [this]() { CreateModifier(); }, true, true)
+        modifierTimer(6000, [this]() { CreateModifier(); }, true, true),
+        timerDelayResume(3000, []() {})
 {
     SinglePlayerMode::Init();
 }
@@ -17,39 +18,61 @@ SinglePlayerMode::~SinglePlayerMode()
 
 void SinglePlayerMode::Update(float dt)
 {
-    if (*(gameContext.gameStatus) == GameState::RUNNING_SINGLE_PLAYER && menuHandle.GameShouldUpdate)
+    if (menuHandle.shouldResumeTheGame)
     {
-        entityManager.Update(dt);
-        player.Update(dt);
-
-        if (menuHandle.wantToRestartSinglePlayer)
-        {
-            this->Init();
-            menuHandle.wantToRestartSinglePlayer = false;
-        }
-
-        if (player.wantToGenerateLaser)
-        {
-            player.generateLaser(entityManager.getContainer<Laser>()->getElements());
-            player.wantToGenerateLaser = false;
-        }
-
-        cManager.ResolveAll(player,
-                entityManager.getContainer<Meteor>()->getElements(),
-            entityManager.getContainer<Laser>()->getElements(),
-            entityManager.getContainer<Modifier>()->getElements(),
-            entityManager.getContainer<Explosion>()->getElements(),
-            GameScore, gameContext.gameStatus,  menuHandle.heartsArray, menuHandle.nMaxHearts);
-
-        meteorTimer.update();
-        modifierTimer.update();
+        *gameContext.gameStatus = GameState::RUNNING_SINGLE_PLAYER;
+        timerDelayResume.active();
+        menuHandle.shouldResumeTheGame = false;
     }
+
+    if (timerDelayResume.isRunning)
+    {
+        timerDelayResume.update();
+        return;
+    }
+
+    if (*gameContext.gameStatus != GameState::RUNNING_SINGLE_PLAYER)
+        return;
+
+    entityManager.Update(dt);
+    player.Update(dt);
+
+    if (menuHandle.wantToRestartSinglePlayer)
+    {
+        this->Init();
+        menuHandle.wantToRestartSinglePlayer = false;
+    }
+
+    if (player.wantToGenerateLaser)
+    {
+        player.generateLaser(entityManager.getContainer<Laser>()->getElements());
+        player.wantToGenerateLaser = false;
+    }
+
+    cManager.ResolveAll(player,
+            entityManager.getContainer<Meteor>()->getElements(),
+        entityManager.getContainer<Laser>()->getElements(),
+        entityManager.getContainer<Modifier>()->getElements(),
+        entityManager.getContainer<Explosion>()->getElements(),
+        GameScore, gameContext.gameStatus,  menuHandle.heartsArray, menuHandle.nMaxHearts);
+
+    if (lastScore != GameScore)
+    {
+        menuHandle.setCurrentScore(GameScore);
+        lastScore = GameScore;
+    }
+
+    meteorTimer.update();
+    modifierTimer.update();
 }
 
 void SinglePlayerMode::Draw()
 {
     entityManager.Draw();
     player.Draw();
+
+    if (timerDelayResume.isRunning)
+        menuHandle.RenderCountDown(3000 - timerDelayResume.elapsedTime());
 }
 
 void SinglePlayerMode::ClearEffects()
@@ -60,7 +83,15 @@ void SinglePlayerMode::ClearEffects()
     menuHandle.heartsArray.clear();
     
     GameScore = 0;
+    lastScore = 0;
 }
+
+void SinglePlayerMode::ShowCountDown()
+{
+    int remainingSeconds = ((int) timerDelayResume.duration.count() - timerDelayResume.elapsedTime()) / 1000 + 1;
+    menuHandle.RenderCountDown(remainingSeconds);
+}
+
 void SinglePlayerMode::Init()
 {
     ClearEffects();

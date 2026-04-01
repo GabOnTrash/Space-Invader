@@ -60,8 +60,9 @@ void Game::Run()
 void Game::Update()
 {
     float dt = GetFrameTime();
-    SetMusicVolume(gameMusic, *AudioManager::Instance().getMusicVolume());
     UpdateMusicStream(gameMusic);
+    SetMusicVolume(gameMusic, AudioManager::Instance().getCalibratedMusicVolume());
+
     backgroundStars.updateStars(dt);
 
     menuHandle->Update();

@@ -22,10 +22,12 @@ public:
     void OnExit() override;
 
     int GameScore = 0;
+    int lastScore = 0;
     int modifierType = 0;
 
 private:
     void ClearEffects();
+    void ShowCountDown();
     void CreateMeteor();
     void CreateModifier();
 
@@ -33,4 +35,5 @@ private:
 
     Timer<> meteorTimer;
     Timer<> modifierTimer;
+    Timer<> timerDelayResume;
 };

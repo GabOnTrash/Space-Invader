@@ -10,6 +10,7 @@ public:
 	~Modifier();
 	void InitAllTextures();
 	void Draw();
+	void playSound();
 	void Update(float dt);
 	bool ShouldDie(float checkValue);
 	Rectangle getBounds();

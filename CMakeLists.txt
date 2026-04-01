@@ -56,7 +56,6 @@ set(GAME_SOURCES
         Game/GameElements/Explosion/Explosion.cpp
         Game/GameElements/Game/Game.cpp
         Game/GameElements/Heart/Heart.cpp
-        Game/GameElements/IGameMode/IGameMode.cpp
         Game/GameElements/Laser/Laser.cpp
         Game/GameElements/MenuHandle/MenuHandle.cpp
         Game/GameElements/Meteor/Meteor.cpp

@@ -18,7 +18,7 @@ void MenuHandle::InitStartMenu()
 
 void MenuHandle::InitPauseMenu()
 {
-    pauseMenu.Add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { ResumeGame(*gameContext.gameStatus); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    pauseMenu.Add<Button>("btnResume", Strings::resume, GameFontMedium,                                     fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { shouldResumeTheGame = true; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     pauseMenu.Add<Button>("btnRestart", Strings::restart, GameFontMedium,                                   fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 + 130), (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { wantToRestartSinglePlayer = true; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 
     pauseMenu.Add<Button>("btnctrl", Strings::control, GameFontMedium,                                      fontSize, 240, buttonHeight, (gameContext.renderer.BASE_WIDTH / 2 - 130), (gameContext.renderer.BASE_HEIGHT / 2 - 60), [this]() { *gameContext.gameStatus = GameState::ON_CONTROLS_MENU; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
@@ -32,7 +32,7 @@ void MenuHandle::InitPauseMenu()
 void MenuHandle::InitDeathMenu()
 {
     deathMenu.Add<Button>("btnRestart", Strings::restart, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, (gameContext.renderer.BASE_HEIGHT / 2 - 200), [this]() { wantToRestartSinglePlayer = true; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    deathMenu.Add<Label>("labelMenuScore", TextFormat(Strings::score, [this]() { /*if (GetScore) { return GetScore(); }*/}), nullptr, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    deathMenu.Add<Label>("labelMenuScore", TextFormat(Strings::score, 0), nullptr, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     deathMenu.Add<TextureButton>("btnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
     deathMenu.Add<Button>("difficButton", TextFormat(Strings::difficulty, SetDifficulty().c_str()), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 80), [this]() { this->SetDifficulty(true); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
@@ -96,13 +96,13 @@ void MenuHandle::InitBindsMenu()
 
 void MenuHandle::InitConneMenu()
 {
-    connectionMenu.Add<Label>("labelScore", "IP:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.6, gameContext.renderer.BASE_HEIGHT / 3, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    connectionMenu.Add<Label>("labelIp", "IP:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.6, gameContext.renderer.BASE_HEIGHT / 3, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     connectionMenu.Add<TextBox>("txtFirstTerne", gameContext.renderer.BASE_WIDTH / 2 - sliderWidth + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
     connectionMenu.Add<TextBox>("txtSecondTerne", gameContext.renderer.BASE_WIDTH / 2 - sliderWidth / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
     connectionMenu.Add<TextBox>("txtThirdTerne", gameContext.renderer.BASE_WIDTH / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
     connectionMenu.Add<TextBox>("txtFourthTerne", gameContext.renderer.BASE_WIDTH / 2 + sliderWidth / 2 + sliderWidth / 4, gameContext.renderer.BASE_HEIGHT / 3, sliderWidth / 2 - 5, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 3, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
 
-    connectionMenu.Add<Label>("labelScore", "Port:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.4, gameContext.renderer.BASE_HEIGHT / 3 + 130, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    connectionMenu.Add<Label>("labelPort", "Port:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.4, gameContext.renderer.BASE_HEIGHT / 3 + 130, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     connectionMenu.Add<TextBox>("txtPort", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3 + 130, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 5, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
 
     connectionMenu.Add<Label>("lblStatus", "", nullptr, GameFontMedium, 40, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2 + 50, RED, RED);
@@ -114,7 +114,7 @@ void MenuHandle::InitConneMenu()
 void MenuHandle::InitSinglePlayerHUD()
 {
     singlePlayerHUD.Add<Label>("labelDanger", Strings::danger, nullptr, GameFontMedium, 70, gameContext.renderer.BASE_WIDTH - MeasureText(Strings::danger, 70) / 2 * 1.5f, MeasureText(Strings::danger, 70) / 4, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    singlePlayerHUD.Add<Label>("labelScore", TextFormat(Strings::score, [this]() { /*if (GetScore) { return GetScore(); }*/ }), nullptr, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    singlePlayerHUD.Add<Label>("labelScore", TextFormat(Strings::score, 0), nullptr, GameFontMedium, 140, MeasureText(Strings::score, 140) / 2, 140 / 2, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
 }
 
 void MenuHandle::InitMultiPlayerHUD()

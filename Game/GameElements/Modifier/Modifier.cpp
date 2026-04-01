@@ -12,8 +12,6 @@ Modifier::Modifier(Vector2 position, int type)
 }
 Modifier::~Modifier()
 {
-    SetSoundVolume(audio, *AudioManager::Instance().getModifierVolume());
-    PlaySound(audio);
 }
 Rectangle Modifier::getBounds()
 {
@@ -40,6 +38,13 @@ void Modifier::Draw()
 {
     DrawTexture(*texture, static_cast<int>(position.x), static_cast<int>(position.y), WHITE);
 }
+
+void Modifier::playSound()
+{
+    SetSoundVolume(audio, AudioManager::Instance().getCalibratedModifierVolume());
+    PlaySound(audio);
+}
+
 void Modifier::Update(float dt)
 {
     position.y += vel * dt;

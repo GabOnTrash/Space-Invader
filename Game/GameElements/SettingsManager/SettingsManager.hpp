@@ -16,26 +16,27 @@ public:
     }
 
     [[nodiscard]] float* getMusicVolume() { return &musicVolume; }
-    [[nodiscard]] float* getGlobalVolume() { return &globalVolume; }
+    [[nodiscard]] float* getGeneralVolume() { return &generalVolume; }
     [[nodiscard]] float* getExplosionVolume() { return &explosionVolume; }
     [[nodiscard]] float* getModifierVolume() { return &modifierVolume; }
     [[nodiscard]] float* getMeteorVolume() { return &meteorVolume; }
     [[nodiscard]] float* getLaserVolume() { return &laserVolume; }
 
-    void setGlobalVolume(float volume) { globalVolume = volume; }
-    void setMusicVolume(float volume) { musicVolume = volume * globalVolume; }
-    void setExplosionVolume(float volume) { globalVolume = volume * globalVolume; }
-    void setModifierVolume(float volume) { modifierVolume = volume * globalVolume; }
-    void setMeteorVolume(float volume) { meteorVolume = volume * globalVolume; }
-    void setLaserVolume(float volume) { laserVolume = volume * globalVolume; }
+    [[nodiscard]] float getCalibratedMusicVolume() const { return musicVolume * generalVolume; }
+    [[nodiscard]] float getCalibratedExplosionVolume() const { return explosionVolume * generalVolume; }
+    [[nodiscard]] float getCalibratedModifierVolume() const { return modifierVolume * generalVolume; }
+    [[nodiscard]] float getCalibratedMeteorVolume() const { return meteorVolume * generalVolume; }
+    [[nodiscard]] float getCalibratedLaserVolume() const { return laserVolume * generalVolume; }
 
 private:
-    float globalVolume = 1.f;
+    float generalVolume = 1.f;
     float musicVolume = 1.f;
     float explosionVolume = 1.f;
     float laserVolume = 1.f;
     float modifierVolume = 1.f;
     float meteorVolume = 1.f;
+
+    friend class SettingsManager;
 };
 
 class SettingsManager
@@ -64,6 +65,8 @@ public:
     }
 
 private:
+    static void GenerateDefaultConfig();
+
     inline static nlohmann::json settings;
     inline static std::string settingsPath;
 };

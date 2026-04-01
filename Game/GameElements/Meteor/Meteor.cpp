@@ -58,7 +58,7 @@ bool Meteor::ShouldDie(float checkValue)
 
 void Meteor::NextState()
 {
-	SetSoundVolume(damage, *AudioManager::Instance().getMeteorVolume());
+	SetSoundVolume(damage, AudioManager::Instance().getCalibratedMeteorVolume());
 	PlaySound(damage);
 
 	switch (meteorState)

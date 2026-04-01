@@ -117,6 +117,7 @@ void CollisionManager::HandlePlayerModifiers(Player& player, std::vector<Modifie
         {
             if (Player::byteMask.checkPixelCollision(Modifier::byteMask, player.position, modifiers[i].position, GetCollisionRec(rPlayer, rPot)))
             {
+                modifiers[i].playSound();
                 switch (modifiers[i].modType)
                 {
                 case ModifierType::SLOWER:

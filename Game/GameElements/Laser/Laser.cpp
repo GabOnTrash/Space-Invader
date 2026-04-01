@@ -14,7 +14,7 @@ Laser::Laser(Vector2 position, int laserTimeToLive)
         byteMask.loadFromImage(PATH_BYTEMASK_LASER);
         byteMaskLoaded = true;
     }
-    SetSoundVolume(audio, *AudioManager::Instance().getLaserVolume());
+    SetSoundVolume(audio, AudioManager::Instance().getCalibratedLaserVolume());
     PlaySound(audio);
 
 	this->position = position;

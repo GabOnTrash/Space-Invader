@@ -6,7 +6,7 @@ Explosion::Explosion(const Rectangle& bounds)
 {
 	InitResources();
 
-	SetSoundVolume(explosionAudio, *AudioManager::Instance().getExplosionVolume());
+	SetSoundVolume(explosionAudio, AudioManager::Instance().getCalibratedExplosionVolume());
 	PlaySound(explosionAudio);
 
 	position.x = (bounds.x + bounds.width / 2);

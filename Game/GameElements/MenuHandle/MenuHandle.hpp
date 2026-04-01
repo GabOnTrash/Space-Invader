@@ -34,6 +34,8 @@ public:
 
 	bool IsFullscreen();
 	void UpdateDifficulty();
+    void setCurrentScore(int gameScore);
+	void RenderCountDown(int remainingSeconds);
 
     bool UserWantsToQuit()
 	{
@@ -44,9 +46,9 @@ public:
 	std::function<void()> StartMultiPlayer;
 	std::function<void()> Reset;
 
+	bool shouldResumeTheGame = false;
 	bool stillTryingConnecting = true;
 	bool wantToRestartSinglePlayer = false;
-	bool GameShouldUpdate = true;
 	int DiffPerModifiers = 0;
 	int nMaxHearts = 0;
 	std::vector<Heart> heartsArray;
@@ -90,7 +92,6 @@ private:
 	int lastID = -1;
 	int lastMatchSize = -1;
 
-	Timer<> timerDelayResume;
 	GameContext& gameContext;
 
 	/////////////////////////////////
@@ -109,13 +110,6 @@ private:
     bool shouldQuit = false;
     bool fullscreen = true;
     int taskbar = 60; // Approximate taskbar height
-
-    float MusicVolume = 0.0f;
-    float LaserVolume = 0.0f;
-    float PowerUpVolume = 0.0f;
-    float MeteorDamageVolume = 0.0f;
-    float ExplosionVolume = 0.0f;
-    float GeneralVolume = 0.0f;
 
     float offsetY = 0.0f;
     float centerY = 0.0f;
