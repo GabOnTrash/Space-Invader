@@ -52,7 +52,6 @@ endif()
 
 set(GAME_SOURCES
         Game/GameElements/AssetsManager/AssetsManager.cpp
-        Game/GameElements/AudioManager/AudioManager.cpp
         Game/GameElements/CollisionManager/CollisionManager.cpp
         Game/GameElements/Explosion/Explosion.cpp
         Game/GameElements/Game/Game.cpp

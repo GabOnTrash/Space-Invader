@@ -1,10 +1,12 @@
 #include "Explosion.hpp"
 
+#include "GameElements/SettingsManager/SettingsManager.hpp"
+
 Explosion::Explosion(const Rectangle& bounds)
 {
 	InitResources();
 
-	SetSoundVolume(explosionAudio, volume);
+	SetSoundVolume(explosionAudio, *AudioManager::Instance().getExplosionVolume());
 	PlaySound(explosionAudio);
 
 	position.x = (bounds.x + bounds.width / 2);

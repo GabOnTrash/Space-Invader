@@ -18,7 +18,6 @@ public:
 	Vector2 position{ 0, 0 };
 
     static inline ByteMask byteMask;
-	static inline float volume = 1.0f;
 	static inline Vector2 playerPos = { 0.0f, 0.0f };
 
 	bool shouldDie = false;

@@ -18,7 +18,6 @@ public:
 	ModifierType modType;
 	static inline Sound audio = {};
     static inline ByteMask byteMask;
-	static inline float volume = 1.0f;
 
 private:
 	int vel = 300;

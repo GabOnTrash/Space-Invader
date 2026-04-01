@@ -17,7 +17,6 @@ public:
 	Vector2 position = { 0, 0 };
 
 	static inline ByteMask byteMask;
-	static inline float volume = 1.0f;
 	static inline Texture2D texture = { 0 };
 	
 	uint32_t owner;

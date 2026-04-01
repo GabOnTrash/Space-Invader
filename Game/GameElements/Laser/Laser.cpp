@@ -1,5 +1,7 @@
 #include "Laser.hpp"
 
+#include "GameElements/SettingsManager/SettingsManager.hpp"
+
 Laser::Laser(Vector2 position, int laserTimeToLive)
     : shouldDieTimer(laserTimeToLive, nullptr, false, true)
 {
@@ -12,7 +14,7 @@ Laser::Laser(Vector2 position, int laserTimeToLive)
         byteMask.loadFromImage(PATH_BYTEMASK_LASER);
         byteMaskLoaded = true;
     }
-    SetSoundVolume(audio, volume);
+    SetSoundVolume(audio, *AudioManager::Instance().getLaserVolume());
     PlaySound(audio);
 
 	this->position = position;

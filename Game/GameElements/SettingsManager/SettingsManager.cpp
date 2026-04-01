@@ -1,4 +1,5 @@
 #include "SettingsManager.hpp"
+#include "GameElements/util/Logger.hpp"
 
 void SettingsManager::Init(const std::string& jsonPath)
 {
@@ -9,21 +10,33 @@ void SettingsManager::Init(const std::string& jsonPath)
     {
         file >> settings;
         file.close();
+        LoadVolumeValues();
         return;
     }
 
-    std::cerr << "File not found, a new one will be created." << std::endl;
+    LOG_INFO_FILE("File not found, a new one will be created.");
     settings = nlohmann::json::object();
+}
+
+void SettingsManager::LoadVolumeValues()
+{
+    AudioManager::Instance().setGlobalVolume(GetKey<float>("audio", "GeneralVolume"));
+    AudioManager::Instance().setMusicVolume(GetKey<float>("audio", "MusicVolume"));
+    AudioManager::Instance().setLaserVolume(GetKey<float>("audio", "LaserVolume"));
+    AudioManager::Instance().setMeteorVolume(GetKey<float>("audio", "MeteorDamageVolume"));
+    AudioManager::Instance().setModifierVolume(GetKey<float>("audio", "ModifierVolume"));
+    AudioManager::Instance().setExplosionVolume(GetKey<float>("audio", "ExplosionVolume"));
 }
 
 void SettingsManager::SaveData(const KeyBindings& keys, MenuHandle& menu)
 {
-    SetKey("audio", "GeneralVolume", AudioManager::GetGeneralVolume());
-    SetKey("audio", "MusicVolume", AudioManager::GetMusicVolume());
-    SetKey("audio", "LaserVolume", AudioManager::GetLaserVolume());
-    SetKey("audio", "MeteorDamageVolume", AudioManager::GetMeteorDamageVolume());
-    SetKey("audio", "PowerUpVolume", AudioManager::GetModifierVolume());
-    SetKey("audio", "ExplosionVolume", AudioManager::GetExplosionVolume());
+    SetKey("audio", "GeneralVolume", *AudioManager::Instance().getGlobalVolume());
+    SetKey("audio", "MusicVolume", *AudioManager::Instance().getMusicVolume());
+    SetKey("audio", "LaserVolume", *AudioManager::Instance().getLaserVolume());
+    SetKey("audio", "MeteorDamageVolume", *AudioManager::Instance().getMeteorVolume());
+    SetKey("audio", "ModifierVolume", *AudioManager::Instance().getModifierVolume());
+    SetKey("audio", "ExplosionVolume", *AudioManager::Instance().getExplosionVolume());
+
     SetKey("difficulty", "GameDifficulty", menu.GameDifficulty);
 
     keys.forEach([](const std::string& key, int val)

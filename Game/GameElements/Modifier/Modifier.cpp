@@ -1,5 +1,7 @@
 #include "Modifier.hpp"
 
+#include "GameElements/SettingsManager/SettingsManager.hpp"
+
 Modifier::Modifier(Vector2 position, int type)
 {
     InitAllTextures();
@@ -10,6 +12,8 @@ Modifier::Modifier(Vector2 position, int type)
 }
 Modifier::~Modifier()
 {
+    SetSoundVolume(audio, *AudioManager::Instance().getModifierVolume());
+    PlaySound(audio);
 }
 Rectangle Modifier::getBounds()
 {

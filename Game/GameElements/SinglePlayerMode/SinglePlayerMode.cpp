@@ -12,6 +12,7 @@ SinglePlayerMode::SinglePlayerMode(GameContext& ctx, MenuHandle& handle)
 
 SinglePlayerMode::~SinglePlayerMode()
 {
+    OnExit();
 }
 
 void SinglePlayerMode::Update(float dt)
@@ -20,6 +21,12 @@ void SinglePlayerMode::Update(float dt)
     {
         entityManager.Update(dt);
         player.Update(dt);
+
+        if (menuHandle.wantToRestartSinglePlayer)
+        {
+            this->Init();
+            menuHandle.wantToRestartSinglePlayer = false;
+        }
 
         if (player.wantToGenerateLaser)
         {

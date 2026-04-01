@@ -8,22 +8,24 @@ Game::Game() :
     gameContext{ gameStatus, keyBindings, renderer },
     backgroundStars(gameContext)
 {
+    InitAudioDevice();
     gameContext.renderer.Init();
+
+    Logger::Get().Init("Server_Log.txt");
 
     AssetsManager::Init(PATH_ASSETS_CONFIG);
     SettingsManager::Init(PATH_SPACEINVADER_SETTINGS);
-    AudioManager::Init();
 
     menuHandle = std::make_shared<MenuHandle>(gameContext);
     SetUICallBacks();
 
     SetExitKey(KEY_NULL);
 
-    InitAudioDevice();
     gameMusic = AssetsManager::GetMusic("game_music");
     gameCursor = AssetsManager::GetTexture("game_cursor");
 
     HideCursor();
+    PlayMusicStream(gameMusic);
 }
 Game::~Game()
 {
@@ -58,6 +60,7 @@ void Game::Run()
 void Game::Update()
 {
     float dt = GetFrameTime();
+    SetMusicVolume(gameMusic, *AudioManager::Instance().getMusicVolume());
     UpdateMusicStream(gameMusic);
     backgroundStars.updateStars(dt);
 
@@ -68,24 +71,12 @@ void Game::Update()
 
 void Game::LoadSinglePlayerMode()
 {
-    if (currentMode)
-    {
-        currentMode->OnExit();
-        currentMode.reset();
-    }
-
     currentMode = std::make_unique<SinglePlayerMode>(gameContext, *menuHandle);
     currentMode->Init();
     *gameStatus = GameState::RUNNING_SINGLE_PLAYER;
 }
 void Game::LoadMultiPlayerMode()
 {
-    if (currentMode)
-    {
-        currentMode->OnExit();
-        currentMode.reset();
-    }
-
     std::string ip = menuHandle->GetIP();
     std::string port = menuHandle->GetPort();
 
@@ -110,7 +101,6 @@ void Game::SetUICallBacks()
 {
     menuHandle->StartSinglePlayer = [this]() { this->LoadSinglePlayerMode(); };
     menuHandle->StartMultiPlayer = [this]() { this->LoadMultiPlayerMode(); };
-    menuHandle->Restart = [this]() { LoadSinglePlayerMode(); };
     menuHandle->Reset = [this]() { currentMode.reset(); };
 }
 

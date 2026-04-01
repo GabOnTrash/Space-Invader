@@ -15,7 +15,7 @@ struct AudioSetting
 	std::string labelId;
 	const char* labelText;
 	std::string sliderId;
-	float& volumeVar;
+	float* volumeVar;
 };
 
 
@@ -42,11 +42,10 @@ public:
 
     std::function<void()> StartSinglePlayer;
 	std::function<void()> StartMultiPlayer;
-	std::function<void()> Restart;
 	std::function<void()> Reset;
-	std::function<int()> GetScore;
 
 	bool stillTryingConnecting = true;
+	bool wantToRestartSinglePlayer = false;
 	bool GameShouldUpdate = true;
 	int DiffPerModifiers = 0;
 	int nMaxHearts = 0;
@@ -86,6 +85,7 @@ private:
     Menu multiPlayerHUD;
 
 	std::unordered_map<GameState, Menu&> menus;
+	std::vector<AudioSetting> settings;
 
 	int lastID = -1;
 	int lastMatchSize = -1;

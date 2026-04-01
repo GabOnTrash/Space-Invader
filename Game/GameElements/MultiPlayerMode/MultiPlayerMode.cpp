@@ -8,11 +8,11 @@ MultiPlayerMode::MultiPlayerMode(GameContext& ctx, MenuHandle& menu, std::string
 }
 MultiPlayerMode::~MultiPlayerMode()
 {
+    OnExit();
 }
 
 void MultiPlayerMode::Init()
 {
-    Logger::Get().Init("Server_Log.txt");
     if (!Connect(ip, port))
         *(gameContext.gameStatus) = GameState::ON_START_MENU;
 

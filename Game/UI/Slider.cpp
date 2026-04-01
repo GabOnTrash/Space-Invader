@@ -1,5 +1,7 @@
 #include "Slider.h"
 
+#include "GameElements/util/Logger.hpp"
+
 Slider::Slider(std::string id, RectS& rectangle, PointerS& point)
 	: id(id), rect(rectangle), pointer(point)
 {

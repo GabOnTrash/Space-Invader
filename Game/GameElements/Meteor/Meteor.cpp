@@ -1,5 +1,7 @@
 #include "Meteor.hpp"
 
+#include "GameElements/SettingsManager/SettingsManager.hpp"
+
 Meteor::Meteor(Vector2 pos)
 {
 	damage = AssetsManager::GetSound("meteor_damage");
@@ -56,7 +58,7 @@ bool Meteor::ShouldDie(float checkValue)
 
 void Meteor::NextState()
 {
-	SetSoundVolume(damage, volume);
+	SetSoundVolume(damage, *AudioManager::Instance().getMeteorVolume());
 	PlaySound(damage);
 
 	switch (meteorState)

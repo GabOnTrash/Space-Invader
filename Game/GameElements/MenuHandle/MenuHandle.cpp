@@ -7,6 +7,14 @@ MenuHandle::MenuHandle(GameContext& ctx)
     Widget::setRenderer(&ctx.renderer);
 
     LoadGameFont(); // maybe will be removed
+    settings = std::vector<AudioSetting>{
+            {"GeneralVolume",      "labelGeneralAudio",   Strings::generalVolume,  "GeneralSliderVolume",   AudioManager::Instance().getGlobalVolume() },
+            {"MusicVolume",        "labelMusicAudio",     Strings::musicVolume,    "MusicSliderVolume",     AudioManager::Instance().getMusicVolume() },
+            {"LaserVolume",        "labelLaserAudio",     Strings::laserVolume,    "LaserSliderVolume",     AudioManager::Instance().getLaserVolume() },
+            {"MeteorDamageVolume", "labelAsteroidAudio",  Strings::meteorVolume,   "AsteroidSliderVolume",  AudioManager::Instance().getMeteorVolume() },
+            {"ExplosionVolume",    "labelExplosionAudio", Strings::explosionVolume, "ExplosionSliderVolume",AudioManager::Instance().getExplosionVolume() },
+            {"ModifierVolume",      "labelModifierAudio",  Strings::modifierVolume, "ModifierSliderVolume",   AudioManager::Instance().getModifierVolume() }
+    };
     InitAllMenus();
 
     GameDifficulty = static_cast<Difficulty>(SettingsManager::GetKey<int>("difficulty", "GameDifficulty"));
@@ -84,7 +92,6 @@ void MenuHandle::Update()
         updateKeyBinding();
         break;
     case GameState::ON_PAUSE_MENU:
-        AudioManager::Update();
         break;
     default: ;
     }
