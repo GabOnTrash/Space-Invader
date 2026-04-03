@@ -32,7 +32,7 @@ void MenuHandle::InitPauseMenu()
 void MenuHandle::InitDeathMenu()
 {
     deathMenu.Add<Label>("labelMenuScore", TextFormat(Strings::score, 0), nullptr, GameFontMedium, 100, centerX, blockSpacing, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
-    deathMenu.Add<Button>("btnRestart", Strings::restart, GameFontMedium, fontSize, buttonWidth, buttonHeight, centerX, (gameContext.renderer.BASE_HEIGHT / 2 - 140), [this]() { wantToRestartSinglePlayer = true; }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
+    deathMenu.Add<TextureButton>("btnRestart", centerX, (gameContext.renderer.BASE_HEIGHT / 2 - 140), AssetsManager::GetTexture("btnRestart"), [this]() { wantToRestartSinglePlayer = true; });
     deathMenu.Add<Button>("difficButton", TextFormat(Strings::difficulty, SetDifficulty().c_str()), GameFontMedium, fontSize, buttonWidth, buttonHeight, gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2), [this]() { this->SetDifficulty(true); }, borderRadius, 0, 4, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER, FILL_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     deathMenu.Add<TextureButton>("btnQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 140), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
 }
