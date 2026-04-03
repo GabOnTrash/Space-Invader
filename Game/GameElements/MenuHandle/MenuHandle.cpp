@@ -217,14 +217,14 @@ void MenuHandle::setCurrentScore(int gameScore)
 void MenuHandle::RenderCountDown(int remainingSeconds)
 {
     Color c;
-    if (remainingSeconds <= 3000 && remainingSeconds > 2000)
+    if (remainingSeconds <= 3 && remainingSeconds > 2)
         c = GREEN;
-    else if (remainingSeconds <= 2000 && remainingSeconds > 1000)
+    else if (remainingSeconds <= 2 && remainingSeconds > 1)
         c = YELLOW;
     else
         c = RED;
 
-    const char* text = TextFormat("%d", (remainingSeconds / 1000) + 1);
+    const char* text = TextFormat("%d", remainingSeconds);
 
     float fontSize = 200.0f;
     Vector2 textSize = MeasureTextEx(GameFontMedium, text, fontSize, 5);
@@ -274,6 +274,9 @@ std::string MenuHandle::SetDifficulty(bool change)
 
     UpdateDifficulty();
     auto p = pauseMenu.getByID("difficButton");
+    if (p) p->setText(TextFormat(Strings::difficulty, diff.c_str()));
+
+    p = deathMenu.getByID("difficButton");
     if (p) p->setText(TextFormat(Strings::difficulty, diff.c_str()));
     return diff;
 }
