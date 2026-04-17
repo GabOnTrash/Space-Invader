@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../util/specs.hpp"
+#include "../util/enums.hpp"
+#include "../util/ByteMask.hpp"
 #include "../AssetsManager/AssetsManager.hpp"
 
 class Modifier

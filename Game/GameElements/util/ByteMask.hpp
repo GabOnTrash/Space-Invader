@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <raylib.h>
+
 class ByteMask
 {
 public:

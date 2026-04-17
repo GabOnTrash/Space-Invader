@@ -87,13 +87,13 @@ void Game::LoadMultiPlayerMode()
         return;
     }
 
-    uint16_t p = std::stoi(port);
-    if (p > 65535)
+    int intPort = std::stoi(port);
+    if (intPort > 65535)
     {
         *gameStatus = GameState::ON_CONNECTION_MENU;
         return;
     }
-
+    uint16_t p = intPort;
     currentMode = std::make_unique<MultiPlayerMode>(gameContext, *menuHandle, ip, p);
     currentMode->Init();
     *gameStatus = GameState::RUNNING_MULTI_PLAYER;

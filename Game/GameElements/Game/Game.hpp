@@ -2,7 +2,6 @@
 #include <memory>
 
 #include "../SettingsManager/SettingsManager.hpp"
-#include "../util/specs.hpp"
 #include "../IGameMode/IGameMode.hpp"
 #include "../Renderer/Renderer.hpp"
 #include "../MenuHandle/MenuHandle.hpp"

@@ -2,8 +2,8 @@
 
 #include "../Heart/Heart.hpp"
 #include "../util/enums.hpp"
-
-#include "../util/specs.hpp"
+#include "../util/GameContext.hpp"
+#include "../util/Strings.hpp"
 #include "../Renderer/Renderer.hpp"
 
 #include "../../UI/Menu.h"
@@ -17,7 +17,6 @@ struct AudioSetting
 	std::string sliderId;
 	float* volumeVar;
 };
-
 
 class MenuHandle
 {

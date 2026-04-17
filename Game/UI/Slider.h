@@ -9,6 +9,7 @@ public:
 
 	Slider() {}
 	Slider(std::string id, RectS& rectangle, PointerS& point);
+	~Slider() override {};
 
 	void draw() override;
 	void update() override;

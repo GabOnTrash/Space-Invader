@@ -10,6 +10,7 @@
 class Widget
 {
 public:
+	virtual ~Widget() {}
 	static void setRenderer(Renderer* r)
 	{
 		renderer = r;

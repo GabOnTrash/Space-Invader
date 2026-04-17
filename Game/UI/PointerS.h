@@ -23,12 +23,12 @@ private:
 	Color color = { 0, 0, 0, 0 };
 
 public:
-
 	PointerS() {}
 	PointerS(bool rect, float side1, float side2, float roundness, float segments, Color color)
 		: rect(rect), side1(side1), side2(side2), roundness(roundness), segments(segments), color(color) 
 	{
 	}
+	~PointerS() = default;
 
 	// Getters
 	bool isRect() const { return rect; }

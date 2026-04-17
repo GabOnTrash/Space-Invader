@@ -9,6 +9,7 @@ public:
 
 	Label() {}
 	Label(std::string id, std::string text, std::function<int()> func, Font customFont, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH);
+	~Label() override {};
 
 	void draw() override;
 	bool isHovered() override;

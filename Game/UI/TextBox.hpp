@@ -6,6 +6,7 @@ class TextBox : public Widget
 {
 public:
     TextBox(std::string id, float x, float y, float width, float height, Font font, int fontSize, int maxLength, int minRange, int maxRange, Color fg, Color bg, Color bd, Color focusedBd);
+    ~TextBox() override {};
 
     void draw() override;
     void update() override;

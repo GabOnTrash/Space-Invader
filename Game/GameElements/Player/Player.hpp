@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Laser/Laser.hpp"
-#include "../util/specs.hpp"
 
 struct GameContext;
 

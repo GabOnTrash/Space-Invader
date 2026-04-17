@@ -1,28 +1,9 @@
 #pragma once
 
-#include <atomic>
-#include <chrono>
-#include <cmath>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <mutex>
-#include <stack>
-#include <string>
-#include <thread>
-#include <vector>
-
-#include <raylib.h>
-#include <raymath.h>
-
-#include "MyRandom.hpp"
-#include "timer.hpp"
-#include "ByteMask.hpp"
 #include "enums.hpp"
 #include "keys.hpp"
-#include "Strings.hpp"
 #include "../Renderer/Renderer.hpp"
+#include <memory>
 
 struct GameContext
 {

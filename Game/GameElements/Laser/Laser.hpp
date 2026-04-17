@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../util/specs.hpp"
-#include "../AssetsManager/AssetsManager.hpp"
+#include "../util/ByteMask.hpp"
+#include "../util/timer.hpp"
+#include "GameElements/SettingsManager/SettingsManager.hpp"
 
 class Laser
 {

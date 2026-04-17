@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../util/specs.hpp"
+#include "../util/GameContext.hpp"
+#include "../util/MyRandom.hpp"
 
 #define STARS_NUM 300
 

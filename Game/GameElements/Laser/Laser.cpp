@@ -1,7 +1,5 @@
 #include "Laser.hpp"
 
-#include "GameElements/SettingsManager/SettingsManager.hpp"
-
 Laser::Laser(Vector2 position, int laserTimeToLive)
     : shouldDieTimer(laserTimeToLive, nullptr, false, true)
 {

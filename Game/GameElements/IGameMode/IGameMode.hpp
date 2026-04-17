@@ -2,7 +2,7 @@
 
 #include "../Player/Player.hpp"
 #include "../MenuHandle/MenuHandle.hpp"
-#include "../util/specs.hpp"
+#include "../util/GameContext.hpp"
 #include "../CollisionManager/CollisionManager.hpp"
 
 class IGameMode

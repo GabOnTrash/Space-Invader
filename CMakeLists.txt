@@ -74,7 +74,8 @@ set(GAME_SOURCES
         Game/GameElements/EntitiesManaging/EntityManager.hpp
         Game/UI/TextBox.cpp
         Game/UI/TextBox.hpp
-        Game/GameElements/MenuHandle/MenuInitializer.cpp # Headers are usually optional in add_executable but good for IDEs
+        Game/GameElements/MenuHandle/MenuInitializer.cpp
+        Game/GameElements/util/GameContext.hpp # Headers are usually optional in add_executable but good for IDEs
 )
 
 # Main Executable

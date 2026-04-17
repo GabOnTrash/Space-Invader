@@ -25,7 +25,8 @@ public:
    RectS(float x, float y, float width, float height, float roundness, float segments, float min, float max, float* var, Color color)  
        : posX(x), posY(y), width(width), height(height), roundness(roundness), segments(segments), min(min), max(max), var(var), color(color)  
    {  
-   }  
+   }
+   ~RectS() = default;
 
    // Getters  
    float getPosX() const { return posX; }  

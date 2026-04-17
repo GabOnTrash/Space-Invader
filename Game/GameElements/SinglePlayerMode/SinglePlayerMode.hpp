@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../util/specs.hpp"
 #include "../IGameMode/IGameMode.hpp"
 
 #include "../Meteor/Meteor.hpp"
 #include "../Explosion/Explosion.hpp"
 #include "../Modifier/Modifier.hpp"
 #include "../Heart/Heart.hpp"
+#include "../util/timer.hpp"
 
 #include "../EntitiesManaging/EntityManager.hpp"
 

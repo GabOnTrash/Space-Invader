@@ -14,6 +14,7 @@ class Menu
 {
 public:
     Menu() = default;
+	~Menu() = default;
 
 	template <typename T, typename... Args>
 	void Add(Args&&... args)

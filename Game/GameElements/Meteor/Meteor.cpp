@@ -1,7 +1,5 @@
 #include "Meteor.hpp"
 
-#include "GameElements/SettingsManager/SettingsManager.hpp"
-
 Meteor::Meteor(Vector2 pos)
 {
 	damage = AssetsManager::GetSound("meteor_damage");

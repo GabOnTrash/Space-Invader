@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../util/specs.hpp"
 #include "../AssetsManager/AssetsManager.hpp"
 
 class Explosion 

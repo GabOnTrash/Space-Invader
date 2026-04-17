@@ -1,5 +1,7 @@
 #pragma once 
 
+#include <cstdint>
+
 enum class GameState
 {
     ON_START_MENU,

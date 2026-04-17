@@ -9,7 +9,8 @@ class Button : public Widget
 public:
 	Button();
 	Button(std::string id, std::string text, Font fontJ, int fontS, float width, float height, float xPosCenter, float yPosCenter, std::function<void()> func, float round, int segm, float thickness, Color FG, Color BG, Color BGH, Color BD, Color BDH);
-	
+	~Button() override {};
+
 	void draw() override;
 	void update() override;
 	bool OnClick() override;	// funzione di tipo void

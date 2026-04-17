@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../util/specs.hpp"
+
 #include "../Meteor/Meteor.hpp"
 #include "../Laser/Laser.hpp"
 #include "../Player/Player.hpp"

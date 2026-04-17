@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../util/specs.hpp"
-#include "../AssetsManager/AssetsManager.hpp"
+#include "GameElements/SettingsManager/SettingsManager.hpp"
+#include "../util/ByteMask.hpp"
+#include "../util/enums.hpp"
+#include "../util/MyRandom.hpp"
 
 class Meteor
 {

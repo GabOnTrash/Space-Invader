@@ -1,7 +1,9 @@
 #pragma once
 
-#include "raylib.h"
 #include <map>
+#include <string>
+#include <functional>
+#include <raylib.h>
 
 class KeyBindings
 {
