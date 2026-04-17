@@ -3,17 +3,38 @@
 #include "Widget.h"
 #include <functional>
 
+template <typename T>
 class Label : public Widget
 {
 public:
-
 	Label() {}
-	Label(std::string id, std::string text, std::function<int()> func, Font customFont, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH);
+
+	Label(std::string id, std::string text, std::function<T()> func, Font customFont, int fontS, float xPosCenter, float yPosCenter, Color FG, Color FGH)
+	: id(id), text(text), function(func), customFont(customFont), fontS(fontS), posX(xPosCenter), posY(yPosCenter), FG(FG), FGH(FGH)
+	{
+		textSize = MeasureTextEx(customFont, text.c_str(), static_cast<float>(fontS), 1);
+
+		posX = xPosCenter - (textSize.x / 2);
+		posY = yPosCenter - (textSize.y / 2);
+	}
 	~Label() override {};
 
-	void draw() override;
-	bool isHovered() override;
-	bool OnClick() override;
+	void draw() override
+	{
+		if (function)
+			function();
+
+		if (hovered()) hover(FGH);
+		else hover(FG);
+	}
+	bool isHovered() override
+	{
+		return hovered();
+	}
+	bool OnClick() override
+	{
+		return false;
+	}
 
 	// Getters	// manca il get/set per il fontS e per function
 	std::string getId() const override { return id; }
@@ -44,23 +65,31 @@ public:
 	void setPosY(float value) override { posY = value; }
 
 private:
-
 	std::string id = "";
 	std::string text = "";
 	
-	std::function<int()> function;
-
+	std::function<T()> function;
 	int fontS = 0;
 	float posX = 0;
 	float posY = 0;
 
-	//float StdCenteredX = 0;
-	//float StdCenteredY = 0;
-
 	bool activated = true;
 
-	void hover(Color FGH);
-	bool hovered();
+	void hover(Color color)
+	{
+		if constexpr (!std::is_same_v<void, T>)
+		{
+			if (function)
+				DrawTextEx(customFont, TextFormat(text.c_str(), function()), { posX, posY }, static_cast<float>(fontS), 1, color);
+		}
+		else
+			DrawTextEx(customFont, text.c_str(), { posX, posY }, static_cast<float>(fontS), 1, color);
+	};
+	bool hovered()
+	{
+		mousePos = renderer->GetVirtualMouse();
+		return (mousePos.x >= posX && mousePos.x <= posX + textSize.x && mousePos.y >= posY && mousePos.y <= posY + textSize.y);
+	}
 
 	Font customFont;
 

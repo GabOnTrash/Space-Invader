@@ -68,14 +68,14 @@ set(GAME_SOURCES
         Game/GameElements/Stars/Stars.cpp
         # UI Elements
         Game/UI/Button.cpp
-        Game/UI/Label.cpp
         Game/UI/Slider.cpp
         # Managers (Entities)
         Game/GameElements/EntitiesManaging/EntityManager.hpp
         Game/UI/TextBox.cpp
         Game/UI/TextBox.hpp
         Game/GameElements/MenuHandle/MenuInitializer.cpp
-        Game/GameElements/util/GameContext.hpp # Headers are usually optional in add_executable but good for IDEs
+        Game/GameElements/util/GameContext.hpp
+        Game/GameElements/util/performance.hpp
 )
 
 # Main Executable

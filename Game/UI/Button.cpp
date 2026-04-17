@@ -42,7 +42,7 @@ bool Button::OnClick()
 	{
 		singleClick = false;
 
-		if (function != nullptr)
+		if (function)
 			function();
 		return true;
 	}

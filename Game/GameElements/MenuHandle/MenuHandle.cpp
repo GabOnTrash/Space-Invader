@@ -126,6 +126,7 @@ void MenuHandle::UpdateSinglePlayerHUD()
         heartsArray[i].position = { gameContext.renderer.BASE_WIDTH - (i + 1) * heartsArray[i].getBounds().width - 20, 20 };
 
     heartsArray.empty() ? singlePlayerHUD.activate("labelDanger") : singlePlayerHUD.deactive("labelDanger");
+    singlePlayerHUD.getByID("lblMB")->setText(TextFormat(Strings::mbUsage, GetMemoryUsageMB()));
 }
 
 void MenuHandle::UpdateMultiPlayerHUD()

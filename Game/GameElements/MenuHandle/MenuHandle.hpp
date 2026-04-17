@@ -3,6 +3,7 @@
 #include "../Heart/Heart.hpp"
 #include "../util/enums.hpp"
 #include "../util/GameContext.hpp"
+#include "../util/performance.hpp"
 #include "../util/Strings.hpp"
 #include "../Renderer/Renderer.hpp"
 
