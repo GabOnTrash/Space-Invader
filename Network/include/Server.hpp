@@ -57,7 +57,7 @@ namespace network
 						std::shared_ptr<connection<T>> newconn =
 							std::make_shared<connection<T>>(connection<T>::owner::server,
 								m_asioContext, std::move(socket), m_qMessagesIn);
-						
+
 						if (OnClientConnect(newconn))
 						{
 							if (m_deqConnections.empty()) nIDCounter = 0;
@@ -82,9 +82,7 @@ namespace network
 		void MessageClient(std::shared_ptr<connection<T>> client, const message<T>& msg)
 		{
 			if (client && client->IsConnected())
-			{
 				client->Send(msg);
-			}
 		}
 		void MessageAllClient(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient)
 		{

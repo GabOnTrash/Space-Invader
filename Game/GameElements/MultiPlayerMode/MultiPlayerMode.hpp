@@ -14,6 +14,8 @@ public:
     void OnExit() override;
 
 private:
+    void OnConnectionAccepted() override;
+
     std::string ip;
     uint16_t port;
     Timer<> timeToConnect;

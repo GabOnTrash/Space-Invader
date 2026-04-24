@@ -66,6 +66,13 @@ namespace network
 
 			return false;
 		}
+		bool HasHandshakeHappened()
+		{
+			if (m_connection)
+				return m_connection->HasHandshakeHappened();
+
+			return false;
+		}
 		tsqueue<owned_message<T>>& Incoming()
 		{
 			return m_qMessagesIn;

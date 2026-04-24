@@ -65,11 +65,15 @@ namespace network
         void Disconnect()
         {
             if (IsConnected())
-                asio::post(m_asioContext, [this]() { m_socket.close(); });
+                asio::post(m_asioContext, [this]() { asio::error_code ec; m_socket.close(ec); });
         }
         bool IsConnected() const
         {
-            return m_socket.is_open() && m_bHandshakeComplete;
+            return m_socket.is_open();
+        }
+        bool HasHandshakeHappened() const
+        {
+            return m_bHandshakeComplete;
         }
 
         void Send(const message<T>& msg)
@@ -112,7 +116,8 @@ namespace network
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Header Fail.");
-                        m_socket.close();
+                        asio::error_code ec;
+                        m_socket.close(ec);
                     }
                 });
         }
@@ -128,6 +133,7 @@ namespace network
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Body Fail.");
+                        asio::error_code ec;
                         m_socket.close();
                     }
                 });
@@ -155,7 +161,8 @@ namespace network
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Header Fail.");
-                        m_socket.close();
+                        asio::error_code ec;
+                        m_socket.close(ec);
                     }
                 });
         }
@@ -175,7 +182,8 @@ namespace network
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Body Fail.");
-                        m_socket.close();
+                        asio::error_code ec;
+                        m_socket.close(ec);
                     }
                 });
         }

@@ -16,6 +16,8 @@ struct PlayerInfo
 class Client : public network::clientInterface<MultiplayerPacketType>
 {
 protected:
+    virtual void OnConnectionAccepted() {}
+
     std::unordered_map<uint32_t, PlayerInfo> otherPlayers;
     uint32_t thisPlayer = -1;
 
@@ -24,6 +26,8 @@ public:
 
     void SendPosition(float x, float y)
     {
+        if (thisPlayer == -1) return;
+
         network::message<MultiplayerPacketType> msg;
         msg.header.id = MultiplayerPacketType::PLAYER_MOVE;
         msg << PlayerInfo{ x, y, thisPlayer };
@@ -40,30 +44,39 @@ public:
             switch (msg.header.id)
             {
                 case MultiplayerPacketType::PLAYER_NOTIFY_ID:
+                {
                     msg >> thisPlayer;
                     LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of own ID");
-
+                }
                 break;
                 case MultiplayerPacketType::PLAYER_ADDED:
+                {
                     uint32_t id;
                     msg >> id;
                     LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of [Player #" + std::to_string(id) + "]");
                     if (id != thisPlayer)
                         otherPlayers[id] = {0.0f, 0.0f, id };
+                    else
+                        OnConnectionAccepted();
+                }
                 break;
                 case MultiplayerPacketType::PLAYER_MOVE:
                 case MultiplayerPacketType::PLAYER_ADD_OTHERS:
+                {
                     PlayerInfo info;
                     msg >> info;
 
                     if (info.id != thisPlayer)
                         otherPlayers[info.id] = info;
+                }
                 break;
                 case MultiplayerPacketType::PLAYER_REMOVED:
-                    uint32_t deadID;
-                    msg >> deadID;
-                    LOG_INFO_EVERYWHERE("[Player #" + std::to_string(thisPlayer) + "] got notified of deletion of player #" + std::to_string(deadID));
-                    otherPlayers.erase(deadID);
+                {
+                    uint32_t id;
+                    msg >> id;
+                    LOG_INFO_EVERYWHERE("[Player #" + std::to_string(thisPlayer) + "] got notified of deletion of player #" + std::to_string(id));
+                    otherPlayers.erase(id);
+                }
                 break;
             }
         }

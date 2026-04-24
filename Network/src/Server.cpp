@@ -1,11 +1,9 @@
+#include <map>
+#include <unordered_map>
+
 #include "../include/Common.hpp"
 #include "../include/Server.hpp"
-
-#include <map>
-
 #include "../../Game/GameElements/util/enums.hpp"
-
-#include <unordered_map>
 
 #pragma pack(push, 1)
 struct PlayerInfo
@@ -18,6 +16,7 @@ struct PlayerInfo
 
 class Server : public network::serverInterface<MultiplayerPacketType>
 {
+    size_t m_lobbySize = 2;
     std::mutex muxGame;
     std::unordered_map<uint32_t, PlayerInfo> playersMap;
 
@@ -55,7 +54,7 @@ public:
 protected:
     bool OnClientConnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
-        return true;
+        return m_deqConnections.size() < m_lobbySize; // if accepted, the connection counter will go up by 1 and exceed the lobby limit
     }
     void OnClientValidated(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
@@ -88,7 +87,7 @@ protected:
         msg.header.id = MultiplayerPacketType::PLAYER_ADDED;
         LOG_INFO_EVERYWHERE("[SERVER] Sending player #" + std::to_string(id) + " infos to all");
         msg << id;
-        MessageAllClient(msg, client);
+        MessageAllClient(msg, nullptr); // not MessageAllClient(msg, client); to tell the player to execute some code when he is connected
     }
     void OnClientDisconnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
     {
@@ -124,7 +123,7 @@ protected:
 
             {
                 std::scoped_lock<std::mutex> lock(muxGame);
-                playersMap[info.id] = info;
+                playersMap.at(info.id) = info;
             }
 
             network::message<MultiplayerPacketType> outMsg;

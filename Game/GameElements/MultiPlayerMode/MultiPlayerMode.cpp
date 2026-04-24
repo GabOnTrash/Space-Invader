@@ -13,31 +13,35 @@ MultiPlayerMode::~MultiPlayerMode()
 
 void MultiPlayerMode::Init()
 {
-    if (!Connect(ip, port))
-        *(gameContext.gameStatus) = GameState::ON_START_MENU;
-
     timeToConnect.active();
     player.Reset();
+
+    if (!Connect(ip, port))
+        *(gameContext.gameStatus) = GameState::ON_START_MENU;
+}
+
+void MultiPlayerMode::OnConnectionAccepted()
+{
+    timeToConnect.deactive();
+    menuHandle.stillTryingConnecting = false;
+    menuHandle.SetSizeAndId(otherPlayers.size() + 1, thisPlayer);
 }
 
 void MultiPlayerMode::Update(float dt)
 {
     PollMessage();
 
-    if (!IsConnected())
-        timeToConnect.update();
-
-    if (IsConnected())
+    if (IsConnected() && HasHandshakeHappened())
     {
-        menuHandle.stillTryingConnecting = false;
-        menuHandle.SetSizeAndId(otherPlayers.size() + 1, thisPlayer);
-
         player.Update(dt);
-        timeToConnect.deactive();
         SendPosition(player.position.x, player.position.y);
     }
-    else if (!timeToConnect.isRunning && !IsConnected())
-        *(gameContext.gameStatus) = GameState::ON_START_MENU;
+    else
+    {
+        timeToConnect.update();
+        if (!timeToConnect.isRunning)
+            *(gameContext.gameStatus) = GameState::ON_START_MENU;
+    }
 }
 
 void MultiPlayerMode::Draw()
