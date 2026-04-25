@@ -9,7 +9,7 @@ Renderer::~Renderer()
 
 void Renderer::Init()
 {
-    // SetConfigFlags(FLAG_WINDOW_UNDECORATED);
+    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(GetMonitorWidth(0), GetMonitorHeight(0), "Space Invader");
     target = LoadRenderTexture(BASE_WIDTH, BASE_HEIGHT);
