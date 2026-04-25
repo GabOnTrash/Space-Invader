@@ -11,7 +11,12 @@ namespace network
 	class clientInterface
 	{
 	public:
-		clientInterface() = default;
+		clientInterface()
+			: m_sslContext(asio::ssl::context::tls_client)
+		{
+			// local certificate
+			m_sslContext.set_verify_mode(asio::ssl::context::verify_none);
+		}
 
 		virtual ~clientInterface()
 		{
@@ -32,6 +37,7 @@ namespace network
 				m_connection = std::make_unique<connection<T>>(
 					connection<T>::owner::client, 
 					m_context,
+					m_sslContext,
                     asio::ip::tcp::socket(m_context), 
 					m_qMessagesIn);
 
@@ -80,6 +86,7 @@ namespace network
 
 	protected:
 		asio::io_context m_context;
+		asio::ssl::context m_sslContext;
         std::thread thrContext;
 		std::unique_ptr<connection<T>> m_connection;
 

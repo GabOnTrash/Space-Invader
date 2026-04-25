@@ -141,8 +141,5 @@ int main(int argc, char** argv)
     cli.detach();
 
     while (true)
-    {
-        server_instance.Update(-1, false);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+        server_instance.Update(-1, true);
 }

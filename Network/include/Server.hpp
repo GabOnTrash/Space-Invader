@@ -5,6 +5,7 @@
 #include "Message.hpp"
 #include "Connection.hpp"
 
+// to generate a local certificate valid for 1 year: openssl req -newkey rsa:2048 -nodes -keyout server.key -x509 -days 365 -out server.crt
 namespace network
 {
 	template <typename T>
@@ -12,10 +13,26 @@ namespace network
 	{
 	public:
 		serverInterface(uint16_t port) 
-			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
+			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port)),
+			m_sslContext(asio::ssl::context::tls_server)
 		{
 			this->port = port;
 			m_asioAcceptor.set_option(asio::socket_base::reuse_address(true));
+
+			try
+			{
+				// rejects sslv3 and v2 connections
+				m_sslContext.set_options(asio::ssl::context::default_workarounds
+					| asio::ssl::context::no_sslv2
+					| asio::ssl::context::no_sslv3);
+
+				m_sslContext.use_certificate_chain_file("server.crt");
+				m_sslContext.use_private_key_file("server.key", asio::ssl::context::pem);
+			}
+			catch (std::exception& e)
+			{
+				LOG_ERROR_EVERYWHERE(std::string("SSL Setup Error: ") + e.what());
+			}
 		}
 		virtual ~serverInterface()
 		{
@@ -56,7 +73,7 @@ namespace network
 						LOG_INFO_EVERYWHERE("New Connection: " + socket.remote_endpoint().address().to_string());
 						std::shared_ptr<connection<T>> newconn =
 							std::make_shared<connection<T>>(connection<T>::owner::server,
-								m_asioContext, std::move(socket), m_qMessagesIn);
+								m_asioContext, m_sslContext, std::move(socket), m_qMessagesIn);
 
 						if (OnClientConnect(newconn))
 						{
@@ -68,14 +85,11 @@ namespace network
 							LOG_INFO_CONSOLE("[Player #" + std::to_string(m_deqConnections.back()->GetID()) + "] Connection approved");
 						}
 						else
-						{
 							LOG_WARN_FILE("Connection denied from server");
-						}
 					}
 					else
-					{
 						LOG_ERROR_EVERYWHERE("New Connection Error: " + ec.message());
-					}
+
 					WaitForClientConnection();
                 });
 		}
@@ -129,29 +143,13 @@ namespace network
 		}
 
     protected:
-        // when a client connects
-		virtual bool OnClientConnect(std::shared_ptr<connection<T>> client)
-		{
+        // called when a client connects, disconnects , gets validated and on message arrival
+		virtual bool OnClientConnect(std::shared_ptr<connection<T>> client) { return false; }
+		virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client) {}
+		virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T>& msg) {}
 
-			return false;
-		}
-
-		// when a client disconnects
-		virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client)
-		{
-
-		}
-		// when a message arrives from a client
-		virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T>& msg)
-		{
-
-		}
-		
 	public:
-		virtual void OnClientValidated(std::shared_ptr<connection<T>> client)
-		{
-
-        }
+		virtual void OnClientValidated(std::shared_ptr<connection<T>> client) {}
 
 	protected:
 		tsqueue<owned_message<T>> m_qMessagesIn;
@@ -160,6 +158,7 @@ namespace network
 		std::deque<std::shared_ptr<connection<T>>> m_deqConnections;
 
 		asio::io_context m_asioContext;
+		asio::ssl::context m_sslContext;
 		std::thread m_threadContext;
 
 		asio::ip::tcp::acceptor m_asioAcceptor;

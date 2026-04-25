@@ -6,9 +6,11 @@
 
 namespace network
 {
-    template <typename T> class serverInterface;
+    template <typename T>
+    class serverInterface;
 
-    template <typename T> class connection : public std::enable_shared_from_this<connection<T>>
+    template <typename T>
+    class connection : public std::enable_shared_from_this<connection<T>>
     {
     public:
         enum class owner
@@ -17,34 +19,39 @@ namespace network
             client
         };
 
-        connection(owner parent, asio::io_context& asioContext, asio::ip::tcp::socket socket,
-                   tsqueue<owned_message<T>>& qIn)
-            : m_asioContext(asioContext), m_socket(std::move(socket)), m_qMessagesIn(qIn)
+        connection(owner parent, asio::io_context& asioContext, asio::ssl::context& sslContext,
+                    asio::ip::tcp::socket socket, tsqueue<owned_message<T>>& qIn)
+            : m_asioContext(asioContext), m_socket(std::move(socket), sslContext), m_qMessagesIn(qIn)
         {
             m_nOwnerType = parent;
-
-            if (m_nOwnerType == owner::server)
-            {
-                m_nHandshakeOut = uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
-                m_nHandshakeCheck = scramble(m_nHandshakeOut);
-            }
-            else
-            {
-                m_nHandshakeIn = 0;
-                m_nHandshakeOut = 0;
-            }
-        };
-        virtual ~connection() {};
+        }
+        virtual ~connection() {}
 
         void ConnectToClient(network::serverInterface<T>* server, uint32_t uid = 0)
         {
             if (m_nOwnerType == owner::server)
             {
-                if (m_socket.is_open())
+                if (m_socket.lowest_layer().is_open())
                 {
                     id = uid;
-                    WriteValidation();
-                    ReadValidation(server);
+
+                    m_socket.async_handshake(asio::ssl::stream_base::server,
+                        [this, server](std::error_code ec)
+                        {
+                            if (!ec)
+                            {
+                                m_bHandshakeComplete = true;
+                                LOG_INFO_EVERYWHERE("Client #" + std::to_string(id) + " SSL handshake validated");
+                                server->OnClientValidated(this->shared_from_this());
+                                ReadHeader();
+                            }
+                            else
+                            {
+                                LOG_ERROR_EVERYWHERE("Client #" + std::to_string(id) + " disconnected: SSL handshake failed (" + ec.message() + ")");
+                                asio::error_code ec;
+                                m_socket.lowest_layer().close(ec);
+                            }
+                        });
                 }
             }
         }
@@ -52,12 +59,26 @@ namespace network
         {
             if (m_nOwnerType == owner::client)
             {
-                asio::async_connect(m_socket, endpoints,
+                asio::async_connect(m_socket.lowest_layer(), endpoints,
                     [this](std::error_code ec, asio::ip::tcp::endpoint endpoint)
                     {
                         if (!ec)
                         {
-                            ReadValidation();
+                            m_socket.async_handshake(asio::ssl::stream_base::client,
+                                [this](std::error_code ec)
+                                {
+                                    if (!ec)
+                                    {
+                                        m_bHandshakeComplete = true;
+                                        ReadHeader();
+                                    }
+                                    else
+                                    {
+                                        LOG_ERROR_EVERYWHERE("SSL handshake failed: " + ec.message());
+                                        asio::error_code close_ec;
+                                        m_socket.lowest_layer().close(close_ec);
+                                    }
+                                });
                         }
                     });
             }
@@ -65,11 +86,11 @@ namespace network
         void Disconnect()
         {
             if (IsConnected())
-                asio::post(m_asioContext, [this]() { asio::error_code ec; m_socket.close(ec); });
+                asio::post(m_asioContext, [this]() { asio::error_code ec; m_socket.lowest_layer().close(ec); });
         }
         bool IsConnected() const
         {
-            return m_socket.is_open();
+            return m_socket.lowest_layer().is_open();
         }
         bool HasHandshakeHappened() const
         {
@@ -83,10 +104,9 @@ namespace network
                 {
                     bool bWritingMessage = !m_qMessagesOut.empty();
                     m_qMessagesOut.push_back(msg);
+
                     if (!bWritingMessage)
-                    {
                         WriteHeader();
-                    }
                 });
         }
 
@@ -109,15 +129,13 @@ namespace network
                             ReadBody();
                         }
                         else
-                        {
                             AddToIncomingMessageQueue();
-                        }
                     }
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Header Fail.");
                         asio::error_code ec;
-                        m_socket.close(ec);
+                        m_socket.lowest_layer().close(ec);
                     }
                 });
         }
@@ -127,14 +145,12 @@ namespace network
                 [this](std::error_code ec, std::size_t length)
                 {
                     if (!ec)
-                    {
                         AddToIncomingMessageQueue();
-                    }
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Body Fail.");
                         asio::error_code ec;
-                        m_socket.close();
+                        m_socket.lowest_layer().close();
                     }
                 });
         }
@@ -146,44 +162,40 @@ namespace network
                     if (!ec)
                     {
                         if (m_qMessagesOut.front().body.size() > 0)
-                        {
                             WriteBody();
-                        }
+
                         else
                         {
                             m_qMessagesOut.pop_front();
                             if (!m_qMessagesOut.empty())
-                            {
                                 WriteHeader();
-                            }
                         }
                     }
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Header Fail.");
                         asio::error_code ec;
-                        m_socket.close(ec);
+                        m_socket.lowest_layer().close(ec);
                     }
                 });
         }
         void WriteBody()
         {
-            asio::async_write(m_socket, asio::buffer(m_qMessagesOut.front().body.data(), m_qMessagesOut.front().body.size()),
+            asio::async_write(m_socket, asio::buffer(m_qMessagesOut.front().body.data(),
+                m_qMessagesOut.front().body.size()),
                 [this](std::error_code ec, std::size_t length)
                 {
                     if (!ec)
                     {
                         m_qMessagesOut.pop_front();
                         if (!m_qMessagesOut.empty())
-                        {
                             WriteHeader();
-                        }
                     }
                     else
                     {
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Write Body Fail.");
                         asio::error_code ec;
-                        m_socket.close(ec);
+                        m_socket.lowest_layer().close(ec);
                     }
                 });
         }
@@ -191,87 +203,22 @@ namespace network
         void AddToIncomingMessageQueue()
         {
             if (m_nOwnerType == owner::server)
-                m_qMessagesIn.push_back({this->shared_from_this(), m_msgTemporaryIn});
+                m_qMessagesIn.push_back({ this->shared_from_this(), m_msgTemporaryIn });
 
             else
-                m_qMessagesIn.push_back({nullptr, m_msgTemporaryIn});
+                m_qMessagesIn.push_back({ nullptr, m_msgTemporaryIn });
 
             ReadHeader();
         }
 
-        uint64_t scramble(uint64_t nInput)
-        {
-            uint64_t out = nInput ^ 0xDEADCAFEC0DEBEEF;
-            out = (out & 0xF0F0F0F0F0F0F0F0) >> 4 | (out & 0x0F0F0F0F0F0F0F0F) << 4;
-            return out ^ 0xBEEFFACE030708FF;
-        }
-
-        void WriteValidation()
-        {
-            asio::async_write(m_socket, asio::buffer(&m_nHandshakeOut, sizeof(uint64_t)),
-                [this](std::error_code ec, std::size_t length)
-                {
-                    if (!ec)
-                    {
-                        if (m_nOwnerType == owner::client)
-                        {
-                            m_bHandshakeComplete = true;
-                            ReadHeader();
-                        }
-                    }
-                    else
-                    {
-                        LOG_ERROR_EVERYWHERE("Client disconnected due to fail validation");
-                        m_socket.close();
-                    }
-                });
-        }
-        void ReadValidation(network::serverInterface<T>* server = nullptr)
-        {
-            asio::async_read(m_socket, asio::buffer(&m_nHandshakeIn, sizeof(uint64_t)),
-                [this, server](std::error_code ec, std::size_t length)
-                {
-                    if (!ec)
-                    {
-                        if (m_nOwnerType == owner::server)
-                        {
-                            if (m_nHandshakeIn == m_nHandshakeCheck)
-                            {
-                                LOG_INFO_EVERYWHERE("Client #" + std::to_string(id) + " validated");
-                                server->OnClientValidated(this->shared_from_this());
-                                ReadHeader();
-                            }
-                            else
-                            {
-                                LOG_ERROR_EVERYWHERE("Client #" + std::to_string(id) + " disconnected due to fail validation");
-                                m_socket.close();
-                            }
-                        }
-                        else
-                        {
-                            m_nHandshakeOut = scramble(m_nHandshakeIn);
-                            WriteValidation();
-                        }
-                    }
-                    else
-                    {
-                        LOG_ERROR_EVERYWHERE("Client disconnected most likely due to multiple connections");
-                        m_socket.close();
-                    }
-                });
-        }
-
     protected:
-        asio::ip::tcp::socket m_socket;
+        asio::ssl::stream<asio::ip::tcp::socket> m_socket;
         asio::io_context& m_asioContext;
 
         tsqueue<message<T>> m_qMessagesOut;
         tsqueue<owned_message<T>>& m_qMessagesIn;
 
         bool m_bHandshakeComplete = false;	// to secure if the connection has really happened
-        uint64_t m_nHandshakeOut = 0;
-        uint64_t m_nHandshakeIn = 0;
-        uint64_t m_nHandshakeCheck = 0;
         message<T> m_msgTemporaryIn;
         
         owner m_nOwnerType = owner::server;

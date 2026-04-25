@@ -28,6 +28,7 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(raylib nlohmann_json asio)
+find_package(OpenSSL REQUIRED)
 
 # --- 1. Network Library (Shared by Client and Server) ---
 # Contains only Network logic, no Game logic.
@@ -40,14 +41,25 @@ add_library(ClientServerImplementation STATIC
 target_include_directories(ClientServerImplementation PUBLIC
         Network/include
         ${asio_SOURCE_DIR}/asio/include
+        ${OPENSSL_INCLUDE_DIR}
 )
 
-target_compile_definitions(ClientServerImplementation PUBLIC ASIO_STANDALONE)
+target_compile_definitions(ClientServerImplementation PUBLIC
+        ASIO_HAS_SSL
+)
 
 if (WIN32)
-    target_link_libraries(ClientServerImplementation PUBLIC ws2_32)
+    target_link_libraries(ClientServerImplementation PUBLIC
+            ws2_32
+            OpenSSL::SSL
+            OpenSSL::Crypto
+    )
 elseif(UNIX)
-    target_link_libraries(ClientServerImplementation PUBLIC pthread)
+    target_link_libraries(ClientServerImplementation PUBLIC
+            pthread
+            OpenSSL::SSL
+            OpenSSL::Crypto
+    )
 endif()
 
 set(GAME_SOURCES
