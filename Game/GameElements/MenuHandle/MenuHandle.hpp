@@ -27,7 +27,8 @@ public:
 
     void Update();
 	void Draw();
-	void SetSizeAndId(size_t size, uint16_t id) { this->MATCH_SIZE = size; this->ID = id; }
+	void SetSize(size_t size) { this->MATCH_SIZE = size; }
+	void SetID(uint16_t id) { this->ID = id; }
 
 	std::string GetIP();
     std::string GetPort();
@@ -58,7 +59,6 @@ public:
 
 private:
     void LoadGameFont();
-	void ShowCountDown();
 	void ResumeGame(GameState st);
 
 	void InitAllMenus();

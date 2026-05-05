@@ -16,6 +16,8 @@ struct PlayerInfo
 class Client : public network::clientInterface<MultiplayerPacketType>
 {
 protected:
+    virtual void SetSelfID(uint32_t id) {}
+    virtual void SetGroupSize(size_t gs) {}
     virtual void OnConnectionAccepted() {}
 
     std::unordered_map<uint32_t, PlayerInfo> otherPlayers;
@@ -46,6 +48,7 @@ public:
                 case MultiplayerPacketType::PLAYER_NOTIFY_ID:
                 {
                     msg >> thisPlayer;
+                    SetSelfID(thisPlayer);
                     LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of own ID");
                 }
                 break;
@@ -56,8 +59,7 @@ public:
                     LOG_INFO_FILE("[Player #" + std::to_string(thisPlayer) + "] got notified of [Player #" + std::to_string(id) + "]");
                     if (id != thisPlayer)
                         otherPlayers[id] = {0.0f, 0.0f, id };
-                    else
-                        OnConnectionAccepted();
+                    OnConnectionAccepted();
                 }
                 break;
                 case MultiplayerPacketType::PLAYER_MOVE:
@@ -68,6 +70,8 @@ public:
 
                     if (info.id != thisPlayer)
                         otherPlayers[info.id] = info;
+
+                    SetGroupSize(otherPlayers.size());
                 }
                 break;
                 case MultiplayerPacketType::PLAYER_REMOVED:
@@ -78,6 +82,7 @@ public:
                     otherPlayers.erase(id);
                 }
                 break;
+                default: ;
             }
         }
     }

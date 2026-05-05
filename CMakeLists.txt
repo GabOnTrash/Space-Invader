@@ -6,14 +6,12 @@ project(Space-Invader LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# --- Opzioni di Build (Entrambe ON di default) ---
+option(BUILD_CLIENT "Compile Client (needs Raylib)" ON)
+option(BUILD_SERVER "Compile Server" ON)
+
 # --- Dependencies ---
 include(FetchContent)
-
-FetchContent_Declare(
-        raylib
-        GIT_REPOSITORY https://github.com/raysan5/raylib.git
-        GIT_TAG 5.0
-)
 
 FetchContent_Declare(
         nlohmann_json
@@ -27,42 +25,25 @@ FetchContent_Declare(
         GIT_TAG master
 )
 
-FetchContent_MakeAvailable(raylib nlohmann_json asio)
+FetchContent_MakeAvailable(nlohmann_json asio)
 find_package(OpenSSL REQUIRED)
 
-# --- 1. Network Library (Shared by Client and Server) ---
-# Contains only Network logic, no Game logic.
-add_library(ClientServerImplementation STATIC
+set(NETWORK_SOURCES
         Network/src/Client.cpp
         Network/src/Server.cpp
         Game/GameElements/util/Logger.hpp
 )
 
-target_include_directories(ClientServerImplementation PUBLIC
-        Network/include
-        ${asio_SOURCE_DIR}/asio/include
-        ${OPENSSL_INCLUDE_DIR}
-)
+if (BUILD_CLIENT)
 
-target_compile_definitions(ClientServerImplementation PUBLIC
-        ASIO_HAS_SSL
-)
-
-if (WIN32)
-    target_link_libraries(ClientServerImplementation PUBLIC
-            ws2_32
-            OpenSSL::SSL
-            OpenSSL::Crypto
+    FetchContent_Declare(
+            raylib
+            GIT_REPOSITORY https://github.com/raysan5/raylib.git
+            GIT_TAG 5.0
     )
-elseif(UNIX)
-    target_link_libraries(ClientServerImplementation PUBLIC
-            pthread
-            OpenSSL::SSL
-            OpenSSL::Crypto
-    )
-endif()
+    FetchContent_MakeAvailable(raylib)
 
-set(GAME_SOURCES
+    set(GAME_SOURCES
         Game/GameElements/AssetsManager/AssetsManager.cpp
         Game/GameElements/CollisionManager/CollisionManager.cpp
         Game/GameElements/Explosion/Explosion.cpp
@@ -78,72 +59,85 @@ set(GAME_SOURCES
         Game/GameElements/SettingsManager/SettingsManager.cpp
         Game/GameElements/SinglePlayerMode/SinglePlayerMode.cpp
         Game/GameElements/Stars/Stars.cpp
-        # UI Elements
         Game/UI/Button.cpp
         Game/UI/Slider.cpp
-        # Managers (Entities)
         Game/GameElements/EntitiesManaging/EntityManager.hpp
         Game/UI/TextBox.cpp
         Game/UI/TextBox.hpp
         Game/GameElements/MenuHandle/MenuInitializer.cpp
         Game/GameElements/util/GameContext.hpp
         Game/GameElements/util/performance.hpp
-)
+    )
 
-# Main Executable
-add_executable(Space-Invader
-        Game/Space-Invader.cpp   # The main entry point
-        ${GAME_SOURCES}
-)
+    add_executable(Space-Invader
+            Game/Space-Invader.cpp
+            ${GAME_SOURCES}
+            ${NETWORK_SOURCES}
+    )
 
-# Include directories so you can do #include "Player/Player.hpp" or #include "Game/Game.hpp"
-target_include_directories(Space-Invader PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game/assets
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game/conf
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game/UI
-        ${CMAKE_CURRENT_SOURCE_DIR}/Network/include
-)
+    set_target_properties(Space-Invader PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Client"
+    )
 
-target_link_libraries(Space-Invader PRIVATE
-        raylib
-        nlohmann_json::nlohmann_json
-        ClientServerImplementation
-)
+    target_include_directories(Space-Invader PRIVATE
+            Game/assets
+            Game/conf
+            Game
+            Game/UI
+            Network/include
+            ${asio_SOURCE_DIR}/asio/include
+            ${OPENSSL_INCLUDE_DIR}
+    )
 
-# --- 3. Space-Invader Server ---
+    target_compile_definitions(Space-Invader PUBLIC ASIO_HAS_SSL)
 
-add_executable(Space-Invader-Server
-        Server/src/Space-Invader-Server.cpp
-)
+    if (WIN32)
+        target_link_libraries(Space-Invader PRIVATE raylib nlohmann_json::nlohmann_json OpenSSL::SSL OpenSSL::Crypto ws2_32)
+    else()
+        target_link_libraries(Space-Invader PRIVATE raylib nlohmann_json::nlohmann_json OpenSSL::SSL OpenSSL::Crypto pthread)
+    endif()
 
-target_include_directories(Space-Invader-Server PRIVATE
-        Network/include
-        ${asio_SOURCE_DIR}/asio/include
-)
+    # --- CLIENT FOLDER ---
+    add_custom_command(TARGET Space-Invader POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Game/assets $<TARGET_FILE_DIR:Space-Invader>/assets
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Game/conf $<TARGET_FILE_DIR:Space-Invader>/conf
+            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:Space-Invader>/auth
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/auth/space_invader_server.crt $<TARGET_FILE_DIR:Space-Invader>/auth/space_invader_server.crt
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/auth/address.txt $<TARGET_FILE_DIR:Space-Invader>/auth/address.txt
+            COMMENT "Client folder."
+    )
+endif()
 
-# Link against the shared network library
-target_link_libraries(Space-Invader-Server PRIVATE
-        ClientServerImplementation
-)
 
-# --- Post-Build Steps (Copy Assets) ---
+if (BUILD_SERVER)
+    add_executable(Space-Invader-Server
+            Server/src/Space-Invader-Server.cpp
+            ${NETWORK_SOURCES}
+    )
 
-# Output directory for binaries
-set(OUTPUT_DIR ${CMAKE_BINARY_DIR})
+    set_target_properties(Space-Invader-Server PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Server"
+    )
 
-# Copy Assets folder
-add_custom_command(TARGET Space-Invader POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game/assets
-        ${OUTPUT_DIR}/assets
-        COMMENT "Copying Assets..."
-)
+    target_include_directories(Space-Invader-Server PRIVATE
+            Network/include
+            ${asio_SOURCE_DIR}/asio/include
+            ${OPENSSL_INCLUDE_DIR}
+    )
 
-# Copy Config/Conf folder
-add_custom_command(TARGET Space-Invader POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/Game/conf
-        ${OUTPUT_DIR}/conf
-        COMMENT "Copying Configs..."
-)
+    target_compile_definitions(Space-Invader-Server PUBLIC ASIO_HAS_SSL)
+
+    if (WIN32)
+        target_link_libraries(Space-Invader-Server PRIVATE OpenSSL::SSL OpenSSL::Crypto ws2_32)
+    else()
+        target_link_libraries(Space-Invader-Server PRIVATE OpenSSL::SSL OpenSSL::Crypto pthread)
+    endif()
+
+    # --- SERVER FOLDER ---
+    add_custom_command(TARGET Space-Invader-Server POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:Space-Invader-Server>/auth
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/auth/space_invader_server.crt $<TARGET_FILE_DIR:Space-Invader-Server>/auth/space_invader_server.crt
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/auth/space_invader_server.key $<TARGET_FILE_DIR:Space-Invader-Server>/auth/space_invader_server.key
+            COMMENT "Server folder."
+    )
+endif()

@@ -73,3 +73,9 @@ compile_commands.json
 
 # Clion
 .idea/
+
+# certificate/key
+auth/
+*.crt
+*.key
+address.txt

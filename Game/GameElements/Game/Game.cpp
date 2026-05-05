@@ -11,7 +11,7 @@ Game::Game() :
     InitAudioDevice();
     gameContext.renderer.Init();
 
-    Logger::Get().Init("Server_Log.txt");
+    Logger::Get().Init("Client_Log.txt");
 
     AssetsManager::Init(PATH_ASSETS_CONFIG);
     SettingsManager::Init(PATH_SPACEINVADER_SETTINGS);
@@ -81,12 +81,14 @@ void Game::LoadMultiPlayerMode()
     std::string ip = menuHandle->GetIP();
     std::string port = menuHandle->GetPort();
 
-    if (ip.empty() || port.empty())
+    if (port == "")
+        port = "0";
+    // blocked for now for the connection to the remote server
+    /*if (ip.empty() || port.empty())
     {
         *gameStatus = GameState::ON_CONNECTION_MENU;
         return;
-    }
-
+    }*/
     int intPort = std::stoi(port);
     if (intPort > 65535)
     {

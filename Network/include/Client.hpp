@@ -15,7 +15,16 @@ namespace network
 			: m_sslContext(asio::ssl::context::tls_client)
 		{
 			// local certificate
-			m_sslContext.set_verify_mode(asio::ssl::context::verify_none);
+			m_sslContext.set_verify_mode(asio::ssl::context::verify_peer);
+
+			try
+			{
+				m_sslContext.load_verify_file("auth/space_invader_server.crt");
+			}
+			catch (std::exception& e)
+			{
+				LOG_ERROR_EVERYWHERE(std::string("Error loading the certificate: ") + e.what());
+			}
 		}
 
 		virtual ~clientInterface()

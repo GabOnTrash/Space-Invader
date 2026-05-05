@@ -136,6 +136,12 @@ namespace network
                         LOG_WARN_EVERYWHERE("[Connection #" + std::to_string(id) + "] Read Header Fail.");
                         asio::error_code ec;
                         m_socket.lowest_layer().close(ec);
+
+                        if (m_nOwnerType == owner::server)
+                        {
+                            message<T> msgDummy;
+                            m_qMessagesIn.push_back({ this->shared_from_this(), msgDummy });
+                        }
                     }
                 });
         }

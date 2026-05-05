@@ -26,8 +26,8 @@ namespace network
 					| asio::ssl::context::no_sslv2
 					| asio::ssl::context::no_sslv3);
 
-				m_sslContext.use_certificate_chain_file("server.crt");
-				m_sslContext.use_private_key_file("server.key", asio::ssl::context::pem);
+				m_sslContext.use_certificate_chain_file("auth/space_invader_server.crt");
+				m_sslContext.use_private_key_file("auth/space_invader_server.key", asio::ssl::context::pem);
 			}
 			catch (std::exception& e)
 			{

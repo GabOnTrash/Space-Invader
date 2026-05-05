@@ -49,7 +49,7 @@ public:
             }
         }
         return false;
-    };
+    }
 
 protected:
     bool OnClientConnect(std::shared_ptr<network::connection<MultiplayerPacketType>> client) override
@@ -67,9 +67,10 @@ protected:
                 network::message<MultiplayerPacketType> othersInfo;
                 othersInfo.header.id = MultiplayerPacketType::PLAYER_ADD_OTHERS;
                 othersInfo << info;
+                MessageClient(client, othersInfo);
+
                 LOG_INFO_EVERYWHERE("[SERVER] Passing to player #" + std::to_string(id) + " info of player #"
                     + std::to_string(info.id) + " {" + std::to_string(info.x) + ", " + std::to_string(info.y) + "}");
-                MessageClient(client, othersInfo);
             }
 
             playersMap[id] = { 0.0f, 0.0f, id };
@@ -106,8 +107,11 @@ protected:
         msg.header.id = MultiplayerPacketType::PLAYER_REMOVED;
         msg << id;
 
-        MessageAllClient(msg, nullptr);
-        LOG_INFO_EVERYWHERE("[SERVER] Messaging all players to delete player #" + std::to_string(id));
+        if (!playersMap.empty())
+        {
+            MessageAllClient(msg, nullptr);
+            LOG_INFO_EVERYWHERE("[SERVER] Messaging all players to delete player #" + std::to_string(id));
+        }
     }
     void OnMessage(std::shared_ptr<network::connection<MultiplayerPacketType>> client,
                            network::message<MultiplayerPacketType>& msg) override

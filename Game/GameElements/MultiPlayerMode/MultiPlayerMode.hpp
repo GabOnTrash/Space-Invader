@@ -15,6 +15,8 @@ public:
 
 private:
     void OnConnectionAccepted() override;
+    void SetSelfID(uint32_t id) override;
+    void SetGroupSize(size_t gs) override;
 
     std::string ip;
     uint16_t port;

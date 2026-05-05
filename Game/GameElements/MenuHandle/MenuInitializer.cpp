@@ -105,7 +105,7 @@ void MenuHandle::InitConneMenu()
     connectionMenu.Add<Label<void>>("labelPort", "Port:", nullptr, GameFontMedium, 140, gameContext.renderer.BASE_WIDTH / 2 - sliderWidth * 1.4, gameContext.renderer.BASE_HEIGHT / 3 + 130, TEXT_COLOR_NHOVER, TEXT_COLOR_NHOVER);
     connectionMenu.Add<TextBox>("txtPort", gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 3 + 130, sliderWidth * 2, sliderHeight * 2, GameFontMedium, fontSize * 1.5, 5, 48, 57, TEXT_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_NHOVER, FILL_COLOR_HOVER);
 
-    connectionMenu.Add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnResume"), [this]() { if (StartMultiPlayer) StartMultiPlayer(); });
+    connectionMenu.Add<TextureButton>("btnConnect", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 200), AssetsManager::GetTexture("btnStartMultiPlayer"), [this]() { if (StartMultiPlayer) StartMultiPlayer(); });
     connectionMenu.Add<TextureButton>("btQuit", gameContext.renderer.BASE_WIDTH / 2, (gameContext.renderer.BASE_HEIGHT / 2 + 360), AssetsManager::GetTexture("btnQuit"), [this]() { *(gameContext.gameStatus) = GameState::ON_START_MENU; });
 }
 
@@ -119,7 +119,7 @@ void MenuHandle::InitSinglePlayerHUD()
 void MenuHandle::InitMultiPlayerHUD()
 {
     multiPlayerHUD.Add<Label<void>>("lblConnecting", "Trying to connect...", nullptr, GameFontMedium, fontSize * 3, gameContext.renderer.BASE_WIDTH / 2, gameContext.renderer.BASE_HEIGHT / 2, YELLOW, YELLOW);
-    multiPlayerHUD.Add<Label<void>>("lblPlayerCount", "Players: 0", nullptr, GameFontMedium, fontSize, 150, 50, WHITE, WHITE);
+    multiPlayerHUD.Add<Label<void>>("lblPlayerCount", "Players: 1", nullptr, GameFontMedium, fontSize, 150, 50, WHITE, WHITE);
     multiPlayerHUD.Add<Label<void>>("lblMyID", "ID: ?", nullptr, GameFontMedium, fontSize, gameContext.renderer.BASE_WIDTH / 2, 150, GREEN, GREEN);
 }
 

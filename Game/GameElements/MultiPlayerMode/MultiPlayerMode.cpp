@@ -5,6 +5,15 @@ MultiPlayerMode::MultiPlayerMode(GameContext& ctx, MenuHandle& menu, std::string
 {
     this->ip = ip;
     this->port = port;
+
+    if (ip == "..." && port == 0)
+    {
+        std::string p;
+        std::ifstream ifile("auth/address.txt");
+        std::getline(ifile, this->ip);
+        std::getline(ifile, p);
+        this->port = std::stoi(p.c_str());
+    }
 }
 MultiPlayerMode::~MultiPlayerMode()
 {
@@ -24,8 +33,16 @@ void MultiPlayerMode::OnConnectionAccepted()
 {
     timeToConnect.deactive();
     menuHandle.stillTryingConnecting = false;
-    menuHandle.SetSizeAndId(otherPlayers.size() + 1, thisPlayer);
 }
+void MultiPlayerMode::SetSelfID(uint32_t id)
+{
+    menuHandle.SetID(id);
+}
+void MultiPlayerMode::SetGroupSize(size_t gs)
+{
+    menuHandle.SetSize(gs);
+}
+
 
 void MultiPlayerMode::Update(float dt)
 {
@@ -49,7 +66,7 @@ void MultiPlayerMode::Draw()
     for (const auto& [_, p] : otherPlayers)
         DrawTexture(player.texture, p.x, p.y, WHITE);
 
-    if (IsConnected())
+    if (IsConnected() && HasHandshakeHappened())
         player.Draw();
 }
 

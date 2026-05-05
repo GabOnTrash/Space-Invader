@@ -118,15 +118,22 @@ int main(int argc, char** argv)
 {
     Logger::Get().Init("Server_Log.txt");
 
+    bool noPort = false;
+    size_t port = -1;
+
     if (argc != 2)
     {
+        noPort = true;
         LOG_WARN_CONSOLE("Usage: " + std::string(argv[0]) + " <port>");
-        return 1;
+        LOG_DEBUG_CONSOLE("Defaulting to port: 65000");
     }
 
     try
     {
-        std::stoi(argv[1]);
+        if (noPort)
+            port = 65000;
+        else
+            port = std::stoi(argv[1]);
     }
     catch (std::exception& ex)
     {
@@ -134,7 +141,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Server server_instance(std::stoi(argv[1]));
+    Server server_instance(port);
     server_instance.Start();
 
     std::thread cli(cliThread, std::ref(server_instance));
