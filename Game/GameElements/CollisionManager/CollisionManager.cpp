@@ -21,30 +21,30 @@ void CollisionManager::HandleLaserMeteors(Player& player, std::vector<Laser>& la
     for (size_t i = 0; i < lasers.size();)
     {
         bool laserErased = false;
+
         for (size_t j = 0; j < meteors.size();)
         {
             Rectangle rLaser = lasers[i].getBounds();
             Rectangle rAst = meteors[j].getBounds();
 
-            if (CheckCollisionRecs(rLaser, rAst))
+            if (CheckCollisionRecs(rLaser, rAst) &&
+                Laser::byteMask.checkPixelCollision(Meteor::byteMask, lasers[i].position, meteors[j].position, GetCollisionRec(rLaser, rAst)))
             {
-                if (Laser::byteMask.checkPixelCollision(Meteor::byteMask, lasers[i].position, meteors[j].position, GetCollisionRec(rLaser, rAst)))
+                lasers.erase(lasers.begin() + i);
+                laserErased = true;
+
+                meteors[j].NextState();
+                if (meteors[j].shouldDie)
                 {
-                    lasers.erase(lasers.begin() + i);
-                    laserErased = true;
-
-                    meteors[j].NextState();
-
-                    if (!meteors[j].shouldDie)
-                        break;
-
                     explosions.emplace_back(meteors[j].getBounds());
                     meteors[j] = meteors.back();
                     meteors.pop_back();
                     score++;
                 }
+                else j++;
+                break;
             }
-            j++;
+            else j++;
         }
         if (!laserErased)
             i++;
@@ -57,26 +57,24 @@ void CollisionManager::HandleLaserMeteors(Player& player, std::vector<Laser>& la
             Rectangle rLaser = player.getBigLaser().getBounds();
             Rectangle rAst = meteors[i].getBounds();
 
-            if (CheckCollisionRecs(rLaser, rAst))
+            if (CheckCollisionRecs(rLaser, rAst) &&
+                BigLaser::byteMask.checkPixelCollision(Meteor::byteMask, player.getBigLaser().position, meteors[i].position, GetCollisionRec(rLaser, rAst)))
             {
-                if (BigLaser::byteMask.checkPixelCollision(Meteor::byteMask, player.getBigLaser().position, meteors[i].position, GetCollisionRec(rLaser, rAst)))
+                meteors[i].NextState();
+
+                if (meteors[i].shouldDie)
                 {
-                    meteors[i].NextState();
-
-                    if (!meteors[i].shouldDie)
-                        break;
-
                     explosions.emplace_back(meteors[i].getBounds());
                     meteors[i] = meteors.back();
                     meteors.pop_back();
                     score++;
                 }
+                else i++;
             }
-            i++;
+            else i++;
         }
     }
 }
-
 void CollisionManager::HandlePlayerMeteors(Player& player, std::vector<Meteor>& meteors, std::shared_ptr<GameState>& status,
     std::vector<Heart>& hearts)
 {
